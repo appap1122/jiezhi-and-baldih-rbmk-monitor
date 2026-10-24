@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://minecraft.net"><img alt="Minecraft" src="https://img.shields.io/badge/Minecraft-1.12.2-62B47A?style=flat-square"></a>
   <a href="https://files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html"><img alt="Forge" src="https://img.shields.io/badge/Forge-14.23.5.2864-5A8DEE?style=flat-square"></a>
-  <img alt="Version" src="https://img.shields.io/badge/版本-4.0--beta-FF6BD6?style=flat-square">
+  <img alt="Version" src="https://img.shields.io/badge/版本-1.0.0--beta-FF6BD6?style=flat-square">
   <img alt="Java" src="https://img.shields.io/badge/Java-8-ED8B00?style=flat-square">
   <img alt="Side" src="https://img.shields.io/badge/端-客户端%20%2B%20服务端-FFC55C?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/许可证-署名·非商业-94E2BE?style=flat-square">
@@ -47,7 +47,7 @@ git clone https://github.com/<你的用户名>/<仓库名>.git
 cd <仓库名>
 ```
 
-### 构建三步（缺一不可）
+### 构建三步（缺一不可）（jzmod）
 
 ```bat
 :: 1. 编译出基础 jar
@@ -83,34 +83,7 @@ python tools\selftest\run_selftest.py                                        :: 
 
 ---
 
-## 📁 目录结构
 
-```
-.
-├── build.gradle                    # ForgeGradle 3.x 构建脚本
-├── gradle.properties               # Gradle JVM 参数
-├── screenshots/                    # README 配图
-├── docs/                           # 详细文档
-│   ├── 使用文档.md                  # 完整玩法手册
-│   ├── DFC显示器.md                 # DFC 三块屏专题
-│   ├── 构建指南.md                  # 构建与防篡改架构
-│   └── 常见问题.md
-├── src/main/java/com/jiezhimod/
-│   ├── JiezhiMod.java              # @Mod 入口
-│   ├── block/                      # 方块：DFC 显示屏、密码盘 / 控制台（含多方块与占位块）
-│   ├── item/                       # 物品：线圈、喷气背包、DFC 遥控器
-│   ├── command/                    # 全部指令
-│   ├── client/                     # 客户端渲染：特效、聊天栏、通知、DFC 画布
-│   │   └── dfc/                    # 屏幕画布与版式（ScreenCanvas / ScreenLayout / ScreenFonts）
-│   ├── dfc/                        # 数据层：快照、数据槽、格式化、反射桥、结构几何
-│   ├── network/                    # 网络包（SimpleNetworkWrapper）
-│   ├── countdown/                  # 服务端倒计时管理
-│   ├── proxy/                      # CommonProxy / ClientProxy（类名不可混淆）
-│   └── seal/                       # 完整性校验（SealA / SealB / Str）
-├── src/main/resources/
-│   ├── mcmod.info                  # 游戏内说明（玩家看到的指令手册）
-│   └── assets/jiezhimod/           # 贴图 / 模型 / 语言文件 / 音效
-└── tools/                          # 构建与开发工具（见上表）
 ```
 
 ---
@@ -128,7 +101,7 @@ python tools\selftest\run_selftest.py                                        :: 
 - ❌ **不可以**：直接**二次分发本模组的 jar 或修改版 jar**（请引导用户回到本仓库 / 原作者发布页下载）。整合包内置需先取得作者同意。
 - ❌ **不可以**：**商业用途**（售卖、付费墙、收费整合包等）。
 
-完整条款见 [LICENSE.md](LICENSE.md)。**署名是本许可的核心条件，请务必遵守。**
+
 
 
 
