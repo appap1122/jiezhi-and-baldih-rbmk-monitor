@@ -1,0 +1,33 @@
+# ---- Gradle ----
+.gradle/
+build/
+out/
+classes/
+
+# ---- ForgeGradle / MC 工作目录 ----
+run/
+runs/
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+
+# ---- 编译产物 ----
+libs/
+dist/
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---- 系统 ----
+.DS_Store
+Thumbs.db
+
+# ---- 日志 ----
+logs/
+*.log
+!prebuilt/

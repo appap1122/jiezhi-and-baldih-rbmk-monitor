@@ -1,0 +1,36 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "https://maven.minecraftforge.net/" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+// ---- 基本信息 ----
+version = "1.0.0-rbmk"
+group = "com.jiezhimod"
+archivesBaseName = "jiezhi-rbmk-monitor"
+
+// MC 1.12.2 要求 Java 8
+sourceCompatibility = targetCompatibility = '1.8'
+
+minecraft {
+    // Forge 1.12.2 推荐稳定版
+    version = "1.12.2-14.23.5.2860"
+    runDir = "run"
+    // MCP 稳定映射
+    mappings = "stable_39"
+}
+
+// 替换 mcmod.info 里的变量
+replace '${version}', project.version
+replace '${mcversion}', "1.12.2"
+
+// 编译输出 UTF-8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
