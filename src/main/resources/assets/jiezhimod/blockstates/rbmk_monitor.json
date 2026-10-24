@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=south": { "model": "jiezhimod:rbmk_screen_empty" },
-    "facing=west": { "model": "jiezhimod:rbmk_screen_empty" },
-    "facing=north": { "model": "jiezhimod:rbmk_screen_empty" },
-    "facing=east": { "model": "jiezhimod:rbmk_screen_empty" }
-  }
-}
