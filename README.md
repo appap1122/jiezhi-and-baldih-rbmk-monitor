@@ -133,9 +133,11 @@ gradle wrapper --gradle-version 4.10.3
 ---
 
 ## 📸 截图
-![输入图片说明](%20jiezhi%20and%20baldih-RBMK-monitor%20/%20a7bf2db36f587892fd11d7339b7ee4db.png)
+![输入图片说明](%20jiezhi%20and%20baldih-RBMK-monitor%20/6029c471f82317cc372d56c4d9ccbb5d.png)
 
 ![输入图片说明](%20jiezhi%20and%20baldih-RBMK-monitor%20/%20a7bf2db36f587892fd11d7339b7ee4db.png)
+
+![输入图片说明](%20jiezhi%20and%20baldih-RBMK-monitor%20/0e075fb338861590d2c3ee65a245def3.png)
 ---
 
 ## 🙏 致谢
