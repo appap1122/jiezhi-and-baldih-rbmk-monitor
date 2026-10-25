@@ -133,9 +133,9 @@ gradle wrapper --gradle-version 4.10.3
 ---
 
 ## 📸 截图
+![输入图片说明](%20jiezhi%20and%20baldih-RBMK-monitor%20/%20a7bf2db36f587892fd11d7339b7ee4db.png)
 
-> 待补充：控制室全景 / 15×15 热图特写 / 熔毁报错页
-
+![输入图片说明](%20jiezhi%20and%20baldih-RBMK-monitor%20/%20a7bf2db36f587892fd11d7339b7ee4db.png)
 ---
 
 ## 🙏 致谢
