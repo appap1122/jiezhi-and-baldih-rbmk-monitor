@@ -1,6 +1,6 @@
-<div align="center">
 
-<img src="assets/logo.png" alt="RBMK Monitor Logo" width="180" />
+![输入图片说明](assets/logo.png)
+
 
 # ☢️ RBMK 监控屏 · RBMK Monitor
 
