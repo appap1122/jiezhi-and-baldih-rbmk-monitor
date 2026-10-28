@@ -93,10 +93,11 @@ rbmk-monitor/
 进游戏后用指令拿物品：
 
 ```mcfunction
-/give @s jiezhimod:rbmk_screen
-/give @s jiezhimod:rbmk_monitor
-/give @s jiezhimod:rbmk_custom
-/give @s jiezhimod:rbmk_remote
+/give @p jiezhirbmkmod:rbmk_screen
+/give @p jiezhirbmkmod:rbmk_monitor
+/give @p jiezhirbmkmod:rbmk_custom
+/give @p jiezhirbmkmod:rbmk_remote
+
 ```
 
 > 物品都在创造模式物品栏的 **「RBMK 显示器」** 分组里。
