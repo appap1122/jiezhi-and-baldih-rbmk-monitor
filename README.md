@@ -14,7 +14,7 @@
 ![Forge](https://img.shields.io/badge/Forge-14.23.5.2860-1E1E1E?style=flat-square)
 ![Java](https://img.shields.io/badge/Java-8-orange?style=flat-square)
 ![Version](https://img.shields.io/badge/Mod%20Version-1.0.0--rbmk-blue?style=flat-square)
-![License](https://img.shields.io/badge/License-GPLv3-green?style=flat-square)
+![License](https://img.shields.io/badge/License-MPL-2.0-green?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
 ![HBM NTM-CE](https://img.shields.io/badge/HBM%20NTM--CE-Optional-red?style=flat-square)
 
@@ -152,7 +152,7 @@ gradle wrapper --gradle-version 4.10.3
 
 ## 📄 许可证
 
-本项目基于 **GPLv3** 开源。通过反射读取 HBM 数据，不引用其类、不构成派生，与原作 GPLv3 互不污染。
+本项目基于 **MPL-2.0** 开源。通过反射读取 HBM 数据，不引用其类、不构成派生，与原作 GPLv3 互不污染。
 
 ---
 
