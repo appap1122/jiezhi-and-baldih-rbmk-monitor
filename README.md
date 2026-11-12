@@ -5,6 +5,8 @@
 # ☢️ RBMK 监控屏 · RBMK Monitor
 
 **把切尔诺贝利的控制室，搬进 Minecraft。**
+**📢 玩家交流与 Bug 反馈 QQ 群：1044038319**
+![输入图片说明](%20jiezhi%20and%20baldih-RBMK-monitor%20/qrcode_1794463925594.jpg)
 
 基于节枝 DFC 特效工具二次创作的 HBM 核科技（NTM-CE）RBMK 沸水堆实时监控模组。前置模组：https://gitee.com/yi-sichen-jiezhi/DFC-Map-Creation-Tool
 
