@@ -1,0 +1,1 @@
+{"variants": { "facing=north": { "model": "jiezhirbmkmod:rbmk_terminal" }, "facing=south": { "model": "jiezhirbmkmod:rbmk_terminal", "y": 180 }, "facing=west": { "model": "jiezhirbmkmod:rbmk_terminal", "y": 270 }, "facing=east": { "model": "jiezhirbmkmod:rbmk_terminal", "y": 90 } } }

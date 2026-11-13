@@ -1,0 +1,122 @@
+itemGroup.jiezhirbmkmod=jiezhirbmkmod Items
+itemGroup.jiezhirbmkmod_screen=RBMK Screens
+
+tile.rbmk_screen.name=RBMK Monitor Panel
+tile.rbmk_monitor.name=RBMK Core Monitor
+tile.rbmk_custom.name=RBMK Custom Display
+tile.rbmk_graph.name=RBMK Graph Display
+item.rbmk_remote.name=RBMK Remote
+item.rbmk_laptop.name=RBMK Portable Terminal
+tile.rbmk_siren.name=RBMK Alarm Siren
+tile.rbmk_terminal.name=RBMK Terminal
+tile.rbmk_term_screen.name=RBMK Terminal Display
+tile.rbmk_router.name=RBMK Network Router
+
+# ---- Screen tooltips (v7.1: these keys were missing in v7.0, hotbar showed raw keys) ----
+tooltip.jiezhirbmkmod.rbmk_screen.0=%s-block ceiling mount (4x3), right-click to toggle
+tooltip.jiezhirbmkmod.rbmk_screen.1=Core overview: avg/peak column heat, flux, steam, enrichment, xenon, rods
+tooltip.jiezhirbmkmod.rbmk_screen.2=Auto red-screen reboot on meltdown, the whole incident goes to the event log
+tooltip.jiezhirbmkmod.rbmk_screen.3=Sneak + right-click (empty hand): alarm thresholds & redstone linkage
+tooltip.jiezhirbmkmod.rbmk_screen.4=Right-click this panel with the remote to bind the source
+
+tooltip.jiezhirbmkmod.rbmk_monitor.0=%s-block ceiling mount (4x3), right-click to toggle
+tooltip.jiezhirbmkmod.rbmk_monitor.1=15x15 core map: fuel/control/boiler columns coloured by temperature
+tooltip.jiezhirbmkmod.rbmk_monitor.2=Sneak + right-click (empty hand): alarm thresholds & redstone linkage
+tooltip.jiezhirbmkmod.rbmk_monitor.3=Hot columns get an outline, find the hottest one at a glance
+tooltip.jiezhirbmkmod.rbmk_monitor.4=Right-click this panel with the remote to bind the source
+
+tooltip.jiezhirbmkmod.rbmk_custom.0=%s-block ceiling mount (4x3), right-click for the device manager
+tooltip.jiezhirbmkmod.rbmk_custom.1=List the readings you care about
+tooltip.jiezhirbmkmod.rbmk_custom.2=Sneak + right-click tanks/batteries with the remote, then right-click this panel
+tooltip.jiezhirbmkmod.rbmk_custom.3=Up to %s rows; redstone mode "Watch slot 1" emits on the first row's fill ratio
+tooltip.jiezhirbmkmod.rbmk_custom.4=Sneak + right-click (empty hand): alarm thresholds & redstone linkage
+tooltip.jiezhirbmkmod.rbmk_custom.5=v7.1: full-screen strobe + siren + redstone from any of the 12 blocks + per-screen thresholds
+
+# ---- RBMK Graph display tooltip ----
+tooltip.jiezhirbmkmod.rbmk_graph.0=4x3 ceiling-mounted multiblock, right-click to toggle
+tooltip.jiezhirbmkmod.rbmk_graph.1=Three charts, thermal/fuel groups rotate automatically: heat/flux/water & steam/enrich/xenon
+tooltip.jiezhirbmkmod.rbmk_graph.2=Auto-scaling Y axis, ~%s second window
+tooltip.jiezhirbmkmod.rbmk_graph.3=A break means data loss, not zero
+tooltip.jiezhirbmkmod.rbmk_graph.4=~%s seconds of history, one point per 0.5s
+
+# ---- Custom display (opened by right-clicking the block) ----
+gui.jiezhirbmkmod.custom.title=RBMK Custom Display
+gui.jiezhirbmkmod.custom.power.on=Power On
+gui.jiezhirbmkmod.custom.power.off=Power Off
+gui.jiezhirbmkmod.custom.state.on=State: ON
+gui.jiezhirbmkmod.custom.state.off=State: OFF
+gui.jiezhirbmkmod.custom.delete=Del
+gui.jiezhirbmkmod.custom.clear=Clear
+gui.jiezhirbmkmod.custom.close=Close
+gui.jiezhirbmkmod.custom.empty=(empty)
+gui.jiezhirbmkmod.custom.offline=offline
+gui.jiezhirbmkmod.custom.hint=Put the RBMK remote in the slot and click Add (max 8 readings).
+gui.jiezhirbmkmod.custom.add=Add
+gui.jiezhirbmkmod.custom.add.hint=Put a remote in the slot
+gui.jiezhirbmkmod.custom.remote=Remote
+gui.jiezhirbmkmod.custom.remote.empty=empty
+gui.jiezhirbmkmod.custom.remote.count=%s/%s
+
+# ---- RBMK Remote tooltip ----
+tooltip.jiezhirbmkmod.rbmk_remote.0=No RBMK source recorded
+tooltip.jiezhirbmkmod.rbmk_remote.1=Right-click a console or RBMK part to record
+tooltip.jiezhirbmkmod.rbmk_remote.2=Source (%s) @ %s
+tooltip.jiezhirbmkmod.rbmk_remote.3=Devices recorded %s/%s
+tooltip.jiezhirbmkmod.rbmk_remote.4=Sneak + right-click tanks/batteries to record
+tooltip.jiezhirbmkmod.rbmk_remote.5=Then right-click a display to bind
+tooltip.jiezhirbmkmod.rbmk_remote.6=Sneak + right-click this panel to hook up
+tooltip.jiezhirbmkmod.rbmk_remote.7=Sneak + right-click air to clear all
+
+# ---- RBMK Portable Terminal (v11.2: handheld laptop) ----
+tooltip.jiezhirbmkmod.rbmk_laptop.0=No reactor connected
+tooltip.jiezhirbmkmod.rbmk_laptop.1=Connected to RBMK console @ %s %s %s
+tooltip.jiezhirbmkmod.rbmk_laptop.2=Right-click a console or RBMK column to connect
+tooltip.jiezhirbmkmod.rbmk_laptop.3=Right-click in the air to open the command prompt
+tooltip.jiezhirbmkmod.rbmk_laptop.4=Sneak + right-click air to clear the link
+
+# ---- original items: coils / jetpack / jet switch ----
+item.speed_coil.name=Speed Coil
+item.gravity_coil.name=Gravity Coil
+item.healing_coil.name=Healing Coil
+item.jetpack.name=Jetpack
+item.jet_switch.name=Jet Switch
+tooltip.jiezhirbmkmod.coil_speed.0=Speed Coil
+tooltip.jiezhirbmkmod.coil_speed.1=Hold in either hand: movement speed x%s
+tooltip.jiezhirbmkmod.coil_speed.2=Raw attribute boost, not a potion effect
+tooltip.jiezhirbmkmod.coil_gravity.0=Gravity Coil
+tooltip.jiezhirbmkmod.coil_gravity.1=Hold in either hand: jump about %s blocks high
+tooltip.jiezhirbmkmod.coil_gravity.2=Raw physics boost, not a potion effect
+tooltip.jiezhirbmkmod.coil_healing.0=Healing Coil
+tooltip.jiezhirbmkmod.coil_healing.1=Hold in either hand: +%s HP per second
+tooltip.jiezhirbmkmod.coil_healing.2=Raw healing, not a potion effect
+tooltip.jiezhirbmkmod.jetpack.0=Jetpack
+tooltip.jiezhirbmkmod.jetpack.1=Wear in the chest slot, hold the Jet Switch and hold right-click to fly
+tooltip.jiezhirbmkmod.jetpack.2=Burn time: %s seconds per full tank
+tooltip.jiezhirbmkmod.jetpack.3=Release right-click to cool down; the tank overheats when it runs dry
+tooltip.jiezhirbmkmod.jetpack.4=Vanilla physics, stacks with potion effects
+tooltip.jiezhirbmkmod.jet_switch.0=Jet Switch
+tooltip.jiezhirbmkmod.jet_switch.1=Requires a Jetpack in the chest slot
+tooltip.jiezhirbmkmod.jet_switch.2=Hold right-click: fly / release: stop
+tooltip.jiezhirbmkmod.jet_switch.3=The heat bar is drawn under the crosshair while flying
+
+# ---- RBMK Alarm Siren (v7.2: standalone block, rings on redstone) ----
+tooltip.jiezhirbmkmod.rbmk_siren.0=One block, no multiblock; rings whenever any side gets redstone
+tooltip.jiezhirbmkmod.rbmk_siren.1=Hold a dye and right-click to repaint instantly (16 colors)
+tooltip.jiezhirbmkmod.rbmk_siren.2=Right-click for the tuner: sound / volume / pitch / gap / mode / category / flash
+tooltip.jiezhirbmkmod.rbmk_siren.3=%s built-in alarm sounds, up to ~6s per blare
+tooltip.jiezhirbmkmod.rbmk_siren.4="Loop" re-triggers before the sample ends, so the alarm keeps wailing
+tooltip.jiezhirbmkmod.rbmk_siren.5=Color: %s
+
+# ---- RBMK Terminal (v11.0: floor block, right-click opens a command prompt) ----
+tooltip.jiezhirbmkmod.rbmk_terminal.0=Floor-standing terminal block, right-click opens the command prompt
+tooltip.jiezhirbmkmod.rbmk_terminal.1=To connect a reactor: record a console with the RBMK remote, then right-click this block; or type 'bind' near a console
+tooltip.jiezhirbmkmod.rbmk_terminal.2=Commands: help / status / rods / rods <0-100> [color] / scram / where / siren <on|off|test> / history
+tooltip.jiezhirbmkmod.rbmk_terminal.3=Tab autocompletes commands, just like vanilla commands
+tooltip.jiezhirbmkmod.rbmk_terminal.4=Type 'clear' to unlink this terminal, 'cls' to wipe the screen
+
+# ---- RBMK Terminal Display (v11.0: 4x3 multiblock, same family as the other screens) ----
+tooltip.jiezhirbmkmod.rbmk_term_screen.0=%s-block multiblock (4x3), same structure as the other displays
+tooltip.jiezhirbmkmod.rbmk_term_screen.1=Right-click (sneaking or not) opens the command prompt, output is shown on the big screen
+tooltip.jiezhirbmkmod.rbmk_term_screen.2=Bind an RBMK console with the RBMK remote, same as the other displays
+tooltip.jiezhirbmkmod.rbmk_term_screen.3=Commands: help / status / rods / rods <0-100> / scram / where / siren <on|off|test> / history, Tab autocompletes
+tooltip.jiezhirbmkmod.rbmk_term_screen.4=Type 'cls' to wipe the big screen, 'exit' to close

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_term_screen",
+    "count": 1
+  },
+  "ingredients": [
+    {
+      "item": "jiezhirbmkmod:rbmk_screen"
+    },
+    {
+      "item": "minecraft:repeater"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ]
+}

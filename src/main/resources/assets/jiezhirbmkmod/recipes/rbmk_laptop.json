@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_laptop",
+    "count": 1
+  },
+  "pattern": [
+    "igi",
+    "grg",
+    "iei"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "g": {
+      "item": "minecraft:glass_pane"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "e": {
+      "item": "minecraft:redstone_lamp"
+    }
+  }
+}

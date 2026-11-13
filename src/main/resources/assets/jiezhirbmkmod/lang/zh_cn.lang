@@ -1,0 +1,122 @@
+itemGroup.jiezhirbmkmod=jiezhirbmkmod物品
+itemGroup.jiezhirbmkmod_screen=RBMK显示器
+
+tile.rbmk_screen.name=RBMK 监控显示器
+tile.rbmk_monitor.name=RBMK 堆芯监视器
+tile.rbmk_custom.name=RBMK 自定义显示屏
+tile.rbmk_graph.name=RBMK 曲线显示器
+item.rbmk_remote.name=RBMK 遥控器
+item.rbmk_laptop.name=RBMK 便携终端
+tile.rbmk_siren.name=RBMK 警报器
+tile.rbmk_terminal.name=RBMK 终端显示屏
+tile.rbmk_term_screen.name=RBMK 终端大屏
+tile.rbmk_router.name=RBMK 网络路由器
+
+# ---- 显示屏 tooltip（v7.1 补齐：原先这三组键缺失，工具栏会显示原始 key）----
+tooltip.jiezhirbmkmod.rbmk_screen.0=%s 格吊装多方块（4x3），右键开关机
+tooltip.jiezhirbmkmod.rbmk_screen.1=堆芯总览：平均/最高柱温、通量、蒸汽、富集度、氙毒、控制棒
+tooltip.jiezhirbmkmod.rbmk_screen.2=熔毁时自动红屏重启，事故经过写进事件日志
+tooltip.jiezhirbmkmod.rbmk_screen.3=蹲下 + 空手右键：告警阈值与红石联动设置
+tooltip.jiezhirbmkmod.rbmk_screen.4=遥控器右键本屏完成绑定
+
+tooltip.jiezhirbmkmod.rbmk_monitor.0=%s 格吊装多方块（4x3），右键开关机
+tooltip.jiezhirbmkmod.rbmk_monitor.1=15x15 堆芯透视：燃料棒/控制棒/锅炉柱按温度着色
+tooltip.jiezhirbmkmod.rbmk_monitor.2=蹲下 + 空手右键：告警阈值与红石联动设置
+tooltip.jiezhirbmkmod.rbmk_monitor.3=超温柱自动描边，一眼找到最热的那一格
+tooltip.jiezhirbmkmod.rbmk_monitor.4=遥控器右键本屏完成绑定
+
+tooltip.jiezhirbmkmod.rbmk_custom.0=%s 格吊装多方块（4x3），右键打开设备管理
+tooltip.jiezhirbmkmod.rbmk_custom.1=把自己关注的读数排成一列
+tooltip.jiezhirbmkmod.rbmk_custom.2=遥控器蹲下右键储罐/电池等记录设备，再右键本屏接入
+tooltip.jiezhirbmkmod.rbmk_custom.3=最多挂 %s 条；红石模式选「自定义槽 1」可按第 1 条读数的占比出信号
+tooltip.jiezhirbmkmod.rbmk_custom.4=蹲下 + 空手右键：告警阈值与红石联动设置
+tooltip.jiezhirbmkmod.rbmk_custom.5=v7.1：全屏红闪 + 汽笛 + 12 格红石输出 + 独立阈值
+
+# ---- RBMK 曲线显示器 tooltip ----
+tooltip.jiezhirbmkmod.rbmk_graph.0=4x3 吊装多方块，右键开关机
+tooltip.jiezhirbmkmod.rbmk_graph.1=三张折线图，热工/燃料两组自动轮换：柱温/通量/水量 与 蒸汽/富集度/氙毒
+tooltip.jiezhirbmkmod.rbmk_graph.2=纵轴自动量程，窗口约 %s 秒
+tooltip.jiezhirbmkmod.rbmk_graph.3=断线代表数据中断，不是归零
+tooltip.jiezhirbmkmod.rbmk_graph.4=历史约 %s 秒，每 0.5 秒一个点
+
+# ---- 自定义显示屏（右键方块打开） ----
+gui.jiezhirbmkmod.custom.title=RBMK 自定义显示屏
+gui.jiezhirbmkmod.custom.power.on=开机
+gui.jiezhirbmkmod.custom.power.off=关机
+gui.jiezhirbmkmod.custom.state.on=当前：已开机
+gui.jiezhirbmkmod.custom.state.off=当前：已关机
+gui.jiezhirbmkmod.custom.delete=删除
+gui.jiezhirbmkmod.custom.clear=清空
+gui.jiezhirbmkmod.custom.close=关闭
+gui.jiezhirbmkmod.custom.empty=（空）
+gui.jiezhirbmkmod.custom.offline=离线
+gui.jiezhirbmkmod.custom.hint=放入 RBMK 遥控器，点「添加」接入它记录的全部设备（最多 8 条）
+gui.jiezhirbmkmod.custom.add=添加
+gui.jiezhirbmkmod.custom.add.hint=把遥控器放进槽位
+gui.jiezhirbmkmod.custom.remote=遥控器
+gui.jiezhirbmkmod.custom.remote.empty=空
+gui.jiezhirbmkmod.custom.remote.count=%s/%s 台
+
+# ---- RBMK 遥控器 tooltip ----
+tooltip.jiezhirbmkmod.rbmk_remote.0=未记录 RBMK 数据源
+tooltip.jiezhirbmkmod.rbmk_remote.1=右键控制台或任意 RBMK 部件记录
+tooltip.jiezhirbmkmod.rbmk_remote.2=数据源（%s）@ %s
+tooltip.jiezhirbmkmod.rbmk_remote.3=已记录设备 %s/%s 台
+tooltip.jiezhirbmkmod.rbmk_remote.4=蹲下右键储罐/电池等记录设备
+tooltip.jiezhirbmkmod.rbmk_remote.5=再右键显示器完成绑定
+tooltip.jiezhirbmkmod.rbmk_remote.6=蹲下右键本屏接入设备
+tooltip.jiezhirbmkmod.rbmk_remote.7=蹲下右键空气清空全部记录
+
+# ---- RBMK 便携终端（v11.2：手持电脑）----
+tooltip.jiezhirbmkmod.rbmk_laptop.0=尚未连接反应堆
+tooltip.jiezhirbmkmod.rbmk_laptop.1=已连接 RBMK 控制台 @ %s %s %s
+tooltip.jiezhirbmkmod.rbmk_laptop.2=手持它右键控制台或堆芯部件即可连接
+tooltip.jiezhirbmkmod.rbmk_laptop.3=对空气右键打开命令提示符
+tooltip.jiezhirbmkmod.rbmk_laptop.4=蹲下右键空气清除连接
+
+# ---- 原版搬入：线圈 / 喷气背包 / 喷气开关 ----
+item.speed_coil.name=加速线圈
+item.gravity_coil.name=重力线圈
+item.healing_coil.name=治愈线圈
+item.jetpack.name=喷气背包
+item.jet_switch.name=喷气开关
+tooltip.jiezhirbmkmod.coil_speed.0=加速线圈
+tooltip.jiezhirbmkmod.coil_speed.1=主手或副手持有：移动速度 ×%s
+tooltip.jiezhirbmkmod.coil_speed.2=直接改属性，不是药水效果（可与药水叠加）
+tooltip.jiezhirbmkmod.coil_gravity.0=重力线圈
+tooltip.jiezhirbmkmod.coil_gravity.1=主手或副手持有：跳跃约 %s 格高
+tooltip.jiezhirbmkmod.coil_gravity.2=直接改物理，不是药水效果（可与药水叠加）
+tooltip.jiezhirbmkmod.coil_healing.0=治愈线圈
+tooltip.jiezhirbmkmod.coil_healing.1=主手或副手持有：每秒回复 %s 点生命
+tooltip.jiezhirbmkmod.coil_healing.2=直接回血，不是药水效果（可与药水叠加）
+tooltip.jiezhirbmkmod.jetpack.0=喷气背包
+tooltip.jiezhirbmkmod.jetpack.1=穿在胸甲槽，手持「喷气开关」按住右键起飞
+tooltip.jiezhirbmkmod.jetpack.2=满燃料可持续飞行 %s 秒
+tooltip.jiezhirbmkmod.jetpack.3=松开右键降温；热量打满会过热锁定，必须冷却后才能再飞
+tooltip.jiezhirbmkmod.jetpack.4=使用原版物理，可与药水效果叠加
+tooltip.jiezhirbmkmod.jet_switch.0=喷气开关
+tooltip.jiezhirbmkmod.jet_switch.1=需要胸甲槽里穿着「喷气背包」
+tooltip.jiezhirbmkmod.jet_switch.2=按住右键起飞 / 松开即停
+tooltip.jiezhirbmkmod.jet_switch.3=飞行时在准星下方显示热量条
+
+# ---- RBMK 警报器（v7.2：独立方块，通红石就响）----
+tooltip.jiezhirbmkmod.rbmk_siren.0=一格方块，不占多方块结构；任意一面来红石信号就响
+tooltip.jiezhirbmkmod.rbmk_siren.1=手里拿染料右键可直接换色（16 色）
+tooltip.jiezhirbmkmod.rbmk_siren.2=右键打开调音界面：音色 / 音量 / 音调 / 停顿 / 模式 / 声道 / 闪灯
+tooltip.jiezhirbmkmod.rbmk_siren.3=内置 %s 种警报音色，最长约 6 秒一响
+tooltip.jiezhirbmkmod.rbmk_siren.4=「循环」档会在样本播完前重新拉响，做出周而复始的警报
+tooltip.jiezhirbmkmod.rbmk_siren.5=当前颜色：%s
+
+# ---- RBMK 终端显示屏（v11.0：落地单方块，右键打开命令提示符）----
+tooltip.jiezhirbmkmod.rbmk_terminal.0=落地放置的终端方块，右键打开命令提示符，用键盘输入命令
+tooltip.jiezhirbmkmod.rbmk_terminal.1=连接反应堆：遥控器右键控制台记录，再右键本方块；或站到控制台旁输入 bind
+tooltip.jiezhirbmkmod.rbmk_terminal.2=命令：help / status / rods / rods <0-100> [颜色] / scram（紧急停堆）/ where / siren <on|off|test> / history
+tooltip.jiezhirbmkmod.rbmk_terminal.3=Tab 键自动补全命令，像原版指令一样
+tooltip.jiezhirbmkmod.rbmk_terminal.4=输入 clear 解绑本终端，输入 cls 清屏
+
+# ---- RBMK 终端大屏（v11.0：4x3 吊装多方块，与其他显示屏同一体系）----
+tooltip.jiezhirbmkmod.rbmk_term_screen.0=%s 格吊装多方块（4x3），与其他显示屏同款结构
+tooltip.jiezhirbmkmod.rbmk_term_screen.1=右键（蹲不蹲下都一样）打开命令提示符，输出直接显示在大屏上
+tooltip.jiezhirbmkmod.rbmk_term_screen.2=遥控器右键控制台记录，再右键本屏绑定（与其他显示屏一样）
+tooltip.jiezhirbmkmod.rbmk_term_screen.3=命令：help / status / rods / rods <0-100> / scram / where / siren <on|off|test> / history，Tab 补全
+tooltip.jiezhirbmkmod.rbmk_term_screen.4=输入 cls 清空大屏，输入 exit 关闭界面

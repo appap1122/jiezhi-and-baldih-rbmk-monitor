@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.aliyun.com/repository/public/' }
+        mavenCentral()
+        maven { url = 'https://maven.gofancy.wtf/releases' }
+        maven { url = 'https://maven.minecraftforge.net/' }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+'
+        classpath group: 'wtf.gofancy.fancygradle', name: 'wtf.gofancy.fancygradle.gradle.plugin', version: '+'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'wtf.gofancy.fancygradle'
+version = '13.1-beta'
+group = 'com.jiezhirbmkmod'
+archivesBaseName = 'RBMK-Monitor'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+minecraft {
+    mappings channel: 'stable', version: '39-1.12'
+}
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
+}
+jar {
+    manifest {
+        attributes([
+            'Implementation-Title'  : 'RBMK Monitor (JiezhiMod derived)',
+            'Implementation-Version': project.version,
+            'Specification-Vendor'  : 'jiezhi',
+            'Specification-Title'   : 'jiezhirbmkmod',
+            'Implementation-Vendor' : 'jiezhi'
+        ])
+    }
+}
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

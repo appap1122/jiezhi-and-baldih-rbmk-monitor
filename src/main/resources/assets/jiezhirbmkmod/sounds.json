@@ -1,0 +1,56 @@
+{
+  "coil_equip": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "jiezhirbmkmod:coil_equip",
+        "stream": false
+      }
+    ]
+  },
+  "alert_warn": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "jiezhirbmkmod:alert_warn",
+        "stream": false
+      }
+    ]
+  },
+  "alert_crit": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "jiezhirbmkmod:alert_crit",
+        "stream": false
+      }
+    ]
+  },
+  "siren_twotone": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "jiezhirbmkmod:siren_twotone",
+        "stream": false
+      }
+    ]
+  },
+  "siren_yelp": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "jiezhirbmkmod:siren_yelp",
+        "stream": false
+      }
+    ]
+  },
+  "siren_airhorn": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "jiezhirbmkmod:siren_airhorn",
+        "stream": false
+      }
+    ]
+  }
+}

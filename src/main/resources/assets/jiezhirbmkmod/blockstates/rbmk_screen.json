@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=south,powered=false": { "model": "jiezhirbmkmod:rbmk_screen_empty" },
+    "facing=south,powered=true": { "model": "jiezhirbmkmod:rbmk_screen_empty" },
+    "facing=west,powered=false": { "model": "jiezhirbmkmod:rbmk_screen_empty" },
+    "facing=west,powered=true": { "model": "jiezhirbmkmod:rbmk_screen_empty" },
+    "facing=north,powered=false": { "model": "jiezhirbmkmod:rbmk_screen_empty" },
+    "facing=north,powered=true": { "model": "jiezhirbmkmod:rbmk_screen_empty" },
+    "facing=east,powered=false": { "model": "jiezhirbmkmod:rbmk_screen_empty" },
+    "facing=east,powered=true": { "model": "jiezhirbmkmod:rbmk_screen_empty" }
+  }
+}

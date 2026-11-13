@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "color=white": {
+      "model": "jiezhirbmkmod:rbmk_siren_white"
+    },
+    "color=orange": {
+      "model": "jiezhirbmkmod:rbmk_siren_orange"
+    },
+    "color=magenta": {
+      "model": "jiezhirbmkmod:rbmk_siren_magenta"
+    },
+    "color=light_blue": {
+      "model": "jiezhirbmkmod:rbmk_siren_light_blue"
+    },
+    "color=yellow": {
+      "model": "jiezhirbmkmod:rbmk_siren_yellow"
+    },
+    "color=lime": {
+      "model": "jiezhirbmkmod:rbmk_siren_lime"
+    },
+    "color=pink": {
+      "model": "jiezhirbmkmod:rbmk_siren_pink"
+    },
+    "color=gray": {
+      "model": "jiezhirbmkmod:rbmk_siren_gray"
+    },
+    "color=silver": {
+      "model": "jiezhirbmkmod:rbmk_siren_silver"
+    },
+    "color=cyan": {
+      "model": "jiezhirbmkmod:rbmk_siren_cyan"
+    },
+    "color=purple": {
+      "model": "jiezhirbmkmod:rbmk_siren_purple"
+    },
+    "color=blue": {
+      "model": "jiezhirbmkmod:rbmk_siren_blue"
+    },
+    "color=brown": {
+      "model": "jiezhirbmkmod:rbmk_siren_brown"
+    },
+    "color=green": {
+      "model": "jiezhirbmkmod:rbmk_siren_green"
+    },
+    "color=red": {
+      "model": "jiezhirbmkmod:rbmk_siren_red"
+    },
+    "color=black": {
+      "model": "jiezhirbmkmod:rbmk_siren_black"
+    }
+  }
+}
