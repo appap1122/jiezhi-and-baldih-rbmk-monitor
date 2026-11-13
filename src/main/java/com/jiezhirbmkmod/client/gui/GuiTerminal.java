@@ -54,10 +54,10 @@ public class GuiTerminal extends GuiScreen {
     public GuiTerminal(BlockPos pos) {
         this.hostPos = pos;
         if (LAPTOP_HOST.equals(pos)) {
-            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Portable Terminal [v13.1-beta]"));
+            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Portable Terminal [v14.0]"));
             this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "Linked console: shown by 'where'. Type 'help' for commands."));
         } else {
-            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Reactor Terminal [v13.1-beta]"));
+            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Reactor Terminal [v14.0]"));
             this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "Type 'help' for commands. 'history'/'graph' replay the black box."));
         }
         if (!RbmkConfig.enableHackerAttack) {
@@ -135,6 +135,30 @@ public class GuiTerminal extends GuiScreen {
         }
         // 'graph' overlay: real polyline drawn with drawRect
         this.drawGraphOverlay();
+        this.drawMeltdownWarning();
+    }
+
+    /** Flashing red T-minus banner when the bound reactor is under 60s from meltdown. */
+    private void drawMeltdownWarning() {
+        TileRbmkMonitorScreen monitor = this.findHistorySource();
+        if (monitor == null) {
+            return;
+        }
+        double eta = RbmkBridge.meltdownEta(monitor.getData());
+        if (eta <= 0.0 || eta >= 60.0) {
+            return;
+        }
+        // ~4 Hz blink so it is impossible to miss but still readable
+        if (System.currentTimeMillis() / 250L % 2L != 0L) {
+            return;
+        }
+        String warning = String.format(Locale.ROOT,
+                "[CRITICAL WARNING] MELTDOWN IN %.1f SECONDS!", Double.valueOf(eta));
+        int tw = this.fontRenderer.getStringWidth(warning);
+        int wx = Math.max(2, (this.width - tw) / 2);
+        int wy = this.height - 12;
+        drawRect(wx - 3, wy - 2, wx + tw + 3, wy + 10, 0xCC000000);
+        this.fontRenderer.drawString(warning, wx, wy, 0xFF0000);
     }
 
     @Override

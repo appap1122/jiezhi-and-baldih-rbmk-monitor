@@ -141,6 +141,27 @@ public final class RbmkBridge {
         return v > 1.0 ? 1.0 : v;
     }
 
+    /**
+     * Estimated seconds until the hottest column reaches its heat limit.
+     * {@link RbmkSnapshot#tempDelta} is already the heat rise rate in C/s
+     * (computed from the previous refresh), so the T-minus is simply the
+     * remaining heat headroom divided by that rate. Returns -1 when the
+     * reactor is safe / cooling / offline, and 0 once the limit is reached.
+     */
+    public static double meltdownEta(RbmkSnapshot d) {
+        if (d == null || !d.linked || d.offline || d.meltdown) {
+            return -1.0;
+        }
+        if (d.maxHeatLimit <= 0.0 || d.tempDelta <= 0.0) {
+            return -1.0;
+        }
+        double remaining = d.maxHeatLimit - d.maxHeat;
+        if (remaining <= 0.0) {
+            return 0.0;
+        }
+        return remaining / d.tempDelta;
+    }
+
     public static boolean isConsole(TileEntity te) {
         if (te == null) {
             return false;

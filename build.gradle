@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'wtf.gofancy.fancygradle'
-version = '13.1-beta'
+version = '14.0'
 group = 'com.jiezhirbmkmod'
 archivesBaseName = 'RBMK-Monitor'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
