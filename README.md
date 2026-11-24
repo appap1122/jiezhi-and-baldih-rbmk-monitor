@@ -1,87 +1,146 @@
-# anatawa12's ForgeGradle 1.2 fork for Gradle 4.4.1+ - example project
 
-This is an example mod using the [fork of ForgeGradle-1.2 made by anatawa12](https://github.com/anatawa12/ForgeGradle-1.2).
-This fork supports Gradle 4.4.1 and later. This example project uses Gradle 5.6.4.
+# RBK-Monitor（RBMK 显示屏）
 
-## How to use this example project
+Minecraft 1.12.2 Forge 模组 —— 为 HBM 核技术（Nuclear Tech Mod）的 RBMK 反应堆提供一整套**监控、报警、审计与中控室**解决方案。当前版本：**18.0**。
 
-You can download this example project from [here](https://github.com/anatawa12/ForgeGradle-example/archive/master.zip), or use it as a template on Github.
-This project can be used as a replacement for Forge's 1.7.10 MDK.
+---
 
-## How to replace ForgeGradle 1.2. with anatawa12's fork
-Although this example project has some differences to Forge's 1.7.10 MDK, anatawa12's fork of ForgeGradle 1.2 can be used by most projects with only minimal changes to their Gradle build script.
+## 一、这是什么
 
-Here is a list of changes to Forge's 1.7.10 MDK Gradle build script, to replace the official ForgeGradle 1.2 plugin with the fork. These changes are likely to work with most projects based on Forge's 1.7.10 MDK.
+把散装的反应堆读数，升级成一座真正的核电站主控室：
 
-In the repositories block of the buildscript section, add jcenter, and switch the Forge maven to use HTTPS instead of HTTP:
-```diff
-     repositories {
-         mavenCentral()
-         maven {
-             name = "forge"
--            url = "http://files.minecraftforge.net/maven"
-+            url = "https://maven.minecraftforge.net/"
-         }
-```
+- **监控屏**：吊装多方块（4x3），实时显示堆芯总览、热图网格、历史曲线
+- **报警体系**：分级告警、警笛、报警灯自动染色、红石联动
+- **中控设备**：巡屏中控、多堆芯聚合排行、跨维度终端
+- **拟真约束**：「真实版」全家族需要供电（红石 + HE/FE）才能亮
+- **黑匣子**：曲线历史落盘，重启不丢，可导出 CSV/PNG 回放
+- **审计**：关键操作写 `rbmk_audit.log`，事后可查
 
-Also in the dependencies block of the buildscript section, change the dependency on Forge's official ForgeGradle 1.2 to the fork:
-```diff
-     dependencies {
--        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.1.+') {
-+            changing = true
-+        }
-     }
-```
+---
 
-The Gradle wrapper should also be changed to use Gradle 4.4.1 or higher. <!--Currently, the plugin [does not support Gradle 6.x](https://github.com/anatawa12/ForgeGradle-1.2/issues/9), although this may change in the future. As such, the latest version of Gradle this plugin supports is Gradle 5.6.4.-->
+## 二、方块一览
 
-## 多媒体依赖安装说明（RBMK-Monitor 15.2-beta）
+| 方块                                      | 说明                                          |
+| --------------------------------------- | ------------------------------------------- |
+| `rbmk_screen` / `_real`                 | 堆芯总览屏（平均/最高柱温、通量、蒸汽、富集度、氙毒、控制棒）             |
+| `rbmk_monitor` / `_real`                | 热图网格屏（逐柱温度矩阵，熔毁自动红屏）                        |
+| `rbmk_graph` / `_real`                  | 历史曲线屏（滚轮回放，双击开导出面板）                         |
+| `rbmk_custom` / `_real`                 | 自定义文本屏                                      |
+| `rbmk_term_screen` / `_real`            | 墙挂终端屏                                       |
+| `rbmk_cycle_screen` / `_real`           | **v18.0 轮播屏**：总览 → 热图 → 曲线 自动轮播（默认 3 秒）     |
+| `rbmk_terminal` / `_real`               | 地面控制台（终端指令入口，见下）                            |
+| `rbmk_patrol`                           | 巡屏中控：绑定 4 块屏轮巡                              |
+| `rbmk_aggregate`                        | 多堆芯聚合中控：多反应堆功率/温度排行（熔毁置顶）                   |
+| `rbmk_siren`                            | 警笛                                          |
+| `rbmk_alarm_light`                      | 报警灯：四级自动染色 / 手动染色 / 六档触发（右键/潜行/红石/任意/常亮/常灭） |
+| `rbmk_issuer`                           | 签发器                                         |
+| `rbmk_router`                           | 网络路由器（跨维度通讯）                                |
+| `rbmk_media_screen` / `rbmk_ppt_screen` | 多媒体屏 / PPT 汇报屏                              |
 
-4x3 多媒体屏幕的 MP4（H.264）/ MP3（AAC）解码依赖是可选的 JavaCV / FFmpeg 运行库，不装也能正常进游戏，只是屏幕会显示 `[UNSUPPORTED CODEC]`。
+带 `_real` 后缀的是**真实版**：需要屏旁 ≥10 级红石，且 **HE（HBM 厂用电，贴着 HBM 能量方块自动拉）或 FE/RF（Mekanism、热力膨胀电缆）任一有电**。两路全空 → 强制黑屏，点击无效。普通版免电，行为与旧版完全一致。
 
-> **平台限制**：目前仅提供 Windows 64 位（x86_64）的依赖包。Mac/Linux 玩家暂不支持多媒体播放，但中控、红石、黑客等其他功能不受影响。
+---
 
-**1. 依赖包放置路径**
-
-下载 `RBMK-Media-Deps-Windows.zip`，解压后把里面的**全部 `.jar` 文件**放到：
+## 三、终端指令（对 `rbmk_terminal` 右键，或手持笔记本）
 
 ```
-.minecraft/mods/
+help                    指令列表
+status                  堆芯状态总览
+rods                    控制棒状态 / 逐棒列表
+scram | az5             AZ-5 手动停堆（全部控制棒插入，写审计日志）
+bind                    绑定附近反应堆控制台
+connect <维度> <X> <Y> <Z>   跨维度绑定
+where                   显示绑定状态与距离
+siren <on|off|test>     警笛控制
+list                    列出周围路由器连接的设备
+msg <玩家ID> <内容>      跨维度短消息（≤30 字符）
+password / auth         安全码上锁与验证
+redstone <X> <Y> <Z> <0-15>  远程红石超控
+media / ppt / pic       多媒体 / PPT / 图片控制
+diagnose / ai           AI 诊断（可接大模型 API）
+hack / fix              入侵与修复（有痕迹，/rbmktrace 可查）
+
+# v18.0 管道过滤
+status | filter heat > 800      只显示温度大于 800 的行
+rods | filter flux < 100        通量小于 100 的行
+（支持 > < >= <= =；字段可用 heat/temp/温度/flux/water/steam/enrichment/xenon/level）
+
+# v18.0 宏
+macro set emergency scram;scram off     保存宏
+macro run emergency                     一键执行（也可直接输 emergency）
+macro list / macro del emergency        列出 / 删除
 ```
 
-（和 `RBMK-Monitor-15.2-beta.jar` 放在同一个文件夹，重启游戏即可生效。）
+---
 
-如果服务端/整合包不允许往 `mods/` 里放非模组 jar，可改用回退目录：
+## 四、常用命令与操作
 
+| 操作                         | 方式                                                 |
+| -------------------------- | -------------------------------------------------- |
+| 开/关屏                       | 右键屏                                                |
+| 告警阈值 / 红石联动设置              | 蹲下 + 空手右键                                          |
+| 导出历史图形                     | 蹲下 + 连续右键 2 下 → 选 CSV/PNG → 「导出历史图形」               |
+| `/rbmkexport csv\|png [秒]` | 对准屏执行；可带时间段（如 `/rbmkexport png 60`）                |
+| `/rbmktrace`               | 查询附近屏的入侵痕迹（谁、何时、是否已修复）                             |
+| `/rbmkcompat`              | 网络兼容探针：本端/远端版本、协议 9、23 个包注册表                       |
+| 报警灯设置                      | 右键面板：颜色 / 转速 / 触发六档 / 自动染色开关 / 应用 / 取消 / 导出导入 .txt |
+
+**文件位置**（游戏运行时自动创建）：
+
+- `<游戏目录>/rbmk_export/` —— CSV/PNG 历史图形导出
+- `<游戏目录>/rbmk_history/` —— 曲线黑匣子（纯客户端）
+- `<游戏目录>/rbmk_audit.log` —— 操作审计（服务端在服务端根目录）
+  - 格式：`[2026-11-23 18:00:00] [PlayerName] Action: scram at (x, y, z)`
+  - 记录：手动/自动 SCRAM、电源开关、入侵开启、修改安全码
+
+---
+
+## 五、真实版供电速查
+
+| 电源          | 类型           | 接法                         |
+| ----------- | ------------ | -------------------------- |
+| HE（厂用电，优先）  | HBM 能量系统     | 屏/终端**贴着** HBM 能量方块即可，自动拉电 |
+| FE/RF（外部备用） | Forge Energy | Mekanism / 热力膨胀电缆直接接       |
+| 红石（许可）      | —            | 屏旁 ≥10 级红石信号               |
+
+HE 优先扣费（1 FE 当量 = 10 HE），HE 不足自动落 FE；两路全空才断电。屏上状态行显示电源来源：`MAINS`=厂用 HE，`EXT`=外部 FE。没装 HBM 也能玩：纯 FE 供电照常工作。
+
+---
+
+## 六、安装与升级
+
+**安装**：Forge 1.12.2（推荐 14.23.5.2860）+ HBM 核技术 → 把 `RBMK-Monitor-18.0.jar` 放进 `mods/`。
+
+**从旧版升级（≤17.10 → 18.0）**：
+
+1. 备份存档
+2. `mods/` 里删光所有旧版 RBK-Monitor jar，只留 18.0 一份（残留两份会 `DuplicateModsFoundException` 崩启动）
+3. 旧配置文件**不用删**，存档**不用动**，`rbmk_export/`、`rbmk_history/` 跨版本通用
+4. 进世界跑 `/rbmkcompat` 确认
+
+**注意**：18.0 网络协议代号为 **9**，与 17.10 及更早版本**不可互通**——多人游戏两端必须都升 18.0（握手阶段直接标红拒绝，`/rbmkcompat` 给可读原因）。这是防止包串台崩运行时的保护，不是 bug。
+
+---
+
+## 七、自行构建
+
+```bash
+# 需要 JDK 8
+./gradlew build
+# 产物在 build/libs/RBMK-Monitor-18.0.jar
 ```
-.minecraft/rbmk_media/libs/
-```
 
-模组会先尝试常规 classpath，找不到时再从这个目录加载。
+源码包：`RBMK-Monitor-18.0-src.zip`（含全部 173 个 Java 源文件与资源）。
 
-**2. 媒体文件放置路径**
+---
 
-MP4 / MP3 文件统一放在：
+## 八、常见问题
 
-```
-.minecraft/rbmk_media/
-```
+- **屏不亮？** 普通屏检查是否被红石超控关机；真实版检查三路供电（`点击提示` 或状态行会告诉缺哪路）
+- **连服务器被踢？** 两端版本必须一致，`/rbmkcompat` 查对端版本
+- **曲线重启后清零？** 18.0 起落盘接续；若你改过采样间隔，旧文件自动放弃接续属正常
+- **审计日志没生成？** 单机进存档、服务端启动后，首次发生受审计操作（如 SCRAM）时自动创建
 
-例如 `.minecraft/rbmk_media/demo.mp4`。
+---
 
-**3. 终端指令**
-
-打开终端屏幕后输入：
-
-```
-media play demo.mp4
-media pause
-media resume
-media stop
-media volume 80
-media install
-```
-
-`media install` 可随时重新调出多媒体依赖安装引导界面。
-
+*v18.0 · RBMK 显示屏 · 仅供 Minecraft 游戏娱乐，与任何现实核设施无关。*
