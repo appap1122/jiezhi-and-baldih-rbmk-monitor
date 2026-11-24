@@ -1,5 +1,5 @@
 
-# RBK-Monitor（RBMK 显示屏）
+# RBMK-Monitor（RBMK 显示屏）
 
 Minecraft 1.12.2 Forge 模组 —— 为 HBM 核技术（Nuclear Tech Mod）的 RBMK 反应堆提供一整套**监控、报警、审计与中控室**解决方案。当前版本：**18.0**。
 
@@ -143,4 +143,4 @@ HE 优先扣费（1 FE 当量 = 10 HE），HE 不足自动落 FE；两路全空�
 
 ---
 
-*v18.0 · RBMK 显示屏 · 仅供 Minecraft 游戏娱乐，与任何现实核设施无关。*
+*RBMK 显示屏 · 仅供 Minecraft 游戏娱乐，与任何现实核设施无关。*
