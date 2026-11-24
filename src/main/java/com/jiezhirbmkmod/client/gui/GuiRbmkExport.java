@@ -40,7 +40,7 @@ public class GuiRbmkExport
 extends GuiScreen {
 
     private static final int PANEL_W = 216;
-    private static final int PANEL_H = 158;
+    private static final int PANEL_H = 182;
 
     private static final int BTN_FMT = 0;
     private static final int BTN_EXPORT = 1;
@@ -48,6 +48,9 @@ extends GuiScreen {
     /** v18.0 时间段循环按钮：全部 → 60 秒 → 300 秒 → 全部 */
     private static final int BTN_DUR = 3;
     private static final int[] DUR_CHOICES = new int[]{0, 60, 300};
+    /** v18.0 剪辑式部分导出入口 */
+    private static final int BTN_CLIP = 4;
+    private static final int BTN_CLIP_VIDEO = 5;
 
     /** 双击窗口（毫秒）：太短点不出来、太长容易误触发 */
     private static final long DOUBLE_CLICK_MS = 700L;
@@ -107,12 +110,18 @@ extends GuiScreen {
         super.initGui();
         int x = this.width / 2 - PANEL_W / 2;
         int y = this.height / 2 - PANEL_H / 2;
-        this.buttonList.add(new GuiButton(BTN_FMT, x + 10, y + PANEL_H - 74, 92, 20, this.fmtLabel()));
-        this.buttonList.add(new GuiButton(BTN_EXPORT, x + 108, y + PANEL_H - 74, 98, 20,
+        this.buttonList.add(new GuiButton(BTN_FMT, x + 10, y + PANEL_H - 98, 92, 20, this.fmtLabel()));
+        this.buttonList.add(new GuiButton(BTN_EXPORT, x + 108, y + PANEL_H - 98, 98, 20,
                 com.jiezhirbmkmod.client.util.GuiDraw.safe("gui.jiezhirbmkmod.export.do")));
         // v18.0 时间段：历史落盘之后采样窗最长也就容量上限，三档循环足够
-        this.buttonList.add(new GuiButton(BTN_DUR, x + 10, y + PANEL_H - 50, PANEL_W - 20, 20,
+        this.buttonList.add(new GuiButton(BTN_DUR, x + 10, y + PANEL_H - 74, PANEL_W - 20, 20,
                 this.durLabel()));
+        // v18.0 剪辑式部分导出（图形 / 视频）—— 进剪辑编辑器
+        this.buttonList.add(new GuiButton(BTN_CLIP, x + 10, y + PANEL_H - 50, (PANEL_W - 24) / 2, 20,
+                com.jiezhirbmkmod.client.util.GuiDraw.safe("gui.jiezhirbmkmod.export.clip")));
+        this.buttonList.add(new GuiButton(BTN_CLIP_VIDEO, x + PANEL_W - 10 - (PANEL_W - 24) / 2,
+                y + PANEL_H - 50, (PANEL_W - 24) / 2, 20,
+                com.jiezhirbmkmod.client.util.GuiDraw.safe("gui.jiezhirbmkmod.export.clip_video")));
         this.buttonList.add(new GuiButton(BTN_CLOSE, x + 10, y + PANEL_H - 26, PANEL_W - 20, 20,
                 com.jiezhirbmkmod.client.util.GuiDraw.safe("gui.jiezhirbmkmod.export.close")));
     }
@@ -148,9 +157,34 @@ extends GuiScreen {
             button.displayString = this.durLabel();
         } else if (button.id == BTN_EXPORT) {
             this.doExport();
+        } else if (button.id == BTN_CLIP || button.id == BTN_CLIP_VIDEO) {
+            this.openClipEditor(button.id == BTN_CLIP_VIDEO);
         } else if (button.id == BTN_CLOSE) {
             this.mc.displayGuiScreen(null);
         }
+    }
+
+    /** v18.0：打开剪辑式部分导出编辑器（历史为空时给可读提示不开空面板）。 */
+    private void openClipEditor(boolean videoMode) {
+        GraphHistory h = this.currentHistory();
+        if (h == null || !h.hasData()) {
+            GuiRbmkExport.chat(TextFormatting.RED,
+                    com.jiezhirbmkmod.client.util.GuiDraw.safe(h == null
+                            ? "msg.jiezhirbmkmod.export.gone"
+                            : "msg.jiezhirbmkmod.export.no_data"));
+            return;
+        }
+        this.mc.displayGuiScreen(new GuiRbmkClipEditor(this.screenPos, h, videoMode));
+    }
+
+    /** 当前屏的客户端历史（屏被拆/区块卸载时返回 null） */
+    private GraphHistory currentHistory() {
+        if (this.mc.world != null
+                && this.mc.world.getTileEntity(this.screenPos) instanceof TileRbmkMonitorScreen) {
+            return ((TileRbmkMonitorScreen) this.mc.world.getTileEntity(this.screenPos))
+                    .canvas().history();
+        }
+        return null;
     }
 
     /**
@@ -192,7 +226,8 @@ extends GuiScreen {
         }
     }
 
-    private static void chat(TextFormatting color, String s) {
+    /** 包内共享：剪辑编辑器等兄弟 GUI 也用同一套聊天栏提示格式 */
+    static void chat(TextFormatting color, String s) {
         if (Minecraft.getMinecraft().player != null) {
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(color + "[jiezhirbmkmod] "
                     + TextFormatting.RESET + s));

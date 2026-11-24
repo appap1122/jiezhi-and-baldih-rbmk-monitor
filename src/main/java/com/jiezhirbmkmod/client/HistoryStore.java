@@ -30,8 +30,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 曲线屏的历史照旧接续，导出/回放拿到的是跨 session 的完整记录。
  *
  * <h3>为什么落盘在客户端而不是存档里</h3>
- * 采样本来就在客户端（{@code RbmkScreenCanvas.sampleHistory}，与曲线屏
- * 同一份自采数据），服务端根本没有这份序列。多人联机时客户端也写不到
+ * 采样本来就在客户端（{@code RbmkScreenCanvas.autoSample}，v18.1 起由
+ * 客户端 tick 驱动的自动记录，与曲线屏同一份自采数据），服务端根本没有这份序列。多人联机时客户端也写不到
  * 服务器存档目录，所以与 {@code rbmk_export} 同款：落到本机
  * {@code <游戏目录>/rbmk_history/}，按 维度_坐标 一屏一个文件。纯客户端：
  * 专用服务器永远摸不到这个类。

@@ -65,7 +65,7 @@ extends ItemWrittenBook {
      * 超出部分会被截到下一页显示，排版就散了。
      */
     private static final String[] PAGES = new String[] {
-        "《RBMK 核电站\n中控系统操作手册》\n\n固件 18.0 · 持证必读\n\n本手册为只读文档，\n烧录于模组本体，\n不可编辑、不可批注。\n\n——中控设备科",
+        "《RBMK 核电站\n中控系统操作手册》\n\n固件 18.1 · 持证必读\n\n本手册为只读文档，\n烧录于模组本体，\n不可编辑、不可批注。\n\n——中控设备科",
         "第一章 上电规范\n\n上电五查：\n1.区块常载\n2.安装面无遮挡\n3.灯位无嵌墙\n4.能源接口在网\n5.客户端环境确认\n\n【警告】上电初始化期间\n禁止连续拆装方块，\n区块快照会进入脏状态。",
         "第二章 矩阵拼接\n\n4x3 矩阵=12 单元，\n左下角为锚点。\n\n拼接三禁：\n·朝向不一致\n·不同垂直平面\n·半成品接信号\n\n【警告】拆锚点=整体解体。\n矩阵背面留 1 格检修道。",
         "物理校准\n\n拼成后正面 3~5 格目视：\n1.四边框线连续\n2.自检画面无缝延展\n3.斜视无 z 轴闪烁\n\n校准未过的矩阵\n无告警显示资格，\n联动目标登记会被\n服务端拒绝。",
@@ -91,7 +91,7 @@ extends ItemWrittenBook {
      * 不走 .lang —— 中文版的理由（换行符、排版、防版本漂移）对英文同样成立。
      */
     private static final String[] PAGES_EN = new String[] {
-        "RBMK NPP Central\nControl Operations\nManual\n\nFirmware 18.0\nRequired reading.\n\nRead-only: burned\ninto the mod, cannot\nbe edited or signed.\n\n— Control Equip. Div.",
+        "RBMK NPP Central\nControl Operations\nManual\n\nFirmware 18.1\nRequired reading.\n\nRead-only: burned\ninto the mod, cannot\nbe edited or signed.\n\n— Control Equip. Div.",
         "Ch.1 Power-On Rules\n\nFive checks:\n1. chunk force-loaded\n2. mount face clear\n3. lamp not inset\n4. FE port online\n5. client env verified\n\n[WARN] No repeated\ntear-downs during boot;\nchunk snapshot goes\ndirty.",
         "Ch.2 Matrix Layout\n\n4x3 = 12 cells,\nbottom-left is the\nanchor.\n\nThree bans:\n- mismatched facing\n- different planes\n- wiring half-built\n\n[WARN] Breaking the\nanchor dissolves the\nmatrix. Keep 1 block\nservice aisle behind.",
         "Physical Alignment\n\nView 3-5 blocks in\nfront after build:\n1. frame lines join\n2. boot screen seamless\n3. no z-fighting\nat an angle\n\nA misaligned matrix\nhas no alert display\nrights; linking is\nrejected server-side.",

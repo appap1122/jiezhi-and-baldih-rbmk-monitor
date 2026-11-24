@@ -43,35 +43,41 @@ extends TileEntitySpecialRenderer<TileRbmkMonitorScreen> {
         if (!(state.getBlock() instanceof BlockRbmkScreen)) {
             return;
         }
-        // v17.4: a real screen with no mains draws nothing at all. The block
-        // model underneath is the empty bezel-only model, so the result is a
-        // plain dark panel - exactly what a dead monitor looks like.
-        if (te.isRealScreen() && te.getRealPowerState() != RealPower.ON) {
-            return;
-        }
         RbmkScreenCanvas canvas = te.canvas();
-        boolean powered = te.isPowered();
-        Block ctrl = state.getBlock();
-        int page = 1;
-        // v18.0 轮播屏：页号由 Tile 的 currentPage 决定（1=总览/2=热图/4=曲线）
-        if (te instanceof com.jiezhirbmkmod.block.TileRbmkCycleScreen) {
-            page = ((com.jiezhirbmkmod.block.TileRbmkCycleScreen)te).pageForRender();
-        } else if (ctrl instanceof BlockRbmkCustomScreen) {
-            page = 3;
-        } else if (ctrl instanceof BlockRbmkGraph) {
-            page = 4;
-        } else if (ctrl instanceof BlockRbmkMonitor) {
-            page = 2;
-        } else if (ctrl instanceof com.jiezhirbmkmod.block.BlockRbmkTermScreen) {
-            page = 5;
+        // v18.0 修订：真实屏断电不再"什么都不画"。旧版直接 return，玩家
+        // 只看到一块空面板，分不清"还没通电"和"刚才断电了"。现在黑屏 +
+        // 提示文字（与待机画面的"待机 POWER"一眼可分），外壳/面板照常
+        // 画 —— 物理机身还在，只是屏幕黑了。
+        boolean realOff = te.isRealScreen() && te.getRealPowerState() != RealPower.ON;
+        if (realOff) {
+            boolean curve = state.getBlock() instanceof BlockRbmkGraph
+                    || te instanceof com.jiezhirbmkmod.block.TileRbmkCycleScreen;
+            canvas.renderRealPowerOff(curve);
+            canvas.uploadIfDirty(System.currentTimeMillis());
+        } else {
+            boolean powered = te.isPowered();
+            Block ctrl = state.getBlock();
+            int page = 1;
+            // v18.0 轮播屏：页号由 Tile 的 currentPage 决定（1=总览/2=热图/4=曲线）
+            if (te instanceof com.jiezhirbmkmod.block.TileRbmkCycleScreen) {
+                page = ((com.jiezhirbmkmod.block.TileRbmkCycleScreen)te).pageForRender();
+            } else if (ctrl instanceof BlockRbmkCustomScreen) {
+                page = 3;
+            } else if (ctrl instanceof BlockRbmkGraph) {
+                page = 4;
+            } else if (ctrl instanceof BlockRbmkMonitor) {
+                page = 2;
+            } else if (ctrl instanceof com.jiezhirbmkmod.block.BlockRbmkTermScreen) {
+                page = 5;
+            }
+            if (te instanceof com.jiezhirbmkmod.block.TileRbmkTermScreen) {
+                canvas.setTermLines(((com.jiezhirbmkmod.block.TileRbmkTermScreen)te).termSnapshot());
+            }
+            canvas.setMainStepMs(te.getRefreshMs());
+            canvas.setAlert(te.getAlertLevel(), te.getAlertReason());
+            canvas.render(powered ? te.clientBootElapsedMs() : -1L, powered, te.getData(), te.getEvents(), page, powered ? te.clientFaultElapsedMs() : -1L);
+            canvas.uploadIfDirty(System.currentTimeMillis());
         }
-        if (te instanceof com.jiezhirbmkmod.block.TileRbmkTermScreen) {
-            canvas.setTermLines(((com.jiezhirbmkmod.block.TileRbmkTermScreen)te).termSnapshot());
-        }
-        canvas.setMainStepMs(te.getRefreshMs());
-        canvas.setAlert(te.getAlertLevel(), te.getAlertReason());
-        canvas.render(powered ? te.clientBootElapsedMs() : -1L, powered, te.getData(), te.getEvents(), page, powered ? te.clientFaultElapsedMs() : -1L);
-        canvas.uploadIfDirty(System.currentTimeMillis());
         EnumFacing facing = (EnumFacing)state.getValue(BlockRbmkScreen.FACING);
         float tilt = ScreenStructure.tiltDegrees(te.getTilt());
         double[] anchor = ScreenStructure.anchor(facing);

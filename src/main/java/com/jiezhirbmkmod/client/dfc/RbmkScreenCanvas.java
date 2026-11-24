@@ -92,6 +92,8 @@ public final class RbmkScreenCanvas {
     /** v17.7 最近一次 setAlert 的等级（0/1/2），随采样落盘供告警标记线使用 */
     private int lastAlertLevel = 0;
     private static final long STROBE_MS = 120L;
+    /** v18.0 修订 上一帧是不是"真实版断电黑屏"（给 renderRealPowerOff 节流） */
+    private boolean lastRealOff = false;
     private final GraphHistory history = new GraphHistory();
     private long lastSampleMs = Long.MIN_VALUE;
     /**
@@ -149,6 +151,7 @@ public final class RbmkScreenCanvas {
             return;
         }
         this.lastBucket = bucket;
+        this.lastRealOff = false;
         this.themeLine = -14928312;
         this.g.setColor(new Color(-16513269, true));
         this.g.fillRect(0, 0, 768, 576);
@@ -163,9 +166,9 @@ public final class RbmkScreenCanvas {
             } else if (p == 1) {
                 this.drawConsole(sinceOnMs);
             } else {
-                if (page == 4) {
-                    this.sampleHistory(data, sinceOnMs);
-                }
+                // v18.0 修订：采样已从渲染路径挪走 —— 历史由客户端 tick
+                // 驱动（ScreenAutoSampler，放置即自动记录），不再要求
+                // "有人看着屏 + 停在曲线页"。这里只负责画。
                 this.drawMain(data, events, page);
             }
         }
@@ -332,6 +335,37 @@ public final class RbmkScreenCanvas {
         this.textCenter("\u5f85\u673a", 72, -8480856, RbmkScreenCanvas.fCjk(12));
         this.textCenter("POWER", 90, -12957096, RbmkScreenCanvas.fMono(10));
         this.textCenter("\u53f3\u952e\u5f00\u673a \u00b7 \u8e72\u4e0b\u53f3\u952e\u8bbe\u7f6e\u544a\u8b66/\u7ea2\u77f3", 108, -14273474, RbmkScreenCanvas.fCjk(8));
+    }
+
+    /**
+     * v18.0 修订 真实版断电画面：纯黑 + 提示文字。
+     *
+     * <p>旧版对真实屏断电是"什么都不画"——玩家只能看到一块空面板，
+     * 分不清"还没通电"和"刚才断电了"。现在黑屏上写明状况与后果：
+     * 断电期间曲线历史冻结不记录（见 autoSample）。</p>
+     *
+     * <p>与 render() 共用 pixelDirty/纹理管线：黑屏也是一帧画面，
+     * 由渲染器的 uploadIfDirty 贴上 GPU。断电画面不随帧变化，
+     * 画过一次且纹理干净就跳过，不给主循环加负担。</p>
+     *
+     * @param curve true = 曲线/轮播屏（文案点名"曲线显示屏"）
+     */
+    public void renderRealPowerOff(boolean curve) {
+        if (this.lastRealOff && !this.pixelDirty) {
+            return;
+        }
+        this.lastRealOff = true;
+        // 18.1 自查修复：必须是不透明黑（alpha=0xFF）。画布是 TYPE_INT_ARGB，
+        // 纹理上传后走 alpha 混合贴到面板上 —— 之前写的 new Color(0, true)
+        // 是全透明像素，整屏上传后什么都看不见，黑屏文字根本显示不出来。
+        this.g.setColor(new Color(0xFF000000, true));
+        this.g.fillRect(0, 0, 768, 576);
+        this.textCenter(curve ? "\u771f\u5b9e\u7248\u66f2\u7ebf\u663e\u793a\u5c4f\u65ad\u7535\uff0c\u65e0\u6cd5\u8bb0\u5f55"
+                              : "\u771f\u5b9e\u7248\u663e\u793a\u5c4f\u65ad\u7535\uff0c\u65e0\u6cd5\u8bb0\u5f55",
+                96, -9408400, RbmkScreenCanvas.fCjk(10));
+        this.textCenter("\u6062\u590d\u4f9b\u7535\u540e\u81ea\u52a8\u7ee7\u7eed\u8bb0\u5f55", 118, -11200986, RbmkScreenCanvas.fCjk(8));
+        this.image.getRGB(0, 0, 768, 576, this.pixels, 0, 768);
+        this.pixelDirty = true;
     }
 
     private void drawBoot(long ms) {
@@ -641,11 +675,32 @@ public final class RbmkScreenCanvas {
         }
     }
 
-    private void sampleHistory(RbmkSnapshot d, long nowMs) {
-        if (this.lastSampleMs != Long.MIN_VALUE && nowMs - this.lastSampleMs < GraphHistory.SAMPLE_MS) {
+    /**
+     * v18.1 自动记录入口（客户端 tick 驱动，与渲染无关）：
+     * 屏一放置 / 区块一加载就开始为曲线历史采样 —— 不再要求"有人看着
+     * 屏 + 停在曲线页"，导出/回放/巡屏面板拿到的历史从放置那一刻起就是
+     * 完整的。
+     *
+     * <p>断电/待机（{@code canRecord=false}）时<b>冻结</b>，连空格都不推。
+     * 18.1 自查修复：最初一版断电时按同样节奏推空格想留断口，但有两个
+     * 致命副作用 —— (1) 窗口只有约 60 秒，断电超过 60 秒内存里的历史就被
+     * 空格完全挤光，之后区块卸载时 HistoryStore.checkpoint 看到
+     * hasData()==false 会把落盘的黑匣子文件删掉，18.0 的"历史永不丢"
+     * 承诺被断电毁掉；(2) 恢复供电时 drawBoot 会 history.clear()，断电
+     * 期间推的空格在曲线上根本显示不出来 —— 只有副作用没有意义。
+     * 现在屏断电=采样器也断电，历史原样冻结（断电前录到哪就停在哪），
+     * 与旧版待机行为一致；"断口"只保留给屏开着但数据源离线的场景
+     * （堆芯断链/遥控器断开，走下方 pushGap 分支）。</p>
+     */
+    public void autoSample(RbmkSnapshot d, boolean canRecord) {
+        if (!canRecord) {
+            return; // 屏断电/待机：冻结历史，不推空格（理由见上）
+        }
+        long now = System.currentTimeMillis();
+        if (this.lastSampleMs != Long.MIN_VALUE && now - this.lastSampleMs < GraphHistory.SAMPLE_MS) {
             return;
         }
-        this.lastSampleMs = nowMs;
+        this.lastSampleMs = now;
         if (d != null && d.linked && !d.offline) {
             this.history.push(d.avgHeat, d.flux, d.waterTotal, d.steamTotal, d.avgEnrichment, d.avgXenon,
                     (byte) Math.max(0, Math.min(2, this.lastAlertLevel)));

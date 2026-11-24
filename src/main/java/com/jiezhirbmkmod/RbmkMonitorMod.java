@@ -23,11 +23,11 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid="jiezhirbmkmod", name="RBMK\u663e\u793a\u5c4f", version="18.0")
+@Mod(modid="jiezhirbmkmod", name="RBMK\u663e\u793a\u5c4f", version="18.1")
 public class RbmkMonitorMod {
     public static final String MODID = "jiezhirbmkmod";
     public static final String NAME = "RBMK\u663e\u793a\u5c4f";
-    public static final String VERSION = "18.0";
+    public static final String VERSION = "18.1";
     @Mod.Instance(value="jiezhirbmkmod")
     public static RbmkMonitorMod instance;
     public static Logger logger;

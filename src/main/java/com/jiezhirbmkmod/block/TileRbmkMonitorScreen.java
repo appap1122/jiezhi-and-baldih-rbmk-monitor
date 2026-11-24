@@ -362,6 +362,16 @@ implements ITickable, IRealPowerTile {
             return;
         }
         if (this.world.isRemote) {
+            // v18.0 修订 客户端自动记录：曲线历史从屏一放置/区块一加载
+            // 就开始采样（按 SAMPLE_MS 节流），不再依赖"有人看着屏 +
+            // 翻到曲线页"。真实版断电/普通屏待机时不记录（推空格留断口）。
+            // ScreenAutoSampler 只在本分支被执行时加载，专用服务器不触碰。
+            try {
+                com.jiezhirbmkmod.client.dfc.ScreenAutoSampler.sample(this);
+            }
+            catch (Throwable t) {
+                RbmkMonitorMod.warn("[TileRbmkMonitorScreen] auto sample failed at {}: {}", this.pos, t);
+            }
             return;
         }
         ++this.refreshTimer;

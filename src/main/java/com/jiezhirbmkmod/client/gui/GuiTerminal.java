@@ -128,10 +128,10 @@ public class GuiTerminal extends GuiScreen {
     public GuiTerminal(BlockPos pos) {
         this.hostPos = pos;
         if (LAPTOP_HOST.equals(pos)) {
-            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Portable Terminal [v18.0]"));
+            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Portable Terminal [v18.1]"));
             this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "Linked console: shown by 'where'. Type 'help' for commands."));
         } else {
-            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Reactor Terminal [v18.0]"));
+            this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "RBMK Reactor Terminal [v18.1]"));
             this.buffer.add(new CmdLine(MessageTerminalCommand.C_OUT, "Type 'help' for commands. 'history'/'graph' replay the black box."));
         }
         if (!RbmkConfig.enableHackerAttack) {

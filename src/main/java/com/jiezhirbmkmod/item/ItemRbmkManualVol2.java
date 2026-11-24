@@ -49,7 +49,7 @@ extends ItemWrittenBook {
      * 170 个字符内，超出会被原版截到下一页、排版就散了。
      */
     private static final String[] PAGES = new String[] {
-        "《RBMK 应急规程》\n操作手册 · 卷二\n\n固件 18.0 · 持证必读\n\n只读文档，与卷一\n配套使用。本卷只\n讲一件事：出事时\n该做什么。\n\n——中控设备科",
+        "《RBMK 应急规程》\n操作手册 · 卷二\n\n固件 18.1 · 持证必读\n\n只读文档，与卷一\n配套使用。本卷只\n讲一件事：出事时\n该做什么。\n\n——中控设备科",
         "第一章 事故分级\n\nL1 注意 黄\nL2 警告 橙\nL3 严重 红\nL4 灾难 闪白\n\n颜色只认屏，\n不认记忆。看到\n什么颜色，\n按什么响应。",
         "第二章 预警响应\n\nL1/L2 三查：\n1.查事件日志\n2.查趋势走向\n3.查现场设备\n\n确认是误报也要\n留记录：误报\n本身就是数据。\n\n60 秒内回复确认。",
         "第三章 严重响应\n\nL3 红色：15 秒\n内到场，双人\n复核，一人操作\n一人读规程。\n\n单人不得处置\nL3 事件。凑不出\n第二个人，就先\n按规程 SCRAM\n再叫人。",
@@ -69,7 +69,7 @@ extends ItemWrittenBook {
      * 原版成书 ~21 个半角字符控制，仍是硬编码安全文件（理由同卷一）。
      */
     private static final String[] PAGES_EN = new String[] {
-        "RBMK Emergency\nProcedures Vol. II\n\nFirmware 18.0\nRequired reading.\n\nRead-only companion\nto Vol. I. This volume\ncovers one thing:\nwhat to do when it\ngoes wrong.\n\n— Control Equip. Div.",
+        "RBMK Emergency\nProcedures Vol. II\n\nFirmware 18.1\nRequired reading.\n\nRead-only companion\nto Vol. I. This volume\ncovers one thing:\nwhat to do when it\ngoes wrong.\n\n— Control Equip. Div.",
         "Ch.1 Severity\n\nL1 notice   yellow\nL2 warning  orange\nL3 critical red\nL4 disaster strobe\n\nTrust the screen\ncolor, not memory.\nMatch the response\nto the color you\nsee.",
         "Ch.2 L1/L2\n\nThree checks:\n1. event log\n2. trend direction\n3. field equipment\n\nLog false alarms\ntoo: a false alarm\nis data.\n\nAcknowledge within\n60 seconds.",
         "Ch.3 L3 Response\n\nL3 red: on scene in\n15 seconds, two-\nperson rule - one\noperates, one reads\nthe procedure.\n\nNever handle L3\nalone. No second\nperson? SCRAM first,\ncall for help\nsecond.",
