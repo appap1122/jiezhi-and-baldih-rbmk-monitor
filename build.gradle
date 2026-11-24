@@ -1,0 +1,53 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.aliyun.com/repository/public/' }
+        mavenCentral()
+        maven { url = 'https://maven.gofancy.wtf/releases' }
+        maven { url = 'https://maven.minecraftforge.net/' }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+'
+        classpath group: 'wtf.gofancy.fancygradle', name: 'wtf.gofancy.fancygradle.gradle.plugin', version: '+'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'wtf.gofancy.fancygradle'
+version = '18.0'
+group = 'com.jiezhirbmkmod'
+archivesBaseName = 'RBMK-Monitor'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+minecraft {
+    mappings channel: 'stable', version: '39-1.12'
+}
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
+    // v15.2 multimedia screen: MP3/AAC audio helper (small, pure Java)
+    implementation 'com.googlecode.soundlibs:mp3spi:1.9.5.4'
+    // JavaCV is an OPTIONAL client-side runtime dependency: the decoder is
+    // loaded by reflection, so the mod never hard-links against it and can not
+    // crash with NoClassDefFoundError when the natives are absent.
+    // Uncomment for a dev setup that ships JavaCV + natives on the classpath:
+    // implementation 'org.bytedeco:javacv-platform:1.5.9'
+}
+jar {
+    manifest {
+        attributes([
+            'Implementation-Title'  : 'RBMK Monitor (JiezhiMod derived)',
+            'Implementation-Version': project.version,
+            'Specification-Vendor'  : 'jiezhi',
+            'Specification-Title'   : 'jiezhirbmkmod',
+            'Implementation-Vendor' : 'jiezhi'
+        ])
+    }
+}
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    // v17.7-beta: mcmod.info is copied verbatim. Groovy's expand() runs the
+    // file through SimpleTemplateEngine, which rewrote the \n escapes inside
+    // the description into raw control characters - the packaged file came
+    // out as invalid strict JSON (Forge's lenient Gson hid it in game).
+    // The version string is hardcoded in mcmod.info now and must be kept in
+    // sync with this file's `version` and @Mod's version by hand.
+    from(sourceSets.main.resources.srcDirs)
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_siren_horn",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:noteblock",
+    "minecraft:redstone",
+    "minecraft:redstone",
+    "minecraft:leather"
+  ]
+}

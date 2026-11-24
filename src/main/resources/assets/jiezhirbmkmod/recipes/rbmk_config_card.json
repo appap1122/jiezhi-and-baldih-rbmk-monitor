@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_config_card",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:paper",
+    "minecraft:paper",
+    "minecraft:iron_ingot",
+    "minecraft:redstone",
+    "minecraft:repeater"
+  ]
+}

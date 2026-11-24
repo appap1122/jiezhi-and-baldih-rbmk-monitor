@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_terminal",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:glass_pane",
+    "minecraft:glass_pane",
+    "minecraft:redstone",
+    "minecraft:redstone",
+    "minecraft:redstone_torch"
+  ]
+}

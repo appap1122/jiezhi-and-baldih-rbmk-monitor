@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_manual",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:book",
+    "minecraft:paper",
+    "minecraft:redstone"
+  ]
+}

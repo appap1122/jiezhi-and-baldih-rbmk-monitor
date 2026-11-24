@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:gravity_coil",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:feather",
+    "minecraft:slime_ball",
+    "minecraft:redstone",
+    "minecraft:iron_ingot"
+  ]
+}

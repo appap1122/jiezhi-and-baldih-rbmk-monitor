@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_manual_vol3",
+    "count": 1
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "minecraft:dye",
+      "data": 0
+    },
+    "minecraft:paper",
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ]
+}

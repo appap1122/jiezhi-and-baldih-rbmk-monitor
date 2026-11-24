@@ -1,0 +1,863 @@
+RBMK Monitor - Changelog
+========================
+
+17.8
+- Version unified to 17.8. This banner covers the release previously
+  drafted as 17.7. This release merges what used to be tracked as 17.7
+  (permission wrap-up, audit log, replay, patrol) and 17.8 (recipe card,
+  issuer protection, GUI hub, packet slimming, handbook vol. III) into
+  a single banner.
+- Badge revocation command: /rbmkrevoke <player|all> (permission level
+  2). Cards are entity credentials and deliberately not player-bound,
+  but the issuer knows who it issued to: issued cards now carry a
+  Holder stamp and the revocation epoch of that holder at issue time.
+  Revoking a name bumps that holder's epoch; "all" bumps the global
+  epoch and also kills legacy cards without a holder stamp. A card
+  whose epoch lags the registry is invalid the moment it is shown -
+  wherever it is. Revocation state persists to rbmk_revoke.dat in the
+  save dir (epoch rollback would resurrect revoked cards, so write
+  failures are logged loudly). Fix during self-review: issued-card
+  epoch stamps now take max(global, holder) - previously a badge
+  issued after "rbmkrevoke all" carried only the holder epoch (0) and
+  was instantly dead, bricking the issuer until the global epoch was
+  mirrored onto every new card. Every revoke is audited (BADGE_REVOKE)
+  and the online target is notified in chat. The tuner's denial now
+  distinguishes "no badge" / "used up" / "revoked".
+- Alert markers on the graph screen. The client-sampled history now
+  records the alert level alongside the six channels; the graph panels
+  draw a translucent vertical line at every L1 sample (yellow) and L2
+  (red), so consecutive alerting samples read as a band whose width is
+  the duration. Markers share the replay window: scrubbing back shows
+  them under the curves at the same moments. Zero packets: the level
+  rides the existing canvas sample.
+- Audit query filtering: /rbmkaudit takes grep-style keywords - every
+  non-numeric argument (max 3) must appear in a line for it to match,
+  matched case-insensitively against the full formatted line (player
+  names, actions and details all participate). Numeric argument stays
+  the count, capped at 200. /rbmkaudit Steve REVOKE 10 = Steve's last
+  10 revocation entries. Tab completion offers player names.
+- Bilingual handbooks. All three volumes carry a full English page set
+  (PAGES_EN, page-for-page with the Chinese originals, still hardcoded
+  safe files - no .lang for book pages, same reasoning as before). The
+  client-side NBT self-heal now also compares a Lang stamp against the
+  client language and re-prints the book in the reader's language on
+  first open; server-side /give and recipes keep producing the Chinese
+  default. Vol. III chapter 4 documents /rbmkaudit filtering and
+  /rbmkrevoke; firmware banners updated to 17.7 in all volumes.
+- Permission system wrap-up, part 1: audit log. Every privileged act now
+  leaves a trace: card issuance (per batch, with failure counts), badge
+  revocation, tuner adjustments by card holders (screen, tier, card-holder
+  flag), hack request / vote / veto / outcome, screens hacked and screens
+  repaired, security-code passes, and an issuer broken while holding blank
+  cards. Written to rbmk_audit.log in the server data directory, append-only
+  with a single 4 MB .old rotation; every line flushed immediately so a
+  crash cannot eat the last entry; failures degrade to one console warning
+  instead of throwing into the caller. /rbmkaudit [n] (permission level 2)
+  prints the last n entries from an in-memory tail so operators do not have
+  to shell into the box for a quick "who did this".
+- Permission system wrap-up, part 2: the audit trail deliberately does NOT
+  cover badge issue-from-creative or chat-visible broadcasts - what it does
+  cover is exactly the actions that change rights or fake data, keyed by
+  player name and coordinates, greppable with plain text tools.
+- History replay on the graph screen. Scroll the mouse wheel while looking
+  at a graph display (powered): up scrolls back into the recorded window
+  (1 second per notch, the same client-sampled history the live chart uses),
+  down walks forward, reaching 0 returns to live. A yellow banner shows
+  "REPLAY t-XXs" while scrubbing and the three panels render history up to
+  the scrub point, end-value labels included. No packets, no GUI: the
+  pointer lives in the client canvas next to the history it points into,
+  the server never hears about it, and the wheel event is consumed so the
+  hotbar does not page. Live sampling continues underneath, so replay is
+  strictly "rewind what was recorded", not a pause.
+- Screen patrol hub (rbmk_patrol), a 1x1 block: the duty officer's seat.
+  Sneak+right-click scans up to SCAN_RADIUS=24 blocks and binds the nearest
+  unbound screens (all monitor-screen tiles count) into 4 slots, saved to
+  NBT. Right-click opens a read-only panel: one row per bound screen with
+  type, coordinates, alert level (colored) and heat/flux readouts; clicking
+  a row selects it and shows a detail pane with status line plus a heat
+  history mini-chart drawn from that screen's own client-side canvas
+  history - the same data the graph screen plots, no extra sync. Auto
+  rotate mode switches the selection every 5 s and jumps instantly to the
+  worst alerting screen ("whoever alarms gets watched"). Bound lists reach
+  the client through a dedicated packet (21) because coordinates do not fit
+  window properties; removed screens are pruned client-side, silently, and
+  the server slots are freed on the next scan. The hub itself carries no
+  gate: patrolling is viewing, not a credential.
+- New item: Screen Recipe Card (rbmk_recipe_card). Where the config card
+  moves 15 tuning keys, this one takes a blacklist-based snapshot of an
+  entire screen: everything except the "field state" (power, energy,
+  run ticks, alert cache, messages, security code, owner, tilt, media
+  playback state, PPT slide position) and the TileEntity identity keys
+  (id/x/y/z/ForgeData) goes into the card. Custom-screen watch slot
+  lists, media file/volume, PPT picture mode all travel with it.
+  Sneak+right-click a screen to snapshot, right-click to paste (paste
+  overlays only keys the card holds, so cross-type pastes are safe -
+  each tile reads the keys it knows and ignores the rest), sneak+right-
+  click air to clear. Paste is audit-logged (RECIPE_PASTE). Recipe:
+  config card + 2 paper + gold ingot.
+- Issuer griefing protection, three gates. Placement records the placer
+  as owner (persisted in NBT as OwnerUUID/OwnerName). removedByPlayer
+  now refuses (returns false, block stays) when the breaker is neither
+  owner, admin (level 2 / single-player host) nor creative, and logs
+  ISSUER_BREAK_DENIED to the audit trail. onBlockExploded is
+  intentionally empty: the counter is immune to all explosions. The
+  blank cards stay in the drawer, period.
+- GUI unified safe rendering. GuiDraw is now the single drawing hub for
+  mod-owned GUIs: rect() auto-fills a missing alpha channel (vanilla
+  Gui.drawRect silently draws nothing without it), hline()/vline(),
+  text()/textCentered() normalize colors too, and safe() translates a
+  key with a readable fallback instead of leaking the raw key onto the
+  panel when a translation is missing. GuiRbmkPatrol (overview, rows,
+  detail panel, mini histogram) migrated fully as the reference
+  implementation; existing GuiDraw callers keep their semantics.
+- Network slimming. The per-screen sync packet (highest frequency in
+  the mod) loses 52 bytes: the ten snapshot doubles now travel as
+  floats (display precision), and tilt/alertLevel/rsPower/
+  realPowerState travel as single bytes. Registration table is now one
+  place: the four messages (ids 8..11) that lived in
+  RbmkMonitorMod.preInit moved into ModNetwork.init, ids unchanged.
+  Wire format changed, so old clients cannot join new servers (and
+  vice versa) - same rule as any content update.
+- New item: Administrator Handbook Vol. III (rbmk_manual_vol3), same
+  read-only written-book construction as vols I/II (three siblings, no
+  shared base class on purpose). Eleven chapters cover the permission
+  system end to end: issuer procedure, badge semantics, audit log and
+  /rbmkaudit, patrol control, graph replay wheel, hack approval flow,
+  card vs template division of labor, the griefing checklist and
+  troubleshooting. Recipe: book + black dye + 2 paper + iron ingot.
+- Crafting recipes are now printed inside the handbooks. Vol. I gains
+  three appendix pages (screens / terminal family / alarm family) and
+  a proper closing page (18 pages total); Vol. III gains three appendix
+  pages (permission items / patrol items / the handbooks themselves,
+  15 pages total). Every entry is transcribed from the actual recipe
+  JSON in the jar, shaped grids written as 铁=iron shorthand, not
+  invented. Tooltips state the new page counts.
+
+17.9
+- Map view on the patrol hub. The patrol GUI gains a second button
+  ("Map view"); when on, the list + detail panels are replaced by a
+  2x2 grid of thumbnails, one per bound screen. Each cell carries a
+  state-colored frame (red while hacked/critical, yellow on warnings,
+  grey unpowered, green healthy), the screen type, a mini bar chart of
+  the core-temperature channel (same client-sampled history the detail
+  panel uses - zero new packets), and one status/readout line (alert
+  reason wins over numbers). Click a cell to select it; auto-rotate and
+  "jump to whoever alerts" run unchanged in both modes.
+- Compat probe: /rbmkcompat (permission level 0, read-only). One
+  command answers every question the first minute of troubleshooting
+  asks: local version and network protocol (new ModNetwork.PROTOCOL
+  constant, 8 since the 17.8 packet slimming), running side, MC/Forge/
+  Java versions, the 22-packet registration table, security switch
+  snapshot (hack master, normal-player hack, global revoke epoch),
+  data-file locations, shader-pack / SSS pipeline state (client side),
+  OptiFine presence, a keyword scan for potentially overlapping
+  screen/hud mods, and the last handshake's remote version with the
+  verdict. The handshake recorder (@NetworkCheckHandler on the mod
+  class) replicates Forge's default check semantics exactly - nothing
+  loosened, nothing tightened - it only records: remote versions land
+  in ProtocolGuard, refusals are explained precisely (remote v17.7 vs
+  local v17.9, "update the remote") into the console log and the audit
+  trail as NET_REJECT, instead of the opaque FML "mod rejections"
+  screen being the only trace.
+- Hack gameplay phase 2: reverse tracing. Every successful hack now
+  stamps the screen's NBT with the intruder's name and the world time
+  (Hacker / HackTime / HackFixed); repairing the screen does NOT wipe
+  the evidence - the trace is a forensics record, not the state. New
+  command /rbmktrace [player] (permission level 2): with no arguments
+  it scans the loaded chunks within 64 blocks for screens carrying
+  traces and lists position, live/repaired state, intruder and how
+  long ago; with a player name it walks the loaded chunks of the
+  current dimension and lists every screen that player hacked. Both
+  modes audit themselves (TRACE). Tile side: setHacked(boolean,String)
+  overload, collectScreens() static (loaded chunks only, never loads
+  terrain), legacy saves read as "no trace" and old worlds load
+  unchanged.
+- Reactor aggregate hub: rbmk_aggregate, the flagship "central control
+  room" view. A 1x1 block binding up to 6 screens (same scan-bind flow
+  as the patrol hub, radius 24); screens are grouped by the console
+  they read (one console = one reactor; screens without a console
+  stand alone) and the GUI shows the ranking: a summary bar (reactor
+  count / online / total flux / hottest core), then one row per
+  reactor sorted by core temperature with melt-downs pinned to the
+  top - coordinates, a temperature bar against the 1000 C reference,
+  flux, alert word, per-reactor screen count. Grouping is computed
+  server-side (the screen's consolePos is server-only) and delivered
+  by MessageAggregateSync (discriminator 22, 6 ints per screen);
+  live readings still come from each screen's own client sync, so the
+  hub forwards nothing and offline screens say so. Meltdown rows tint
+  red, the hottest healthy row gets a green wash. Recipe: 2 iron +
+  2 redstone + gold ingot + glass pane + patrol hub.
+- History export: /rbmkexport <csv|png>, a client-side chat command
+  (registered in ClientCommandHandler, dedicated servers never load
+  it). Aim at any screen in reach (ray-trace up to 32 blocks) and it
+  exports that screen's client-sampled GraphHistory - the exact data
+  the graph screen draws. CSV: one row per sample, six channels plus
+  the per-sample alert level, data-loss gaps left empty, Excel-ready.
+  PNG: a stacked long chart, one auto-ranged grid panel per channel
+  with a colored polyline and peak label, plus an alert ribbon at the
+  bottom (L1 yellow / L2 red) - post it in the group chat and the
+  incident reads at a glance. Files land in <game dir>/rbmk_export/
+  named by screen coords and a timestamp, never overwriting an older
+  export. Replay is a viewing mode: the export always covers the full
+  sampled window.
+- Export settings panel (GUI path): sneak + double right-click on a
+  screen (two clicks on the same screen within 700 ms) opens a client
+  side "Export Settings - Graph History" panel with the screen coords,
+  a live sample-count preview, a CSV/PNG format toggle and an
+  "Export graph history" button; success prints the saved path in chat
+  and closes the panel. The panel lives entirely on the client (no
+  container, no packet, id-free); it is opened from ScreenMultiblock's
+  client branch and never hijacks sneak-clicks that carry a tuner /
+  config card / recipe card / siren horn / remote - those item
+  branches run first. Each click of the pair still walks the normal
+  server power-toggle path (net state unchanged, action-bar notices
+  only). The command and the panel share one exporter implementation
+  (RbmkExporter); the <game dir>/rbmk_export/ directory is created by
+  the game at runtime (mkdirs, idempotent) - no manual setup needed.
+- Self-review fixes (same release): /rbmkexport's aim ray now resolves
+  the controller screen through findController when the crosshair hits
+  a visible multiblock panel (part blocks carry no TileEntity, so the
+  command used to report "not aiming at a screen" while pointing
+  straight at one - the double-click panel already resolved this way);
+  the exporter appends _1/_2... to the file name when two exports land
+  within the same second instead of silently overwriting ("never
+  overwrites" now actually holds); the ModNetwork discriminator table
+  was corrected against the real registrations (SirenTune occupies
+  ids 6/7, not 5; the registry holds 23 packets, ids 0..22 - the
+  in-game /rbmkcompat numbers were already correct).
+- Alarm light auto-colouring is now an explicit panel option ("Auto-colour:
+  ON/OFF", relabelled from "Link"): ON = the lamp scans for the nearest
+  display within 16 blocks and recolours by alert level (unchanged
+  behaviour); OFF = the player colours it themselves - and now this
+  actually holds. The player's manual colour / spin / switch are
+  snapshotted into the save NBT (MColor/MRpm/MOn) when auto-colouring
+  is turned on and restored when it is turned off, via the panel button
+  or the remote (sneak + right-click). Previously poll() overwrote the
+  live config with alert values, so unlinking left the lamp stuck on
+  the last alert colour. The AUTO_OFF panel packet no longer applies
+  its slider values (they still show alert colours while linked) on
+  top of the restored manual settings. The snapshot lives in the save
+  NBT only, not in the update tag; pre-17.9 linked lamps without a
+  snapshot keep the old keep-current-colour behaviour.
+- Alarm light trigger modes re-labelled around "does it accept redstone"
+  and extended with a fifth mode TRIGGER_ALWAYS (4): the lamp is lit
+  unconditionally - redstone level and the manual switch take no part,
+  both right-click gestures only open the panel (there is no "switch"
+  action in this mode), the panel's lamp button greys out with an
+  "always lit" caption, and a hint line explains it. Button labels now
+  read: no redstone (click) / no redstone (sneak) / redstone (powered
+  = lit) / redstone + manual / wireless: always lit. The trigger value
+  grows from 2 to 3 bits in MessageAlarmLight and the NBT clamp accepts
+  0..4 (out-of-range still falls back to TRIGGER_ANY); old clients only
+  ever send 0..3, and mode 4 read back by an old build degrades to
+  click mode (mask &3) without disconnecting. The lamp button stays
+  locked in redstone mode as before.
+- Sixth trigger mode TRIGGER_OFF (5), mirroring always-lit: the lamp is
+  unconditionally dark, redstone and the manual switch take no part,
+  both gestures only open the panel. Still inside the 3-bit trigger
+  field, so the packet format is unchanged. Labels now read: no
+  redstone (click) / no redstone (sneak) / redstone (powered = lit) /
+  redstone + manual / wireless: always lit / off: always dark.
+- Panel bottom row rebuilt: "Apply" saves as before, "Cancel" restores
+  the whole panel state as it was when the panel was FIRST opened
+  (snapshot taken on first initGui, not on window resize). Because
+  every click already sent a packet, cancel sends reverse packets:
+  first the auto-link difference (AUTO_ON/AUTO_OFF, computed BEFORE
+  the local snapshot restore which would erase the diff), then a
+  AUTO_KEEP packet carrying the snapshot colour/rpm/switch/spot/trigger
+  so the server ends exactly at the opening state (AUTO_OFF alone
+  would restore the bind-time snapshot, not the panel-open one).
+- Export/Import settings buttons (native file dialog, client only):
+  export writes a UTF-8 key=value text (rbmk-alarm-settings=v1 header;
+  colour as #RRGGBB, rpm 0..120, on/spot/trigger by name, auto flag)
+  anywhere on disk via a save dialog, defaulting to the game directory
+  with a position-stamped file name; import opens the dialog, parses
+  strictly (header version checked, unknown keys ignored for forward
+  compatibility, any invalid value rejects the WHOLE file with a line
+  number - never a half-applied state) and sends the same two-phase
+  packets. The dialog is modal: the game frame freezes while it is
+  open, which is the pragmatic 1.12.2 answer to "no built-in file
+  picker".
+- Hardening during self-review: MessageAggregateSync and the 17.7-era
+  MessagePatrolSync both clamp their element count to [0, slots] -
+  a crafted/cross-version packet with a negative count would have
+  thrown IllegalArgumentException inside the netty thread (instant
+  kick) when constructing the ArrayList. Also: the compat probe now
+  reports 23 packets (ids 0..22) after the aggregate packet joined
+  the table; version stays 17.9 - these features ship inside the same
+  build as the rest of the 17.9 banner.
+
+17.6
+- The cone implementation is now four explicit choices instead of one cycling
+  button: Auto / FBO / Cone / Glow. Per lamp, saved to NBT, applied on click
+  without closing the panel. Auto follows alarm.sssLighting as before; FBO and
+  Cone are the two old paths made selectable directly. The button ids do not
+  line up with the SPOT_ values (FBO is id 11 and SPOT_SSS is 2), because the
+  buttons are ordered the way a player reads them, not the way the constants
+  happen to be declared.
+- New fourth path: Glow. The lamp gets a camera-facing halo at the lens plus 6
+  billboards marching down each beam, each larger and fainter than the last,
+  all cut from rbmk_alarm_light_glow.png - a 64x64 pure-white radial fade that
+  was already in the jar. Vertex colour tints it, so the halo is any colour
+  the lamp is. Beam length comes from the outer ring of the ray trace the
+  geometry path already computed, averaged, so the column stops at the wall
+  instead of poking through it. That is an approximation, not per-puff
+  occlusion; anyone who wants strict occlusion should pick Cone.
+- Glow is the only path that survives a shader pack, and that is the whole
+  reason it exists. It is POSITION_TEX_COLOR with real UVs, so the pack treats
+  it as ordinary world geometry and samples the sheet correctly. The other two
+  are textureless POSITION_COLOR (Cone) or a self-written program (FBO), both
+  which come out as black haze under a pack.
+- Shader packs, revised: AlarmLightVolume no longer bails out of the entire
+  frame. It keeps drawing Glow and skips everything else (see draws()). Manual
+  FBO and Cone lamps draw nothing under a pack; Auto picks Glow on its own
+  (final behavior, see the Auto entry below). Making Cone work under a
+  pack would mean feeding the pack's pipeline our own white sheet and touching
+  the shader path, which is exactly the kind of change that turns a cosmetic
+  glitch into a black screen. Deliberately not done.
+- The pack detection was broken from the day it was written: it reflected
+  Class.forName("Config") without the net.optifine prefix, threw
+  ClassNotFoundException on every call, and the catch turned that into "no
+  pack". The fallback branch it guarded never ran once in its life. It now
+  delegates to the detector DepthDebugPass already had
+  (Shaders.shaderPackLoaded, then Config.isShaders, cached), so SSS and the
+  geometry path can no longer disagree about whether a pack is on.
+- The old textureless fallback decal is gone and stays gone. It was an overlay
+  billboard in the same POSITION_COLOR format as the cones, with the same
+  missing UVs, so it sampled gtexture (0,0) and drew a black patch -
+  worse than nothing. Glow is not that idea coming back: Glow carries real UVs
+  and a real texture, which is the difference between a visible halo and black
+  smudge.
+- Fixed GL state leaking out of AlarmLightVolume. Its finally block reset
+  blend, cull, texture, lighting, blend function and colour to hardcoded
+  vanilla defaults instead of restoring what it found on entry. Vanilla happens
+  to end the world pass in exactly those states, so it looked fine; any pass
+  queued behind us (mod particles, highlight/wireframe renderers) lost its own
+  state and rendered wrong. Cull, lighting, texturing, the blend flag and the
+  depth mask are snapshotted on entry now and restored on the way out. The
+  blend function is the one exception and still goes back to the vanilla
+  default: GL reuses the same enum values for source and destination factors
+  (770 is SRC_ALPHA in one slot and DST_ALPHA in the other), so an int cannot
+  be mapped back to the GlStateManager enum without guessing, and guessing
+  wrong is worse than a sane default.
+- That snapshot is skipped entirely when no alarm light is within range. The
+  five glIsEnabled / glGetBoolean calls stall the pipeline, and there is no
+  reason to pay for them on a frame that draws nothing.
+- DepthDebugPass no longer forces glUseProgram(0) on exit; it restores
+  whichever program was bound beforehand. Same class of bug - a post-processing
+  mod that had bound its shader earlier in the frame was kicked back to fixed
+  function.
+- Replaced the rotating alarm light with the original jiezhimod implementation
+  instead of a lookalike. The block, the tile entity and the renderer are the
+  upstream ones, plus a new com.jiezhirbmkmod.alarm package holding the config,
+  the signal and the rule classes, so future upstream changes can be diffed
+  against the source project.
+- The lamp body is drawn as real geometry: 48-sided cylinders for the base, the
+  bulb and the glass dome, plus the two opposed reflector plates that actually
+  spin. No texture is involved, which is the only way a 16x16 sheet could ever
+  produce a round dome without a jagged rim.
+- The inventory icon, the in-hand model and the dropped item are the upstream
+  textured cube again: block/cube_all with a 16x16 lens sheet (dark ring, red
+  centre). The three json files (blockstates, block model, item model) are
+  literal copies of the upstream ones - the only lines that differ are the
+  namespace and the block name, so the indentation, the key order and all
+  twelve variants stay identical to the source.
+- Six-way mounting. FACING is the direction the lens points at, so a lamp
+  clicked onto a ceiling hangs down, one clicked onto a wall looks out of that
+  wall, and a floor lamp behaves exactly as it always did. The collision box
+  and the TESR follow the same rotation.
+- Per-position phase. The head angle is offset by a hash of the block
+  coordinates (xorshift plus a multiply mix), so a row of lamps and a column of
+  lamps both sweep out of step. The obvious x*A^y*B^z*C hash gave a constant 23
+  degree step along a vertical column and a constant -67 along a row, which
+  read as synchronous rather than random; both axes now spread over the full
+  0-359.
+- Dye still repaints a lamp straight from the hand, without opening the GUI.
+  While the lamp is linked the dye is refused and the reason is printed in
+  chat, rather than being silently swallowed.
+- Sneak + right-click opens the control panel, which replaces the old
+  colour-only editor: RGB sliders, spin speed, on/off and an alert-link toggle,
+  plus a light cone switch and a trigger button, all in one screen.
+- Alert linking is a switch now, not a one-shot remote trick. Opening it binds
+  the nearest display within 16 blocks, closing it releases the lamp: yellow at
+  10 rpm, orange at 30, red at 90, with the thresholds read from that screen's
+  own alert policy, so the lamp turns yellow on the same tick the screen does.
+  The remote still works as the shortcut - sneak + right-click a lamp with it
+  in hand and it binds the nearest screen directly.
+- Only the four-level mapping was adapted, not invented. The original reads a
+  DFC snapshot (melting point, detonator, laser parts); this mod has an RBMK
+  snapshot (column heat, heat rate, flux, melt risk), so AlertRules takes the
+  latter and keeps the original colour and rpm tables untouched.
+- Colour, spin and on/off are greyed out while the lamp is linked, with the
+  reason on the panel: those three are rewritten by the alert level every 10
+  ticks, so letting them be dragged would only make the lamp jump back a second
+  later.
+- New trigger mode: right-click / sneak right-click / redstone / any. It
+  decides which gesture switches the lamp, and the gesture it does not use
+  opens the panel instead - two gestures cannot both mean one thing or the
+  panel becomes unreachable. Clicks that the current mode does not claim are
+  passed through to vanilla (return false) instead of being swallowed,
+  otherwise you could never place a block against the lamp again.
+- Redstone trigger is authoritative: powered = lit, unpowered = dark. It leaves
+  the manual on/off latch untouched, so flipping back to right-click restores
+  what you had set. Only lamps that actually use redstone poll the level (every
+  5 ticks), as a fallback for pistons, /setblock and other mods that move power
+  without sending a neighbour update; the right-click and sneak modes do not
+  poll, do not mark the chunk dirty and do not re-light the block.
+- Linked lamps ignore the trigger entirely - the alert level owns on/off - so a
+  reactor alarm can never be switched off by a redstone line going low. The
+  button is greyed out with the reason and the value is kept for when you
+  unlink.
+- Two lighting paths, switchable per lamp from the panel and effective on the
+  click, no restart. The screen-space spotlight uses an FBO depth capture plus
+  an embedded GLSL fullscreen pass: soft edges, occluded by walls, glass and
+  modded machines. The polygon-cone fallback uses rayTraceBlocks and has hard
+  edges but no GL requirements. AlarmSpotlights skips lamps marked GEOMETRY and
+  AlarmLightVolume skips lamps marked SSS, so exactly one of them ever draws a
+  given lamp.
+- Three optical postures, classified from the lens axis: floor lamps sweep two
+  opposed beams at 35/55 deg over 8 blocks, wall lamps run one full circle
+  hugging the wall at 15/45 deg over 10 blocks, ceiling lamps shine straight
+  down at 45/75 deg over 10 blocks. One classifier feeds both the beam maths
+  and the shader, so the visible lamp and the lit spot cannot disagree.
+- alarm.sssLighting in the config is only the default for the automatic
+  setting. Added the sssAvailable safety net on top: if the shader fails to
+  compile, a shader pack makes the pass step aside, the driver has no OpenGL
+  3.0, or -Djiezhirbmk.debugDepth=false is set, every lamp falls back to the
+  polygon cones. A lamp that is on with nothing lit is worse than a hard-edged
+  beam.
+- The fallback respects FACING too. It used to assume the lamp always stands on
+  the floor, so a ceiling or wall lamp threw its beams out of the top of the
+  block. Cone axis, beam count and rotation axis all come from the same
+  LightType classifier the spotlight pass uses.
+- The fallback traces start outside the lamp's own collision box. The lamp
+  centre sits inside its AABB and rayTraceBlocks tests the block the ray starts
+  in, so every ray hit the lamp itself and the cone collapsed to zero length -
+  a lit lamp with no light. The start point is pushed to the first AABB face
+  the ray crosses, capped at half the beam range.
+- The fallback no longer computes its own head angle; it reads
+  TileAlarmLight.angleDeg(), so the visible blades, the spotlight pass and the
+  polygon cones all sweep together.
+- The fallback's cone cache compares against the clamped radius. It used to
+  compare the clamped value against the raw getRadius(), so any lamp with a
+  radius below 1.0 rebuilt its cone every tick (576 raycasts per lamp per
+  tick).
+- Compatibility: the meta layout is unchanged (north 0, east 1, south 2, west
+  3, up 4, down 5, bit 3 = lit), so a 17.5 world reloads with its lamps
+  pointing the same way and lamps saved before the ON bit existed are re-lit on
+  load. Old saves migrate Color / Speed / ManualEnabled / Powered into AColor /
+  ARpm / AOn (rpm = speed * 20), and both the colour and the on/off state
+  survive. Old lamps and the default both use the "any" trigger, which is the
+  old right-click-or-redstone behaviour; defaulting to right-click would have
+  silently disconnected every redstone line in every existing world.
+- A wall lamp's polygon cone is a solid of revolution, so spinning it around
+  its own axis changes nothing - it renders as a static outward cone rather
+  than the sweeping wall circle the spotlight pass draws. That is deliberate:
+  tilting the cone to fake the sweep would push half of it through the wall.
+- Bugs found and fixed while swapping the implementation:
+  * BlockAlarmLight.boxFor() had disappeared with the rewrite, which is exactly
+    the call the polygon-cone fallback uses to push its ray origin out of the
+    lamp's own box. Without it that path would not compile at all.
+  * The interaction code formatted chat messages through the client-only I18n
+    class on the server side. Replaced with TextComponentTranslation; a
+    dedicated server would have thrown NoClassDefFoundError on the first
+    right-click.
+  * The tile entity called setBlockState from onLoad() to sync the ON state.
+    That runs while the chunk is being loaded, i.e. while the world is
+    iterating its tile entity map. Deferred to the first tick.
+  * Migrating an old save folded the redstone bit into the manual switch, so a
+    lamp that was merely powered came back permanently on and could never be
+    turned off by redstone again. The two are separate fields now.
+  * A tile entity update packet without any config keys (old format, or an
+    empty packet from another mod) reset the colour to 0 and turned the lamp
+    black. Guarded.
+  * The remote's recorded target is a data source (HBM console or part), not a
+    display, so binding a lamp to it made the lamp watch a console position and
+    report "normal" forever. Binding now searches for the nearest display.
+  * The link source was never written to getUpdateTag, so the client always
+    reported isAuto() == false: the panel showed "not linked" on a perfectly
+    linked lamp, and one click would have unlinked it.
+  * The TESR disabled blending unconditionally on exit and left the last lamp
+    colour in the global GL colour state, so particles drawn afterwards came
+    out opaque and later blocks were tinted by the last lamp.
+  * The lamp dome was still drawn while the block was being broken
+    (destroyStage >= 0), which looked like a glass shell floating in mid-air.
+  * The invisible block position darkened its neighbours through ambient
+    occlusion; getAmbientOcclusionLightValue is 1.0 now.
+  * The cone cull test used the player's look vector instead of the render view
+    entity, so third-person / freecam dropped lamps the camera was facing.
+  * Sneak + right-click while holding a block opened the panel instead of
+    placing the block, because onBlockActivated returned true.
+  * The panel's "Lamp ON/OFF" button stayed clickable in redstone mode, where
+    clicking it could not possibly do anything.
+  * Change detection in the panel did not watch the trigger value, so a change
+    arriving from another player or from the remote never refreshed the button
+    label.
+  * Switching trigger mode blinked the lamp: if the new mode computed a
+    different state than what you were looking at (typical case: redstone
+    powered and lit, switching to right-click where the manual latch was off),
+    the visible state is now carried into the manual latch first. Redstone mode
+    is excluded on purpose.
+  * The alarm light's item model binding was nested inside the
+    RBMK_MEDIA_SCREEN null check in RbmkClientProxy. One block's registration
+    failure would have silently unbound the other, and the lamp would show the
+    purple missing model in the inventory while the world looked perfectly
+    fine.
+- Fixed two broken models found while auditing the same folder.
+  models/block/rbmk_terminal.json pointed at block/rbmk_monitor as its parent,
+  and that parent sampled blocks/rbmk_monitor, a texture that does not exist in
+  this mod. The terminal is a plain MODEL-rendered block with no TESR, so a
+  placed terminal showed up as a purple/black missing-texture cube. It is now
+  block/orientable with the three terminal textures that were sitting unused
+  next to it (front / side / top), and those line up with the y rotations
+  already in its blockstate. Deleted models/block/rbmk_monitor.json, the orphan
+  that carried the missing texture reference; nothing points at it any more
+  (the monitor item uses item/generated + items/rbmk_monitor and always did).
+- Dropped the 2-minute main theme from the jar. It was 2.88 MB of a 4 MB
+  package - 93% of the ost/ folder - for one piece of BGM. The seven tracks
+  that remain are short cues (siren loop, crit klaxon, power-down, three
+  terminal blips, warn beep) and total 232 KB. Nothing breaks:
+  installBundledOst skips any name whose resource is missing, and anything a
+  player drops into rbmk_media/ still plays. A copy already extracted by an
+  older version is left in place, so nobody loses a track they already have.
+- The Auto button now says what it resolves to, e.g. "Auto:FBO" or
+  "Auto:Cone". The resolution was always one shared decision - every AUTO
+  lamp goes through the same two global flags (sssAvailable, sssLighting), so
+  two AUTO lamps can never actually disagree. But the panel showed a bare
+  "Auto" while the real path followed runtime state (a shader pack on,
+  program compile failing), which reads as "auto does something different on
+  each lamp". The label is now computed by TileAlarmLight.autoPath(), the
+  same static method the render dispatch goes through, so the panel cannot
+  say one thing while the lamps do another. Resolution is deliberately free
+  of per-lamp state: same instant, same answer, every lamp.
+- Two stale comments refreshed while at it: DepthDebugPass's shader guard
+  still described the old whole-frame bail out (the texture path survives a
+  pack, and geometry is now skipped per lamp by draws(), not by a frame-wide
+  return), and RbmkConfig's sssLighting note still said "click the cone
+  button" (the panel has four buttons now).
+- Auto now means geometry, period. It used to resolve through two global
+  flags (sssAvailable, sssLighting), so every AUTO lamp still got the same
+  answer at the same instant - but that answer changed with runtime state: a
+  shader pack on or a program compile failure flipped it to Cone, a healthy
+  GL stack kept it FBO. Same setting, different lamp per machine, which reads
+  exactly as "auto lamps disagree with each other". FBO is a path that can
+  fail, so it cannot be the default; Cone is plain rayTraceBlocks with zero
+  dependencies and always draws. autoPath() now returns PATH_GEOMETRY
+  unconditionally - no config, no runtime state, no per-lamp input. FBO
+  becomes a manual choice only: click the lamp, pick it on the panel. The
+  sssLighting config key is retired (kept so old config files do not warn,
+  changing it does nothing), and the panel's Auto button keeps showing the
+  resolution ("Auto:Cone") from the same method the renderer uses.
+- Auto now picks the best path for the environment. When the first lamp is
+  placed, the mod looks at whether a shader pack is on: no pack means FBO
+  (true-depth, soft edges; falls back to Cone only if the program genuinely
+  failed to compile), pack on means Glow (the only path a pack renders
+  correctly). The resolution reads exactly two global booleans - shaderPack
+  active and sssAvailable - so every AUTO lamp gets the same answer at the
+  same instant, first lamp included. Toggle the pack mid-game and the probe
+  cache refreshes within about 1.6 s, after which all AUTO lamps re-resolve
+  together under the new environment; there is no "this lamp keeps the old
+  choice, that lamp uses the new rule" split. The Auto button keeps showing
+  the current resolution (Auto:FBO / Auto:Glow / Auto:Cone). Detection is
+  published once per frame into RbmkConfig.shaderPackActive by
+  AlarmLightVolume, so TileAlarmLight stays common-safe and never reflects
+  client classes on the dedicated server.
+- Crash guard, from a player report of an instant black screen with a pack on.
+  Two render entry points had no exception protection at all:
+  AlarmLightVolume's per-lamp loop had try/finally but no catch, and
+  RenderAlarmLight (the TESR) had none whatsoever - its state restore was
+  written sequentially, so a mid-draw exception leaked GL state AND escaped
+  up the pipeline. Any exception thrown past a RenderWorldLast handler or a
+  TESR is FATAL in Forge: the client goes black on the spot. Shader packs make
+  this likeliest - foreign programs own the geometry state, and anything from
+  a Tessellator hiccup to a texture load can throw. Both entry points are now
+  wrapped: the exception is logged once, the shared BufferBuilder is reset
+  (without that, every later begin() anywhere throws IllegalStateException
+  and one lamp's error becomes the whole frame's), and the TESR restore block
+  moved into finally so GL state always comes back. Worst case is now one
+  skipped lamp, not a dead client.
+- Read-only operations manual as a written book: new item rbmk_manual
+  (creative tab + /give jiezhirbmkmod:rbmk_manual). Extends the vanilla
+  ItemBookWritten so paging and rendering are the real written-book GUI, but
+  onItemRightClick always opens GuiScreenBook in the signed/read-only mode -
+  there is no editing page and no signing page, ever. The 14 pages are
+  hardcoded in the item class (they summarize the whitepaper: power-on checks,
+  multiblock alignment, HBM binding, terminal commands, alarm levels, redstone
+  interlock and dual-channel SCRAM, render paths, media specs, emergency SOP
+  and troubleshooting rules), so the content is byte-identical on every server
+  and every save. If the pages tag goes missing (/give of a bare book, a
+  wiped NBT), the client rebuilds it from the hardcoded source before
+  opening - a tampered book simply reads as the original again. The display
+  name ignores the NBT display tag, so anvil renames are visually inert.
+  Item model reuses the vanilla written-book texture on purpose: it should
+  look exactly like a signed document, because that is what it is.
+- Every obtainable mod item now has a shapeless crafting recipe (28 new JSON
+  files). The hand-held items that never had one: speed / gravity / healing
+  coils, jetpack, jet switch, PPT remote and the manual (book + paper +
+  redstone). The screen blocks that never had one: monitor, custom, graph,
+  media, PPT and the alarm light. Items that only had a shaped recipe got an
+  identical shapeless twin (screen, terminal, siren, router, laptop, both
+  refresh tuners) - the old shaped recipes stay, nothing is taken away.
+  The eight mains-gated _real screens craft from their normal twin plus a
+  redstone block, so the mains upgrade remains a deliberate step. The screen
+  part block is excluded on purpose: it has no item form and is a multiblock
+  piece, not a craftable device.
+- Four new hand-held items round out the toolkit. The config card carries a
+  screen's tuned NBT subset (alert thresholds, siren switch, redstone rule,
+  refresh tier, data binding) from one display to the next: sneak+right-click
+  reads, right-click writes, sneak+air clears. It pastes a subset over the
+  target's own NBT, so power state, history and messages survive; custom-screen
+  device slots are deliberately not copied because those bind to that screen's
+  own recorders. The probe is a read-only pocket meter: right-click a console
+  or column and it prints average/peak column heat against the melt limit,
+  rate of rise, flux, steam and melt risk to chat, colored green/yellow/red -
+  same reflection bridge as every screen, zero HBM imports. The alarm horn
+  binds to a display (sneak+click) and blares wherever its owner stands when
+  that screen hits L1 (two-tone beep) or L2 (meltdown wail), reusing the
+  siren SoundEvents - no new audio files; right-click air toggles mute, and
+  it only listens while actually held, so a horn in a chest stays quiet.
+  Manual volume II (rbmk_manual_vol2) is the emergency SOP companion to the
+  operations manual: same read-only written-book construction, 13 hardcoded
+  pages covering alarm grades, L1-L4 response, the SCRAM channels, meltdown
+  evacuation, link loss, power loss, stuck rods, restart and post-incident
+  reporting. The two book classes stay deliberately separate - shared code
+  between two safety documents is how one edit silently rewrites both.
+- Operator badge (rbmk_op_card): mod-admin rights become an item you can hand
+  out. The two permission-2 gates (the full refresh tuner and the hacker
+  gameplay toggle) now also accept an issued badge held in either hand -
+  the middle tier between nothing and full vanilla op, without touching the
+  op list. Blank cards are craftable and carry no rights; only a real op
+  (or the single-player host) can issue one, sneaking + right-clicking the
+  air; the card records the issuer's name. Issuing again on an issued card
+  revokes it back to blank, so taking rights away is taking the card away.
+  The badge must be shown: stowed in the inventory it grants nothing, and
+  the [AUDIT] broadcast on hack events still goes to vanilla ops only.
+  Judgment lives in one method (ItemRbmkOpCard.isModOp) that both gates call.
+- Badge issuer (rbmk_issuer, a 1x1 machine): the badge counter, in machine
+  form. Right-clicking it checks the admin gate first - permission level 2 or
+  the single-player host - and only then opens the GUI; everybody else gets a
+  red refusal and never sees the drawer. The GUI is one card slot plus config:
+  blank cards load into the slot, uses per card steps in +/-1/+10 with 0 shown
+  as unlimited, and four tier toggles (low/mid/high/ultra, all on by default)
+  pick which refresh tiers the card holder may cycle. The player pane lists
+  everyone online (from the TAB-list data already on the client) with a live
+  search box, single/multi select toggle, and one Authorize button that
+  consumes one blank card per selected player. The server re-checks the gate,
+  the distance and every name before issuing - the GUI is a front end, the
+  permission decision is not. Issued cards carry the issuer name, the use
+  count and the tier mask; recipients get theirs into the inventory (dropped
+  at their feet if full) plus a chat line saying who issued what. Breaking the
+  machine drops any loaded cards; the slot refuses issued cards in return.
+- Cards got teeth: UsesLeft and TierMask in NBT. Every successful
+  mod-admin action (a tuner adjustment, a hacker attack toggle) by a
+  card-holding non-op consumes one use; at zero the card goes inert and the
+  gates refuse it again. The tier mask filters the tuner's cycle - the
+  factory default tier always stays reachable so a restricted bearer can
+  always put a screen back. Hand-issued cards (sneak+air) have neither key
+  and behave exactly as before: unlimited uses, all tiers.
+- Issuer follow-up: the issued card now appears in the GUI after authorizing.
+  The server answers the authorize packet with a result reply (packet 16) that
+  carries the success counts and the full NBT of a card produced by the very
+  same config the targets received. The panel no longer closes on authorize:
+  the authorize button greys out while waiting, a five-second timeout unlocks
+  it, and the result strip at the bottom renders the issued card (icon plus
+  the vanilla tooltip, so issued-by / uses-left / allowed tiers are hoverable)
+  with a one-line per-batch summary.
+- Fixed the issuer slot frame drawing twelve pixels off the container slot, so
+  the blank card icon lands inside the drawn frame instead of beside it.
+- Fixed the issuer tile: removeStackFromSlot cleared a scratch list instead of
+  the field, and markDirty was an empty override, so slot changes could leak
+  on world save. Both now operate on the field and mark the chunk dirty.
+- Manual badge issuance is gone. Sneak+right-click on an issued badge now only
+  revokes it; the blank-to-issued step lives exclusively in the issuer block,
+  so every badge carries an issuer line, use count and tier mask from birth.
+- The hack gameplay switch (security.allowNormalPlayerHack) now defaults to
+  off. Double-right-clicking an operator badge opens a request dialog: send
+  or do not send. Enabling needs EVERY online op/admin to agree on a popup
+  review panel (single veto kills the request); disabling needs any single
+  op/admin to agree. Result dialogs tell the applicant the request was
+  approved or denied, with an OK button. The switch is written back to
+  jiezhirbmkmod.cfg on the outcome and announced server-wide.
+- Reviewers are simply the online true ops (level 2 / single-player owner): a
+  plain single-player world pops the panel to the owner-applicant himself, a
+  LAN world with other players counts as a server (owner + ops all review),
+  and an empty LAN world counts as single-player again. Offline mode makes no
+  difference anywhere in the flow.
+- Badge path on the OP tuner is now spelled out everywhere it matters. A
+  normal player may operate the full tuner by showing an issued badge with
+  uses left in either hand - the gate already accepted that, but the refusal
+  text did not. The tip line now says "admins, or show an issued badge with
+  uses left", a badge whose uses hit zero during a tune gets a gold warning
+  the moment it goes inert, and a refusal while holding that dead badge says
+  "uses exhausted - ask an admin to reissue" instead of pointing at the Basic
+  edition. Tooltips updated in both languages.
+- Bug sweep over the whole 17.6 surface (javac parse of all 144 sources plus
+  manual reads of every new class). Three real defects found and fixed:
+  MessageIssuerAuthorize called its private handle() from a static runnable
+  context - would not compile against a real classpath, now static; the
+  issuer tile did not mark itself dirty in decrStackSize / removeStackFromSlot,
+  so cards taken out through the container could survive a crash-restore;
+  the issuer GUI's player list scroll could stay past the end after a search
+  narrowed the list, rendering the panel blank until the wheel moved again -
+  clamped every tick now. Also: sneak+right-click-air on an unbound siren
+  horn now says "not bound" instead of claiming a release that never was.
+- The project now builds for real: a full ForgeGradle run against the
+  stable_39 mappings flushed out a batch of wrong or outdated API names that
+  no dependency-free parse could ever catch. Fixed across the board: the
+  issuer GUI now imports GuiContainer from client.gui.inventory; the two
+  manuals extend ItemWrittenBook (not ItemBookWritten - that name is 1.13+);
+  server-side I18n.format calls became translateToLocalFormatted (1.12
+  renamed the method); Vec3d.lengthVector() became length();
+  getChunkFromChunkCoords became getChunk; ItemStack.loadItemStackFromNBT
+  became new ItemStack(NBTTagCompound); SoundEvents moved to the init
+  package in BlockAlarmLight; Item.onUpdate's holder parameter is an Entity,
+  not an EntityLivingBase; RenderItem.renderItemAndTooltipIntoGUI became
+  renderItemAndEffectIntoGUI; PlayerList.getPlayerByUserName became
+  getPlayerByUsername; the issuer block now implements ITileEntityProvider;
+  the tuner's use-consumption check calls ItemRbmkOpCard.isTrueOp (the old
+  ItemRefreshTuner.isTrueOp never existed); the static authorize handler
+  gained its own server handle; and the operator badge got its missing UUID
+  import plus a type-correct tooltip ternary. Verified by an end-to-end
+  build: compileJava with zero errors and a 1.4 MB RBMK-Monitor-17.6.jar.
+- Four new packets: hack app send (17), review popup (18), vote (19), result
+  (20). One request at a time; a request dies after 60 s without a complete
+  vote, when the applicant disconnects, or when every reviewer leaves.
+- The hack request dialog is a GuiContainer on purpose: window properties (the
+  switch state and whether the opener may request a disable) only reach clients
+  when the open container is a GuiContainer, so the button reads the live
+  switch the moment the dialog opens and names itself "send enable request"
+  or "send disable request" accordingly. Stale state from a previous open
+  is cleared on construction, pre-filled from the local config copy (exact
+  in single player, corrected within one tick on dedicated servers), and the
+  send button stays grey until a real value arrives.
+17.5
+- Added a "real" edition of all eight screens (registry suffix _real, display
+  name carries "（真实）"). Rendering, GUI and multiblock are inherited
+  matching original, so the only differences are the registry name, the icon and
+  the power behaviour.
+- A real screen stays dark until the block is fed: redstone strength >= 10 AND a
+  non-empty Forge Energy buffer (100000 FE, 500 FE/t input, 10 FE/t while on,
+  2 FE/t while in standby). Losing either supply forces the panel off at once.
+- Real screens boot into OFF rather than standby: a freshly mounted panel is dead
+  until it is wired, and the placement message says so.
+- Click contract: one click steps off -> standby -> on -> standby; a second click
+  within 1.5 s jumps to the target computed from the state before the first click
+  (off -> on, standby -> off, on -> off). Sneak + right-click keeps opening the
+  settings GUI, but only while the panel has mains.
+- The dark state draws nothing at all and suppresses the alarm particles, so a
+  disconnected screen reads as a plain black plate and never looks like it is
+  reporting an emergency.
+- The screen sync packet carries the mains state as one extra int, appended after
+  the existing fields so the byte order of the older fields is unchanged.
+- Fixed remote binding on ordinary screens. ItemRbmkRemote.onItemUse only runs
+  when the clicked block's onBlockActivated returns false, and the HBM console is
+  a dummyable multiblock that opens its own GUI and returns true, so the remote
+  never saw the click at all. A RightClickBlock handler now records the position
+  before block logic runs (holding the remote, not sneaking, the block resolving
+  to a real data source) and consumes the click.
+- Fixed "binds but stays blank". refresh() had no exception guard: one throw from
+  RbmkBridge.read / fillExtra / evalAlert left forceSync false and skipped
+  syncToClients() forever, so the panel froze on an empty snapshot. Split into
+  refresh() + refreshBody(), mark the screen offline on failure and always send
+  the packet in a finally block.
+- Fixed the bound dimension. bindSource stored the screen's own dimension instead
+  of the data source's, so a cross-dimension link resolved to a null world and
+  reported offline on every tick.
+- Fixed screens that never powered on after placement: onBlockPlacedBy can run
+  before the tile entity exists and powerOn() on a missing tile is a no-op, so
+  the panel stayed black forever. The first tick now restores power when the
+  Powered tag is absent; a screen the player switched off by hand is left off.
+- Binding, recording and failure paths now report in chat through
+  TextComponentTranslation with both zh_cn and en_us strings, so they also resolve
+  on a dedicated server: console recorded, column recorded, not a data source, no
+  display found, tile not ready, bind ok, bound but unreadable, real screen off.
+- The double-click window now uses world.getTotalWorldTime() (30 ticks) instead of
+  System.currentTimeMillis(). A wall-clock correction that steps the clock back
+  would have made the delta negative and silently killed every double click.
+- The FE buffer is written to NBT every 20 ticks; it used to drain without
+  markDirty(), so a reload restored the old charge and handed out free power.
+- isRealScreen() and isRealTerminal() cache their answer, so an energy pipe
+  polling the capability every tick no longer calls getBlockState each time.
+- Fixed a compile error: BlockRbmkPptScreen only had the no-argument constructor
+  while BlockRbmkPptScreenReal called super(name, name).
+- Removed the client-only I18n use from the remote messages and the real-screen
+  status lines; RealPowerStatus got null guards so a tile without a position can
+  no longer NPE.
+- RenderRbmkMediaScreen checked isRealScreen() before the te == null guard, so a
+  missing tile NPE'd instead of just drawing the dark plate.
+- The PPT remote key names no longer carry (H) (F) (M). Defaults are unchanged and
+  still rebindable in Options -> Controls; F still collides with swap-hands.
+- Bumped the mod version to 17.5.
+
+17.4
+- Added the refresh rate tuner: sneak + right-click any display to cycle its refresh
+  interval per screen, with the result printed to chat as
+  (x y z) <screen type> tuned to <tier>. Each screen keeps its own tier in NBT.
+- Two editions in the same release. rbmk_refresh_tuner walks five tiers (default /
+  low 500 / mid 300 / high 100 / ultra 50 ms) and is op-only: a player without
+  permission level 2 who sneak-clicks a screen gets a red refusal in chat and the
+  screen is left untouched. rbmk_refresh_tuner_basic walks four (default / low 500 /
+  mid 300 / mid-high 250 ms) and is open to everyone, ops included; it has no high /
+  ultra step, so a normal player can never push a screen to a per-tick redraw.
+- Single-player hosts count as op, so a cheats-off world is not locked out of its own
+  tuner. The check compares the player name against getServerOwner() instead of
+  trusting isSinglePlayer(): an integrated server keeps reporting true after
+  "Open to LAN", so a plain isSinglePlayer() check would have handed every LAN guest
+  the admin tuner. On a dedicated server the check is the normal op list.
+- "Default" returns to the value that screen was born with, snapshotted from
+  defaultRefreshMs, so a later config edit cannot rename tiers on existing screens.
+- New 250 ms "mid-high" tier. Screens store their tier in NBT, so two tiers that
+  happen to share a millisecond value still come back as the tier the player picked.
+- The screen sync packet now actually applies refreshMs on the client; before this
+  the field was read and then dropped, so a rate change only showed up after the
+  screen was reloaded.
+- The refusal line uses TextComponentTranslation instead of the client-only I18n
+  class, so it also resolves correctly on a dedicated server.
+- Bumped the mod version to 17.4.
+
+17.3
+- Boot screen no longer shows empty boxes. The bundled font subset had only 544 glyphs,
+  so the OS title (the "system" character) and the version line (the "kernel" character)
+  were drawn as .notdef boxes. The subset is rebuilt from WenQuanYi Micro Hei with all of
+  GB2312 level-1 plus every character the mod prints: 3897 glyphs, 774 KB.
+- Text drawing now checks each character and draws anything the bundled font lacks with a
+  same-size system font, so device names and future strings cannot turn into boxes.
+- Fixed the boot percentage label. It was drawn at y=152 and its ink spans 146..152, so it
+  covered the bottom edge of the progress bar and the last glyph hung 0.7 px past the bar
+  end. The footer is now a caption row above the bar - self-test caption on the left,
+  percentage on the right - both aligned to the bar's 12..244 span.
+
+17.2
+- Fixed the beam vanishing when the lamp itself sat outside the view cone: a 16 block
+  cone can sweep across the screen while the lamp is off to the side, so the cull now
+  only drops lights whose whole beam volume is behind the camera.
+- Removed 576 Vec3d allocations per light per frame. Cone points rotate into reused
+  float arrays, so a row of lamps no longer causes GC stutter while running.
+- The shader path now draws both cones of the dual beam (one of them was skipped).
+- Guarded a null placer (dispenser placement), a missing render view entity and a
+  missing glow sprite.
+- Clamped radius / speed / cone angle read from NBT so a corrupted save cannot ask
+  for thousands of block rays per frame.
+- Lamp list refresh 20 -> 10 ticks, newly placed lamps light up twice as fast.
+- Added the mod logo (mcmod.info logoFile) for the Forge mod list.
+- Boot and self-test screens now show the mod's own brand (RBMK MONITOR OS) instead
+  of the original author's "Jiezhi OS". Brand strings live in ScreenLayout.OS_NAME /
+  OS_TITLE, so renaming it later is a one-line change.
+- Fixed the boot cursor: it was hard-coded at x=66 and drew on top of the title text.
+  It now follows the measured text width, so a longer brand name still looks clean.
+- Bumped the mod version to 17.2.
+
+14.0
+- Added terminal meltdown countdown (T-minus) with a flashing red critical warning under 60 seconds.
+- Hardened the countdown against zero/negative rise rates and NaN/infinite readings.
+- Cached the terminal warning data source to avoid per-frame block scans.
+- Bumped the mod version to 14.0.
+
+13.1-beta
+- Added survival crafting recipes for the screen, terminal screen, terminal, router, siren and remote.
+- Added the missing router localization name.
+- Bumped the mod version to 13.1-beta.
+
+13.0
+- RBMK terminal, terminal screen and network router.
+- Terminal commands: help, status, rods, scram, siren, history, graph, list, connect.

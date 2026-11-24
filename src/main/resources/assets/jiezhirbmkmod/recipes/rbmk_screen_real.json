@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_screen_real",
+    "count": 1
+  },
+  "ingredients": [
+    "jiezhirbmkmod:rbmk_screen",
+    "minecraft:redstone_block"
+  ]
+}

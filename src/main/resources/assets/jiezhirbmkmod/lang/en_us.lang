@@ -1,0 +1,482 @@
+itemGroup.jiezhirbmkmod=jiezhirbmkmod Items
+itemGroup.jiezhirbmkmod_screen=RBMK Screens
+
+tile.rbmk_screen.name=RBMK Monitor Panel
+tile.rbmk_monitor.name=RBMK Core Monitor
+tile.rbmk_custom.name=RBMK Custom Display
+tile.rbmk_graph.name=RBMK Graph Display
+item.rbmk_remote.name=RBMK Remote
+item.rbmk_laptop.name=RBMK Portable Terminal
+tile.rbmk_siren.name=RBMK Alarm Siren
+tile.rbmk_terminal.name=RBMK Terminal
+tile.rbmk_term_screen.name=RBMK Terminal Display
+tile.rbmk_router.name=RBMK Network Router
+
+# ---- Screen tooltips (v7.1: these keys were missing in v7.0, hotbar showed raw keys) ----
+tooltip.jiezhirbmkmod.rbmk_screen.0=%s-block ceiling mount (4x3), right-click to toggle
+tooltip.jiezhirbmkmod.rbmk_screen.1=Core overview: avg/peak column heat, flux, steam, enrichment, xenon, rods
+tooltip.jiezhirbmkmod.rbmk_screen.2=Auto red-screen reboot on meltdown, the whole incident goes to the event log
+tooltip.jiezhirbmkmod.rbmk_screen.3=Sneak + right-click (empty hand): alarm thresholds & redstone linkage
+tooltip.jiezhirbmkmod.rbmk_screen.4=Right-click this panel with the remote to bind the source
+
+tooltip.jiezhirbmkmod.rbmk_monitor.0=%s-block ceiling mount (4x3), right-click to toggle
+tooltip.jiezhirbmkmod.rbmk_monitor.1=15x15 core map: fuel/control/boiler columns coloured by temperature
+tooltip.jiezhirbmkmod.rbmk_monitor.2=Sneak + right-click (empty hand): alarm thresholds & redstone linkage
+tooltip.jiezhirbmkmod.rbmk_monitor.3=Hot columns get an outline, find the hottest one at a glance
+tooltip.jiezhirbmkmod.rbmk_monitor.4=Right-click this panel with the remote to bind the source
+
+tooltip.jiezhirbmkmod.rbmk_custom.0=%s-block ceiling mount (4x3), right-click for the device manager
+tooltip.jiezhirbmkmod.rbmk_custom.1=List the readings you care about
+tooltip.jiezhirbmkmod.rbmk_custom.2=Sneak + right-click tanks/batteries with the remote, then right-click this panel
+tooltip.jiezhirbmkmod.rbmk_custom.3=Up to %s rows; redstone mode "Watch slot 1" emits on the first row's fill ratio
+tooltip.jiezhirbmkmod.rbmk_custom.4=Sneak + right-click (empty hand): alarm thresholds & redstone linkage
+tooltip.jiezhirbmkmod.rbmk_custom.5=v7.1: full-screen strobe + siren + redstone from any of the 12 blocks + per-screen thresholds
+
+# ---- RBMK Graph display tooltip ----
+tooltip.jiezhirbmkmod.rbmk_graph.0=4x3 ceiling-mounted multiblock, right-click to toggle
+tooltip.jiezhirbmkmod.rbmk_graph.1=Three charts, thermal/fuel groups rotate automatically: heat/flux/water & steam/enrich/xenon
+tooltip.jiezhirbmkmod.rbmk_graph.2=Auto-scaling Y axis, ~%s second window
+tooltip.jiezhirbmkmod.rbmk_graph.3=A break means data loss, not zero
+tooltip.jiezhirbmkmod.rbmk_graph.4=~%s seconds of history, one point per 0.5s
+
+# ---- Custom display (opened by right-clicking the block) ----
+gui.jiezhirbmkmod.custom.title=RBMK Custom Display
+gui.jiezhirbmkmod.custom.power.on=Power On
+gui.jiezhirbmkmod.custom.power.off=Power Off
+gui.jiezhirbmkmod.custom.state.on=State: ON
+gui.jiezhirbmkmod.custom.state.off=State: OFF
+gui.jiezhirbmkmod.custom.delete=Del
+gui.jiezhirbmkmod.custom.clear=Clear
+gui.jiezhirbmkmod.custom.close=Close
+gui.jiezhirbmkmod.custom.empty=(empty)
+gui.jiezhirbmkmod.custom.offline=offline
+gui.jiezhirbmkmod.custom.hint=Put the RBMK remote in the slot and click Add (max 8 readings).
+gui.jiezhirbmkmod.custom.add=Add
+gui.jiezhirbmkmod.custom.add.hint=Put a remote in the slot
+gui.jiezhirbmkmod.custom.remote=Remote
+gui.jiezhirbmkmod.custom.remote.empty=empty
+gui.jiezhirbmkmod.custom.remote.count=%s/%s
+
+# ---- RBMK Remote tooltip ----
+tooltip.jiezhirbmkmod.rbmk_remote.0=No RBMK source recorded
+tooltip.jiezhirbmkmod.rbmk_remote.1=Right-click a console or RBMK part to record
+tooltip.jiezhirbmkmod.rbmk_remote.2=Source (%s) @ %s
+tooltip.jiezhirbmkmod.rbmk_remote.3=Devices recorded %s/%s
+tooltip.jiezhirbmkmod.rbmk_remote.4=Sneak + right-click tanks/batteries to record
+tooltip.jiezhirbmkmod.rbmk_remote.5=Then right-click a display to bind
+tooltip.jiezhirbmkmod.rbmk_remote.6=Sneak + right-click this panel to hook up
+tooltip.jiezhirbmkmod.rbmk_remote.7=Sneak + right-click air to clear all
+
+# ---- RBMK Portable Terminal (v11.2: handheld laptop) ----
+tooltip.jiezhirbmkmod.rbmk_laptop.0=No reactor connected
+tooltip.jiezhirbmkmod.rbmk_laptop.1=Connected to RBMK console @ %s %s %s
+tooltip.jiezhirbmkmod.rbmk_laptop.2=Right-click a console or RBMK column to connect
+tooltip.jiezhirbmkmod.rbmk_laptop.3=Right-click in the air to open the command prompt
+tooltip.jiezhirbmkmod.rbmk_laptop.4=Sneak + right-click air to clear the link
+
+# ---- original items: coils / jetpack / jet switch ----
+item.speed_coil.name=Speed Coil
+item.gravity_coil.name=Gravity Coil
+item.healing_coil.name=Healing Coil
+item.jetpack.name=Jetpack
+item.jet_switch.name=Jet Switch
+tooltip.jiezhirbmkmod.coil_speed.0=Speed Coil
+tooltip.jiezhirbmkmod.coil_speed.1=Hold in either hand: movement speed x%s
+tooltip.jiezhirbmkmod.coil_speed.2=Raw attribute boost, not a potion effect
+tooltip.jiezhirbmkmod.coil_gravity.0=Gravity Coil
+tooltip.jiezhirbmkmod.coil_gravity.1=Hold in either hand: jump about %s blocks high
+tooltip.jiezhirbmkmod.coil_gravity.2=Raw physics boost, not a potion effect
+tooltip.jiezhirbmkmod.coil_healing.0=Healing Coil
+tooltip.jiezhirbmkmod.coil_healing.1=Hold in either hand: +%s HP per second
+tooltip.jiezhirbmkmod.coil_healing.2=Raw healing, not a potion effect
+tooltip.jiezhirbmkmod.jetpack.0=Jetpack
+tooltip.jiezhirbmkmod.jetpack.1=Wear in the chest slot, hold the Jet Switch and hold right-click to fly
+tooltip.jiezhirbmkmod.jetpack.2=Burn time: %s seconds per full tank
+tooltip.jiezhirbmkmod.jetpack.3=Release right-click to cool down; the tank overheats when it runs dry
+tooltip.jiezhirbmkmod.jetpack.4=Vanilla physics, stacks with potion effects
+tooltip.jiezhirbmkmod.jet_switch.0=Jet Switch
+tooltip.jiezhirbmkmod.jet_switch.1=Requires a Jetpack in the chest slot
+tooltip.jiezhirbmkmod.jet_switch.2=Hold right-click: fly / release: stop
+tooltip.jiezhirbmkmod.jet_switch.3=The heat bar is drawn under the crosshair while flying
+
+# ---- RBMK Alarm Siren (v7.2: standalone block, rings on redstone) ----
+tooltip.jiezhirbmkmod.rbmk_siren.0=One block, no multiblock; rings whenever any side gets redstone
+tooltip.jiezhirbmkmod.rbmk_siren.1=Hold a dye and right-click to repaint instantly (16 colors)
+tooltip.jiezhirbmkmod.rbmk_siren.2=Right-click for the tuner: sound / volume / pitch / gap / mode / category / flash
+tooltip.jiezhirbmkmod.rbmk_siren.3=%s built-in alarm sounds, up to ~6s per blare
+tooltip.jiezhirbmkmod.rbmk_siren.4="Loop" re-triggers before the sample ends, so the alarm keeps wailing
+tooltip.jiezhirbmkmod.rbmk_siren.5=Color: %s
+
+# ---- RBMK Terminal (v11.0: floor block, right-click opens a command prompt) ----
+tooltip.jiezhirbmkmod.rbmk_terminal.0=Floor-standing terminal block, right-click opens the command prompt
+tooltip.jiezhirbmkmod.rbmk_terminal.1=To connect a reactor: record a console with the RBMK remote, then right-click this block; or type 'bind' near a console
+tooltip.jiezhirbmkmod.rbmk_terminal.2=Commands: help / status / rods / rods <0-100> [color] / scram / where / siren <on|off|test> / history
+tooltip.jiezhirbmkmod.rbmk_terminal.3=Tab autocompletes commands, just like vanilla commands
+tooltip.jiezhirbmkmod.rbmk_terminal.4=Type 'clear' to unlink this terminal, 'cls' to wipe the screen
+
+# ---- RBMK Terminal Display (v11.0: 4x3 multiblock, same family as the other screens) ----
+tooltip.jiezhirbmkmod.rbmk_term_screen.0=%s-block multiblock (4x3), same structure as the other displays
+tooltip.jiezhirbmkmod.rbmk_term_screen.1=Right-click (sneaking or not) opens the command prompt, output is shown on the big screen
+tooltip.jiezhirbmkmod.rbmk_term_screen.2=Bind an RBMK console with the RBMK remote, same as the other displays
+tooltip.jiezhirbmkmod.rbmk_term_screen.3=Commands: help / status / rods / rods <0-100> / scram / where / siren <on|off|test> / history, Tab autocompletes
+tooltip.jiezhirbmkmod.rbmk_term_screen.4=Type 'cls' to wipe the big screen, 'exit' to close
+
+# ---- Rotating Alarm Light (v16.0) ----
+tile.rbmk_alarm_light.name=Rotating Alarm Light
+tile.rbmk_media_screen.name=Multimedia Display
+tooltip.jiezhirbmkmod.rbmk_alarm_light.0=Right-click to toggle, sneak + right-click for the control panel (colour / spin / link / light cone / trigger)
+tooltip.jiezhirbmkmod.rbmk_alarm_light.1=Mounts on whichever face you click: floor, ceiling or wall
+tooltip.jiezhirbmkmod.rbmk_alarm_light.2=Right-click with a dye to repaint it instantly; a linked lamp refuses and tells you why
+tooltip.jiezhirbmkmod.rbmk_alarm_light.3=The panel switches the light cone at any time: polygon cones (per-ray occlusion) or screen-space spotlights (true depth)
+tooltip.jiezhirbmkmod.rbmk_alarm_light.4=Sneak + right-click with the remote, or the panel's Link button: uses the nearest display (16 blocks) as its source, colour and spin follow the alert level (again to unlink)
+tooltip.jiezhirbmkmod.rbmk_alarm_light.5=Panel's Trigger button picks what switches it: right-click / sneak right-click / redstone / any. The gesture it does not use opens the panel instead
+msg.jiezhirbmkmod.alarm_light.color=Alarm light recoloured to %s (%s)
+msg.jiezhirbmkmod.alarm_light.auto=Auto-colouring is on: the colour follows the alert level and your manual colour returns when it is turned off. Use the remote (sneak + right-click) or the panel's Auto-colour button to turn it off
+msg.jiezhirbmkmod.alarm_light.bind=Auto-colouring on (source %s): colour and spin now follow the alert level; your manual settings return when turned off
+msg.jiezhirbmkmod.alarm_light.unbind=Auto-colouring off: your manual colour and spin have been restored
+msg.jiezhirbmkmod.alarm_light.no_screen_near=No display within 16 blocks, move one closer and try again
+msg.jiezhirbmkmod.alarm_light.redstone_only=This lamp is set to "redstone" trigger - right-click will not toggle it (change it in the panel)
+gui.jiezhirbmkmod.alarm_light.title=Alarm Light Control
+gui.jiezhirbmkmod.alarm_light.apply=Apply
+gui.jiezhirbmkmod.alarm_light.rpm=Spin
+gui.jiezhirbmkmod.alarm_light.link_on=Auto-colour: ON
+gui.jiezhirbmkmod.alarm_light.link_off=Auto-colour: OFF
+gui.jiezhirbmkmod.alarm_light.spot_auto=Auto
+gui.jiezhirbmkmod.alarm_light.spot_auto_sss=Auto:FBO
+gui.jiezhirbmkmod.alarm_light.spot_auto_geo=Auto:Cone
+gui.jiezhirbmkmod.alarm_light.spot_auto_tex=Auto:Glow
+gui.jiezhirbmkmod.alarm_light.spot_geo=Cone
+gui.jiezhirbmkmod.alarm_light.spot_sss=FBO
+gui.jiezhirbmkmod.alarm_light.spot_tex=Glow
+gui.jiezhirbmkmod.alarm_light.lamp_on=Lamp ON
+gui.jiezhirbmkmod.alarm_light.lamp_off=Lamp OFF
+gui.jiezhirbmkmod.alarm_light.lamp_redstone=Lamp: Redstone
+gui.jiezhirbmkmod.alarm_light.trigger_click=No redstone (click toggles)
+gui.jiezhirbmkmod.alarm_light.trigger_sneak=No redstone (sneak toggles)
+gui.jiezhirbmkmod.alarm_light.trigger_redstone=Redstone (powered = lit)
+gui.jiezhirbmkmod.alarm_light.trigger_any=Redstone + manual (either)
+gui.jiezhirbmkmod.alarm_light.linked_to=Auto-colour · source %d, %d, %d
+gui.jiezhirbmkmod.alarm_light.linked=Auto-colour (source not loaded)
+gui.jiezhirbmkmod.alarm_light.manual=Manual colouring (auto-colour off)
+gui.jiezhirbmkmod.alarm_light.locked=Auto-colour: colour/spin/switch/trigger follow alerts; manual settings return when turned off
+gui.jiezhirbmkmod.alarm_light.sss_off=SSS unavailable - cones only
+gui.jiezhirbmkmod.alarm_light.hint_redstone=Powered = lit, unpowered = dark
+gui.jiezhirbmkmod.alarm_light.hint_sneak=Sneak: toggle / click: panel
+
+tile.rbmk_ppt_screen.name=PPT Presentation Screen
+item.rbmk_ppt_remote.name=PPT Remote
+item.rbmk_manual.name=RBMK Plant Operations Manual
+tooltip.jiezhirbmkmod.rbmk_manual=§8Read-only document · pages cannot be edited · 18 pages · with crafting appendix
+key.categories.jiezhirbmkmod=RBMK PPT
+key.rbmk_ppt.next=Next slide
+key.rbmk_ppt.prev=Previous slide
+key.rbmk_ppt.goto=Go to slide
+# ---- Refresh rate tuner (v17.4) ----
+item.rbmk_refresh_tuner.name=Refresh Rate Tuner
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.0=Sneak + right-click a display to cycle its refresh rate
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.1=Default -> Low -> Mid -> High -> Ultra (500 / 300 / 100 / 50 ms)
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.2=Default = this screen's factory rate; stored per screen
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.3=OP only, or show an issued badge with uses left; each tune costs 1 use
+screen.jiezhirbmkmod.monitor=Monitor Screen
+screen.jiezhirbmkmod.term=Terminal Screen
+screen.jiezhirbmkmod.custom=Custom Screen
+screen.jiezhirbmkmod.media=Media Screen
+screen.jiezhirbmkmod.ppt=PPT Screen
+tier.jiezhirbmkmod.refresh.default=Default
+tier.jiezhirbmkmod.refresh.low=Low
+tier.jiezhirbmkmod.refresh.mid=Mid
+tier.jiezhirbmkmod.refresh.high=High
+tier.jiezhirbmkmod.refresh.ultra=Ultra
+msg.jiezhirbmkmod.refresh.action=tuned to
+msg.jiezhirbmkmod.refresh.same=(same value as the previous tier)
+msg.jiezhirbmkmod.refresh.denied=not changed: admin permission required
+msg.jiezhirbmkmod.refresh.deniedtip=(OP tuner: admins, or show an issued badge with uses left)
+msg.jiezhirbmkmod.refresh.usedup=Badge uses exhausted, permission lost (ask an admin to reissue)
+
+# ---- Refresh Rate Tuner, basic edition (v17.5) ----
+item.rbmk_refresh_tuner_basic.name=Refresh Rate Tuner (Basic)
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.0=Sneak + right-click a display to cycle its refresh rate
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.1=Default -> Low -> Mid -> Mid-High (500 / 300 / 250 ms)
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.2=Default = this screen's factory rate; plus low 500 / mid 300 / mid-high 250
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.3=Open to every player, no OP needed; this edition has no High / Ultra
+tier.jiezhirbmkmod.refresh.midhigh=Mid-High
+
+# ---- Real screens (v17.4) ----
+tile.rbmk_screen_real.name=RBMK Monitor (Real)
+tile.rbmk_monitor_real.name=RBMK Core Monitor (Real)
+tile.rbmk_custom_real.name=RBMK Custom Screen (Real)
+tile.rbmk_graph_real.name=RBMK Graph Screen (Real)
+tile.rbmk_term_screen_real.name=RBMK Terminal Big Screen (Real)
+tile.rbmk_media_screen_real.name=Media Screen (Real)
+tile.rbmk_ppt_screen_real.name=PPT Presentation Screen (Real)
+tile.rbmk_terminal_real.name=RBMK Terminal (Real)
+screen.jiezhirbmkmod.terminal=Terminal
+tooltip.jiezhirbmkmod.real.header=[Real] needs external power to light up
+tooltip.jiezhirbmkmod.real.power.0=Requires redstone signal strength >= 10, and
+tooltip.jiezhirbmkmod.real.power.1=a Forge Energy (FE) feed at the same time
+tooltip.jiezhirbmkmod.real.click=One click: standby <-> on; two clicks within 1.5 s: straight to on or off
+tooltip.jiezhirbmkmod.real.sneak=Sneak + right-click: open settings (only while powered)
+msg.jiezhirbmkmod.real.off=off
+msg.jiezhirbmkmod.real.standby=standby
+msg.jiezhirbmkmod.real.on=on
+msg.jiezhirbmkmod.real.power=power:
+msg.jiezhirbmkmod.real.nopower=ignored: no mains
+msg.jiezhirbmkmod.real.placed=Real display mounted (4x3). It is off: wire redstone (strength >= 10) and a Forge Energy feed, then click once for standby and once more within 1.5 s for on.
+msg.jiezhirbmkmod.remote.no_screen=No display found: right-click the front of the panel (the 4x3 area)
+msg.jiezhirbmkmod.remote.no_tile=Screen data is not ready: the block was refreshed, right-click it again
+msg.jiezhirbmkmod.remote.no_target=Nothing recorded yet: right-click an RBMK console or column first
+msg.jiezhirbmkmod.remote.dim_mismatch=The recorded source is in another dimension
+msg.jiezhirbmkmod.remote.chunk_unloaded=The source chunk is not loaded, cannot bind
+msg.jiezhirbmkmod.remote.bind_ok=Bound: connected to console %s
+msg.jiezhirbmkmod.remote.bind_part=Bound: connected to column %s (no console nearby)
+msg.jiezhirbmkmod.remote.bind_offline=Bound to %s but no data: the console is not formed, not running, or its chunk is unloaded
+msg.jiezhirbmkmod.remote.bind_cleared=Data source cleared
+msg.jiezhirbmkmod.remote.bind_fail=Bind failed: screen data error, see the log
+msg.jiezhirbmkmod.remote.bind_real_off=Note: this is a REAL display and it is switched off. It needs redstone >= 10 plus Forge Energy; click / double-click to switch it on
+msg.jiezhirbmkmod.remote.recorded_console=Console recorded at %s, now right-click a display to bind (right-click empty-handed to open the console GUI)
+msg.jiezhirbmkmod.remote.recorded_part=RBMK column recorded at %s, the console is located automatically on bind
+msg.jiezhirbmkmod.remote.not_source=This is not an RBMK data source: right-click a console, fuel rod, control rod or boiler column
+
+# ---- v17.6 manual vol.2 / config card / probe / siren horn ----
+item.rbmk_manual_vol2.name=RBMK Emergency Procedures (Vol. II)
+tooltip.jiezhirbmkmod.rbmk_manual_vol2=§8Read-only document · companion to Vol. I · emergency SOP
+item.rbmk_config_card.name=Screen Config Card
+tooltip.jiezhirbmkmod.rbmk_config_card.0=Tune one screen, then nine right-clicks fill the wall.
+tooltip.jiezhirbmkmod.rbmk_config_card.1=Sneak+right-click a screen: read config (alerts/siren/redstone/refresh/bind)
+tooltip.jiezhirbmkmod.rbmk_config_card.2=Right-click a screen: write config · Sneak+right-click air: clear
+tooltip.jiezhirbmkmod.rbmk_config_card.3=§aConfig stored — right-click the next screen to write
+tooltip.jiezhirbmkmod.rbmk_config_card.4=§8Empty card: sneak+right-click a screen first
+item.rbmk_probe.name=RBMK Probe
+tooltip.jiezhirbmkmod.rbmk_probe.0=Right-click an RBMK console or column: prints readings to chat
+tooltip.jiezhirbmkmod.rbmk_probe.1=§8Reflection-based, same data link as the displays
+tooltip.jiezhirbmkmod.rbmk_probe.2=§8Read-only, changes nothing
+item.rbmk_siren_horn.name=Alarm Horn
+tooltip.jiezhirbmkmod.rbmk_siren_horn.0=Sneak+right-click a screen: bind it
+tooltip.jiezhirbmkmod.rbmk_siren_horn.1=Right-click air: toggle mute · Sneak+right-click air: unbind
+tooltip.jiezhirbmkmod.rbmk_siren_horn.2=Blares when the bound screen alarms (L1 beeps / L2 wail)
+tooltip.jiezhirbmkmod.rbmk_siren_horn.3=§aBound to (x: %s  y: %s  z: %s)
+tooltip.jiezhirbmkmod.rbmk_siren_horn.4=§8Unbound: sneak-right-click a screen
+tooltip.jiezhirbmkmod.rbmk_siren_horn.5=§eMuted
+msg.jiezhirbmkmod.cfg.read=config stored into the card
+msg.jiezhirbmkmod.cfg.write=config written
+msg.jiezhirbmkmod.cfg.empty=The card is empty: sneak+right-click a screen to read first
+msg.jiezhirbmkmod.cfg.notscreen=This block is not an RBMK display screen
+msg.jiezhirbmkmod.cfg.cleared=Card cleared
+msg.jiezhirbmkmod.probe.header=RBMK probe @ %s,%s,%s (%s)
+msg.jiezhirbmkmod.probe.src_console=console
+msg.jiezhirbmkmod.probe.src_part=console near column
+msg.jiezhirbmkmod.probe.heat=Avg column %sC (limit %sC) · Peak %sC
+msg.jiezhirbmkmod.probe.rate=Rate %sC/s ·
+msg.jiezhirbmkmod.probe.fluxsteam=Flux %s · Steam %s
+msg.jiezhirbmkmod.probe.riskline=Melt risk:
+msg.jiezhirbmkmod.probe.risk=%s%%
+msg.jiezhirbmkmod.probe.meltdown=[MELTDOWN] Core is melting down — evacuate per Vol. II ch.5
+msg.jiezhirbmkmod.probe.noread=Read failed: data source did not respond
+msg.jiezhirbmkmod.horn.bound=Horn bound: it blares wherever you stand when this screen alarms
+msg.jiezhirbmkmod.horn.cleared=Horn unbound
+msg.jiezhirbmkmod.horn.notbound=Horn is not bound to any display
+msg.jiezhirbmkmod.horn.notscreen=This block is not an RBMK display screen
+msg.jiezhirbmkmod.horn.mute_on=Horn muted
+msg.jiezhirbmkmod.horn.mute_off=Horn unmuted
+
+# ---- v17.6 operator badge ----
+item.rbmk_op_card.name=Operator Badge
+tooltip.jiezhirbmkmod.rbmk_op_card.0=Mod-admin credential: hold an issued badge to use the full tuner and hacker gameplay
+tooltip.jiezhirbmkmod.rbmk_op_card.1=§8Sneak+right-click: revoke · double-right-click: hack-mode request · must be held
+tooltip.jiezhirbmkmod.rbmk_op_card.2=§aIssued · signed by %s
+tooltip.jiezhirbmkmod.rbmk_op_card.3=§8Blank badge: issue it through the badge issuer
+msg.jiezhirbmkmod.opcard.issued=Badge issued to %s: holding it grants mod-admin features
+msg.jiezhirbmkmod.opcard.revoked=Badge revoked and reset to blank
+msg.jiezhirbmkmod.opcard.denied=Issuing / revoking badges requires operator permission (level 2)
+
+# ---- v17.6 issuer ----
+tile.jiezhirbmkmod.rbmk_issuer.name=Operator Badge Issuer
+item.rbmk_issuer.name=Operator Badge Issuer
+container.jiezhirbmkmod.rbmk_issuer=Operator Badge Issuer
+gui.jiezhirbmkmod.issuer.title=RBMK Badge Issuer
+gui.jiezhirbmkmod.issuer.cfg=Issuance config
+gui.jiezhirbmkmod.issuer.unlimited=Unlimited
+gui.jiezhirbmkmod.issuer.uses=%s uses per card
+gui.jiezhirbmkmod.issuer.tiers=Allowed tiers:
+gui.jiezhirbmkmod.issuer.players=Online players
+gui.jiezhirbmkmod.issuer.multi=Multi
+gui.jiezhirbmkmod.issuer.single=Single
+gui.jiezhirbmkmod.issuer.authorize=Authorize · consumes blank cards
+gui.jiezhirbmkmod.issuer.selected=Selected: %s
+gui.jiezhirbmkmod.issuer.nobody=(nobody online)
+gui.jiezhirbmkmod.issuer.cards=Blank cards: %s
+tooltip.jiezhirbmkmod.rbmk_issuer.0=Admin badge counter: load blank cards, set uses & tiers, issue to online players
+tooltip.jiezhirbmkmod.rbmk_issuer.1=§8Opening requires admin (level 2 / single-player host)
+tooltip.jiezhirbmkmod.rbmk_op_card.4=§8Uses left: %s
+tooltip.jiezhirbmkmod.rbmk_op_card.5=§8Allowed tiers: %s
+tooltip.jiezhirbmkmod.rbmk_op_card.6=Exhausted
+tooltip.jiezhirbmkmod.rbmk_op_card.7=all tiers
+msg.jiezhirbmkmod.issuer.denied=The issuer is admin-only (permission level 2 / single-player host)
+msg.jiezhirbmkmod.issuer.done=Issued: %s card(s)
+msg.jiezhirbmkmod.issuer.summary=(no blank card %s · offline %s)
+msg.jiezhirbmkmod.issuer.offline=offline, skipped
+msg.jiezhirbmkmod.issuer.nocard=issuer out of blank cards, skipped
+msg.jiezhirbmkmod.issuer.received=%s issued you an Operator Badge (from %s,%s,%s): hold it to gain mod-admin features
+msg.jiezhirbmkmod.issuer.noselect=Select players from the list first
+gui.jiezhirbmkmod.issuer.waiting=Submitted, waiting for the server…
+gui.jiezhirbmkmod.issuer.timeout=No response from server (validation failed or network issue; retry allowed)
+gui.jiezhirbmkmod.issuer.result=Issued: %s card(s) (no blank card %s · offline %s)
+gui.jiezhirbmkmod.issuer.result_none=Issued nothing: no blank card was consumed
+gui.jiezhirbmkmod.issuer.result_card=Given to %s · hover the card to inspect it
+
+# ---- v17.6 hack gameplay approval ----
+gui.jiezhirbmkmod.hackapp.title=Hack Mode Request
+gui.jiezhirbmkmod.hackapp.state_sync=Current state: reading…
+gui.jiezhirbmkmod.hackapp.state_on=Current state: ON
+gui.jiezhirbmkmod.hackapp.state_off=Current state: OFF (default)
+gui.jiezhirbmkmod.hackapp.hint1=Enabling needs every op/admin to agree (single veto)
+gui.jiezhirbmkmod.hackapp.hint2=Disabling needs one op/admin to agree
+gui.jiezhirbmkmod.hackapp.hint_locked=ON. A disable request must be started by an op/admin
+gui.jiezhirbmkmod.hackapp.send=Send request
+gui.jiezhirbmkmod.hackapp.cancel=Do not send
+gui.jiezhirbmkmod.hackapp.send_open=Send enable request
+gui.jiezhirbmkmod.hackapp.send_close=Send disable request
+gui.jiezhirbmkmod.hackapp.review_title=Hack Mode Review
+gui.jiezhirbmkmod.hackapp.review_body_open=Player %s requests to ENABLE hack mode
+gui.jiezhirbmkmod.hackapp.review_body_close=Player %s requests to DISABLE hack mode
+gui.jiezhirbmkmod.hackapp.rule_open=Enabling requires every op/admin to agree (single veto)
+gui.jiezhirbmkmod.hackapp.rule_close=Disabling needs one op/admin to agree
+gui.jiezhirbmkmod.hackapp.agree=Agree
+gui.jiezhirbmkmod.hackapp.deny=Disagree
+gui.jiezhirbmkmod.hackapp.result_ok=Your %s hack mode request has been APPROVED
+gui.jiezhirbmkmod.hackapp.result_deny=Your %s hack mode request has been DENIED
+gui.jiezhirbmkmod.hackapp.result_note=The switch is live, announced, and persists across restarts
+gui.jiezhirbmkmod.hackapp.word_open=enable
+gui.jiezhirbmkmod.hackapp.word_close=disable
+gui.jiezhirbmkmod.hackapp.ok=OK
+msg.jiezhirbmkmod.hackapp.pending=A request is already under review; try later
+msg.jiezhirbmkmod.hackapp.already_on=Hack mode is already ON; no request needed
+msg.jiezhirbmkmod.hackapp.already_off=Hack mode is already OFF
+msg.jiezhirbmkmod.hackapp.close_denied=A disable request must be started by an op/admin
+msg.jiezhirbmkmod.hackapp.no_reviewer=No op/admin online; the request cannot be accepted
+msg.jiezhirbmkmod.hackapp.submitted=Request submitted to %s op(s)/admin(s)
+msg.jiezhirbmkmod.hackapp.submitted_open=, all must agree (single veto)
+msg.jiezhirbmkmod.hackapp.submitted_close=, one agreement is enough
+msg.jiezhirbmkmod.hackapp.stale=This request was already handled or has expired
+msg.jiezhirbmkmod.hackapp.applicant_offline=Applicant %s left; request cancelled
+msg.jiezhirbmkmod.hackapp.reviewers_offline=all ops/admins offline
+msg.jiezhirbmkmod.hackapp.timeout=timed out (no complete vote within 60 s)
+msg.jiezhirbmkmod.hackapp.veto=vetoed by %s
+msg.jiezhirbmkmod.hackapp.closed_by=agreed by %s
+msg.jiezhirbmkmod.hackapp.unanimous=unanimous consent of all ops/admins
+msg.jiezhirbmkmod.hackapp.announce_on=Hack mode ENABLED (by %s, %s)
+msg.jiezhirbmkmod.hackapp.announce_off=Hack mode DISABLED (by %s, %s)
+tile.jiezhirbmkmod.rbmk_patrol.name=Screen Patrol Hub
+gui.jiezhirbmkmod.patrol.title=RBMK Patrol Hub
+gui.jiezhirbmkmod.patrol.hint=Sneak+click to scan screens within %s blocks; click a row
+gui.jiezhirbmkmod.patrol.auto_on=Auto rotate: ON (alerts jump first)
+gui.jiezhirbmkmod.patrol.auto_off=Auto rotate: OFF
+gui.jiezhirbmkmod.patrol.offline_slot=# (screen removed or unloaded)
+gui.jiezhirbmkmod.patrol.empty=No screens bound yet: sneak+click this hub to scan
+gui.jiezhirbmkmod.patrol.normal=OK
+gui.jiezhirbmkmod.patrol.warn=WARN
+gui.jiezhirbmkmod.patrol.crit=CRIT
+gui.jiezhirbmkmod.patrol.pwr_off=POWER OFF
+gui.jiezhirbmkmod.patrol.unlinked=No data source
+gui.jiezhirbmkmod.patrol.meltdown=MELTDOWN!
+gui.jiezhirbmkmod.patrol.running=Running
+gui.jiezhirbmkmod.patrol.hist=Heat · window ~%s s
+msg.jiezhirbmkmod.patrol.bound=Scan done: %s newly bound (%s total)
+msg.jiezhirbmkmod.patrol.bound_none=Scan done: nothing new (%s total)
+# ===== v17.8 recipe template card / manual vol.3 / issuer griefing protection =====
+item.rbmk_recipe_card.name=Screen Recipe Card
+tooltip.jiezhirbmkmod.rbmk_recipe_card.0=§7Snapshot a whole screen recipe: watch slots, media, alerts, binds
+tooltip.jiezhirbmkmod.rbmk_recipe_card.1=§8Sneak+right-click a screen: snapshot the full recipe
+tooltip.jiezhirbmkmod.rbmk_recipe_card.2=§8Right-click a screen: paste recipe · Sneak+right-click air: clear
+tooltip.jiezhirbmkmod.rbmk_recipe_card.3=§aRecipe stored (%s) — right-click a matching screen to paste
+tooltip.jiezhirbmkmod.rbmk_recipe_card.4=§8Empty card: sneak+right-click a screen first
+item.rbmk_manual_vol3.name=RBMK Administrator Handbook (Vol. III)
+tooltip.jiezhirbmkmod.rbmk_manual_vol3=§8Read-only document · companion to Vol. I & II · people & permissions · 15 pages · with recipe appendix
+msg.jiezhirbmkmod.recipe.read=Full recipe snapshotted (%s keys) — right-click a matching screen to paste
+msg.jiezhirbmkmod.recipe.write=Recipe pasted (%s keys), audit logged
+msg.jiezhirbmkmod.recipe.empty=Card is empty: sneak+right-click a screen first
+msg.jiezhirbmkmod.recipe.cleared=Recipe card cleared
+msg.jiezhirbmkmod.recipe.notscreen=Recipe card only works on monitor screens
+msg.jiezhirbmkmod.issuer.no_break=Issuer cannot be broken: only the owner or an admin may remove it
+# ===== v17.7 badge revocation / tuner revoked notice =====
+msg.jiezhirbmkmod.revoke.done=All badges issued to %s are revoked (revocation epoch %s); old cards die at once, reissue at the counter
+msg.jiezhirbmkmod.revoke.all=All issued badges server-wide are revoked (global revocation epoch %s); reissue at the counter
+msg.jiezhirbmkmod.revoke.notify=Your operator badge has been revoked by an admin; the rights it carried are gone
+msg.jiezhirbmkmod.refresh.revoked=Tuning failed: your badge has been revoked by an admin - ask for a reissue
+
+# ===== v17.9 patrol map view / trace / compat probe =====
+gui.jiezhirbmkmod.patrol.map_on=Map view: ON
+gui.jiezhirbmkmod.patrol.map_off=Map view: OFF
+gui.jiezhirbmkmod.patrol.map_cell_empty=(free slot)
+msg.jiezhirbmkmod.trace.header=Trace scan: radius %s blocks, dim %s
+msg.jiezhirbmkmod.trace.none=No intrusion traces within %s blocks.
+msg.jiezhirbmkmod.trace.line_living=  - (%s,%s,%s) [HACKED LIVE] intruder %s, %s ago
+msg.jiezhirbmkmod.trace.line_fixed=  - (%s,%s,%s) [repaired] intruder %s, hacked %s ago
+msg.jiezhirbmkmod.trace.player_header=Traces by %s (loaded chunks, dim %s):
+msg.jiezhirbmkmod.trace.player_none=No traces left by %s in loaded chunks of this dim.
+msg.jiezhirbmkmod.trace.count=%s trace(s) found. Evidence survives repair; check rbmk_audit.log for the full chain.
+msg.jiezhirbmkmod.compat.header=RBMK Monitor compat probe — v%s (network protocol %s)
+msg.jiezhirbmkmod.compat.env=Side: %s | MC %s | Forge %s | Java %s
+msg.jiezhirbmkmod.compat.packets=Network packets: %s registered (ids 0..%s, one table; mismatched builds are refused by FML)
+msg.jiezhirbmkmod.compat.security=Hack master switch: %s | normal-player hack: %s | global revoke epoch: %s
+msg.jiezhirbmkmod.compat.files=Data files in save dir: rbmk_audit.log (audit) / rbmk_revoke.dat (revocation registry)
+msg.jiezhirbmkmod.compat.client=Shader pack: %s | SSS pipeline: %s %s
+msg.jiezhirbmkmod.compat.optifine=OptiFine present: %s
+msg.jiezhirbmkmod.compat.mods=Potential related mods: %s (watch for overlapping screen/hud features)
+msg.jiezhirbmkmod.compat.mods_none=No potential related mods detected
+msg.jiezhirbmkmod.compat.remote_none=No remote handshake recorded yet this session
+msg.jiezhirbmkmod.compat.remote=Last handshake: %s
+msg.jiezhirbmkmod.compat.remote_hint=If connection is refused with a vague "mod rejections" line, align both sides to v%s (see latest console/audit entry)
+
+# ===== v17.9 aggregate hub / export command =====
+tile.jiezhirbmkmod.rbmk_aggregate.name=Reactor Aggregate Hub
+gui.jiezhirbmkmod.aggregate.title=RBMK Reactor Aggregate
+gui.jiezhirbmkmod.aggregate.hint=Sneak+click to bind screens within %s blocks; ranked by core heat
+gui.jiezhirbmkmod.aggregate.summary=Reactors %s | online %s | total flux %s F | hottest %s C
+gui.jiezhirbmkmod.aggregate.empty=No screens bound yet: sneak+right-click this hub to scan
+gui.jiezhirbmkmod.aggregate.members=%s screen(s) on this reactor
+gui.jiezhirbmkmod.aggregate.no_data=NO DATA
+msg.jiezhirbmkmod.aggregate.bound=Scan done: %s newly bound (%s total)
+msg.jiezhirbmkmod.aggregate.bound_none=Scan done: nothing new (%s total)
+
+# ===== v17.9 export settings panel (sneak double right-click) =====
+gui.jiezhirbmkmod.export.title=Export Settings - Graph History
+gui.jiezhirbmkmod.export.pos=Screen %s, %s, %s
+gui.jiezhirbmkmod.export.fmt_csv=Format: CSV (spreadsheet)
+gui.jiezhirbmkmod.export.fmt_png=Format: PNG (long chart)
+gui.jiezhirbmkmod.export.do=Export graph history
+gui.jiezhirbmkmod.export.close=Close
+gui.jiezhirbmkmod.export.samples=%s samples (window ~%s s)
+gui.jiezhirbmkmod.export.hint=Opened by sneak + double right-click on the screen
+msg.jiezhirbmkmod.export.saved=Your graph history has been saved to %s, please check it out
+msg.jiezhirbmkmod.export.file=File: %s (%s samples)
+msg.jiezhirbmkmod.export.no_data=This screen has no sampled data yet (a graph screen needs power and runtime).
+msg.jiezhirbmkmod.export.gone=This screen is no longer there, cannot export.
+msg.jiezhirbmkmod.export.fail=Export failed: %s
+
+gui.jiezhirbmkmod.alarm_light.trigger_always=Wireless: always lit
+gui.jiezhirbmkmod.alarm_light.lamp_always=Lamp: Always lit
+gui.jiezhirbmkmod.alarm_light.hint_always=Always lit: right-click or sneak-click both just open the panel
+
+gui.jiezhirbmkmod.alarm_light.trigger_off=Off: always dark
+gui.jiezhirbmkmod.alarm_light.lamp_always_off=Lamp: Always dark
+gui.jiezhirbmkmod.alarm_light.hint_off=Always dark: right-click or sneak-click both just open the panel
+gui.jiezhirbmkmod.alarm_light.cancel=Cancel
+gui.jiezhirbmkmod.alarm_light.export_btn=Export settings
+gui.jiezhirbmkmod.alarm_light.import_btn=Import settings
+gui.jiezhirbmkmod.alarm_light.export_dialog=Export alarm light settings
+gui.jiezhirbmkmod.alarm_light.import_dialog=Import alarm light settings
+msg.jiezhirbmkmod.alarm_light.exported=Alarm light settings exported to %s
+msg.jiezhirbmkmod.alarm_light.export_fail=Export failed: %s
+msg.jiezhirbmkmod.alarm_light.imported=Alarm light settings imported and applied: %s
+msg.jiezhirbmkmod.alarm_light.import_fail=Import failed (settings unchanged): %s
+msg.jiezhirbmkmod.alarm_light.cancelled=Settings restored to when the panel was opened
+# ===== v18.0 history persistence / export time window =====
+gui.jiezhirbmkmod.export.dur_all=Time window: all samples
+gui.jiezhirbmkmod.export.dur_s=Time window: last %s s
+rbmkexport.client_only=Only players can use this command
+rbmkexport.bad_seconds=Invalid time window: %s (want 1..3600 seconds)
+tile.rbmk_cycle_screen.name=RBMK Cycle Display
+tile.rbmk_cycle_screen_real.name=RBMK Cycle Display (Real)
+tooltip.jiezhirbmkmod.rbmk_cycle_screen.0=Cycles pages automatically: overview -> grid -> graph (3s)
+tooltip.jiezhirbmkmod.rbmk_cycle_screen.1=Right-click the panel GUI to change the cycle interval

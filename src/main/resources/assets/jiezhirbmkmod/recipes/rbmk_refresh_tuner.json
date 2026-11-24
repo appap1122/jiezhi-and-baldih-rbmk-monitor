@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_refresh_tuner",
+    "count": 1
+  },
+  "pattern": [
+    "iri",
+    "rgr",
+    "ici"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "g": {
+      "item": "minecraft:glass_pane"
+    },
+    "c": {
+      "item": "minecraft:clock"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_custom",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:glass_pane",
+    "minecraft:glass_pane",
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:book",
+    "minecraft:paper",
+    "minecraft:paper"
+  ]
+}

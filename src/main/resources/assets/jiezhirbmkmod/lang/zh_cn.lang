@@ -1,0 +1,482 @@
+itemGroup.jiezhirbmkmod=jiezhirbmkmod物品
+itemGroup.jiezhirbmkmod_screen=RBMK显示器
+
+tile.rbmk_screen.name=RBMK 监控显示器
+tile.rbmk_monitor.name=RBMK 堆芯监视器
+tile.rbmk_custom.name=RBMK 自定义显示屏
+tile.rbmk_graph.name=RBMK 曲线显示器
+item.rbmk_remote.name=RBMK 遥控器
+item.rbmk_laptop.name=RBMK 便携终端
+tile.rbmk_siren.name=RBMK 警报器
+tile.rbmk_terminal.name=RBMK 终端显示屏
+tile.rbmk_term_screen.name=RBMK 终端大屏
+tile.rbmk_router.name=RBMK 网络路由器
+
+# ---- 显示屏 tooltip（v7.1 补齐：原先这三组键缺失，工具栏会显示原始 key）----
+tooltip.jiezhirbmkmod.rbmk_screen.0=%s 格吊装多方块（4x3），右键开关机
+tooltip.jiezhirbmkmod.rbmk_screen.1=堆芯总览：平均/最高柱温、通量、蒸汽、富集度、氙毒、控制棒
+tooltip.jiezhirbmkmod.rbmk_screen.2=熔毁时自动红屏重启，事故经过写进事件日志
+tooltip.jiezhirbmkmod.rbmk_screen.3=蹲下 + 空手右键：告警阈值与红石联动设置
+tooltip.jiezhirbmkmod.rbmk_screen.4=遥控器右键本屏完成绑定
+
+tooltip.jiezhirbmkmod.rbmk_monitor.0=%s 格吊装多方块（4x3），右键开关机
+tooltip.jiezhirbmkmod.rbmk_monitor.1=15x15 堆芯透视：燃料棒/控制棒/锅炉柱按温度着色
+tooltip.jiezhirbmkmod.rbmk_monitor.2=蹲下 + 空手右键：告警阈值与红石联动设置
+tooltip.jiezhirbmkmod.rbmk_monitor.3=超温柱自动描边，一眼找到最热的那一格
+tooltip.jiezhirbmkmod.rbmk_monitor.4=遥控器右键本屏完成绑定
+
+tooltip.jiezhirbmkmod.rbmk_custom.0=%s 格吊装多方块（4x3），右键打开设备管理
+tooltip.jiezhirbmkmod.rbmk_custom.1=把自己关注的读数排成一列
+tooltip.jiezhirbmkmod.rbmk_custom.2=遥控器蹲下右键储罐/电池等记录设备，再右键本屏接入
+tooltip.jiezhirbmkmod.rbmk_custom.3=最多挂 %s 条；红石模式选「自定义槽 1」可按第 1 条读数的占比出信号
+tooltip.jiezhirbmkmod.rbmk_custom.4=蹲下 + 空手右键：告警阈值与红石联动设置
+tooltip.jiezhirbmkmod.rbmk_custom.5=v7.1：全屏红闪 + 汽笛 + 12 格红石输出 + 独立阈值
+
+# ---- RBMK 曲线显示器 tooltip ----
+tooltip.jiezhirbmkmod.rbmk_graph.0=4x3 吊装多方块，右键开关机
+tooltip.jiezhirbmkmod.rbmk_graph.1=三张折线图，热工/燃料两组自动轮换：柱温/通量/水量 与 蒸汽/富集度/氙毒
+tooltip.jiezhirbmkmod.rbmk_graph.2=纵轴自动量程，窗口约 %s 秒
+tooltip.jiezhirbmkmod.rbmk_graph.3=断线代表数据中断，不是归零
+tooltip.jiezhirbmkmod.rbmk_graph.4=历史约 %s 秒，每 0.5 秒一个点
+
+# ---- 自定义显示屏（右键方块打开） ----
+gui.jiezhirbmkmod.custom.title=RBMK 自定义显示屏
+gui.jiezhirbmkmod.custom.power.on=开机
+gui.jiezhirbmkmod.custom.power.off=关机
+gui.jiezhirbmkmod.custom.state.on=当前：已开机
+gui.jiezhirbmkmod.custom.state.off=当前：已关机
+gui.jiezhirbmkmod.custom.delete=删除
+gui.jiezhirbmkmod.custom.clear=清空
+gui.jiezhirbmkmod.custom.close=关闭
+gui.jiezhirbmkmod.custom.empty=（空）
+gui.jiezhirbmkmod.custom.offline=离线
+gui.jiezhirbmkmod.custom.hint=放入 RBMK 遥控器，点「添加」接入它记录的全部设备（最多 8 条）
+gui.jiezhirbmkmod.custom.add=添加
+gui.jiezhirbmkmod.custom.add.hint=把遥控器放进槽位
+gui.jiezhirbmkmod.custom.remote=遥控器
+gui.jiezhirbmkmod.custom.remote.empty=空
+gui.jiezhirbmkmod.custom.remote.count=%s/%s 台
+
+# ---- RBMK 遥控器 tooltip ----
+tooltip.jiezhirbmkmod.rbmk_remote.0=未记录 RBMK 数据源
+tooltip.jiezhirbmkmod.rbmk_remote.1=右键控制台或任意 RBMK 部件记录
+tooltip.jiezhirbmkmod.rbmk_remote.2=数据源（%s）@ %s
+tooltip.jiezhirbmkmod.rbmk_remote.3=已记录设备 %s/%s 台
+tooltip.jiezhirbmkmod.rbmk_remote.4=蹲下右键储罐/电池等记录设备
+tooltip.jiezhirbmkmod.rbmk_remote.5=再右键显示器完成绑定
+tooltip.jiezhirbmkmod.rbmk_remote.6=蹲下右键本屏接入设备
+tooltip.jiezhirbmkmod.rbmk_remote.7=蹲下右键空气清空全部记录
+
+# ---- RBMK 便携终端（v11.2：手持电脑）----
+tooltip.jiezhirbmkmod.rbmk_laptop.0=尚未连接反应堆
+tooltip.jiezhirbmkmod.rbmk_laptop.1=已连接 RBMK 控制台 @ %s %s %s
+tooltip.jiezhirbmkmod.rbmk_laptop.2=手持它右键控制台或堆芯部件即可连接
+tooltip.jiezhirbmkmod.rbmk_laptop.3=对空气右键打开命令提示符
+tooltip.jiezhirbmkmod.rbmk_laptop.4=蹲下右键空气清除连接
+
+# ---- 原版搬入：线圈 / 喷气背包 / 喷气开关 ----
+item.speed_coil.name=加速线圈
+item.gravity_coil.name=重力线圈
+item.healing_coil.name=治愈线圈
+item.jetpack.name=喷气背包
+item.jet_switch.name=喷气开关
+tooltip.jiezhirbmkmod.coil_speed.0=加速线圈
+tooltip.jiezhirbmkmod.coil_speed.1=主手或副手持有：移动速度 ×%s
+tooltip.jiezhirbmkmod.coil_speed.2=直接改属性，不是药水效果（可与药水叠加）
+tooltip.jiezhirbmkmod.coil_gravity.0=重力线圈
+tooltip.jiezhirbmkmod.coil_gravity.1=主手或副手持有：跳跃约 %s 格高
+tooltip.jiezhirbmkmod.coil_gravity.2=直接改物理，不是药水效果（可与药水叠加）
+tooltip.jiezhirbmkmod.coil_healing.0=治愈线圈
+tooltip.jiezhirbmkmod.coil_healing.1=主手或副手持有：每秒回复 %s 点生命
+tooltip.jiezhirbmkmod.coil_healing.2=直接回血，不是药水效果（可与药水叠加）
+tooltip.jiezhirbmkmod.jetpack.0=喷气背包
+tooltip.jiezhirbmkmod.jetpack.1=穿在胸甲槽，手持「喷气开关」按住右键起飞
+tooltip.jiezhirbmkmod.jetpack.2=满燃料可持续飞行 %s 秒
+tooltip.jiezhirbmkmod.jetpack.3=松开右键降温；热量打满会过热锁定，必须冷却后才能再飞
+tooltip.jiezhirbmkmod.jetpack.4=使用原版物理，可与药水效果叠加
+tooltip.jiezhirbmkmod.jet_switch.0=喷气开关
+tooltip.jiezhirbmkmod.jet_switch.1=需要胸甲槽里穿着「喷气背包」
+tooltip.jiezhirbmkmod.jet_switch.2=按住右键起飞 / 松开即停
+tooltip.jiezhirbmkmod.jet_switch.3=飞行时在准星下方显示热量条
+
+# ---- RBMK 警报器（v7.2：独立方块，通红石就响）----
+tooltip.jiezhirbmkmod.rbmk_siren.0=一格方块，不占多方块结构；任意一面来红石信号就响
+tooltip.jiezhirbmkmod.rbmk_siren.1=手里拿染料右键可直接换色（16 色）
+tooltip.jiezhirbmkmod.rbmk_siren.2=右键打开调音界面：音色 / 音量 / 音调 / 停顿 / 模式 / 声道 / 闪灯
+tooltip.jiezhirbmkmod.rbmk_siren.3=内置 %s 种警报音色，最长约 6 秒一响
+tooltip.jiezhirbmkmod.rbmk_siren.4=「循环」档会在样本播完前重新拉响，做出周而复始的警报
+tooltip.jiezhirbmkmod.rbmk_siren.5=当前颜色：%s
+
+# ---- RBMK 终端显示屏（v11.0：落地单方块，右键打开命令提示符）----
+tooltip.jiezhirbmkmod.rbmk_terminal.0=落地放置的终端方块，右键打开命令提示符，用键盘输入命令
+tooltip.jiezhirbmkmod.rbmk_terminal.1=连接反应堆：遥控器右键控制台记录，再右键本方块；或站到控制台旁输入 bind
+tooltip.jiezhirbmkmod.rbmk_terminal.2=命令：help / status / rods / rods <0-100> [颜色] / scram（紧急停堆）/ where / siren <on|off|test> / history
+tooltip.jiezhirbmkmod.rbmk_terminal.3=Tab 键自动补全命令，像原版指令一样
+tooltip.jiezhirbmkmod.rbmk_terminal.4=输入 clear 解绑本终端，输入 cls 清屏
+
+# ---- RBMK 终端大屏（v11.0：4x3 吊装多方块，与其他显示屏同一体系）----
+tooltip.jiezhirbmkmod.rbmk_term_screen.0=%s 格吊装多方块（4x3），与其他显示屏同款结构
+tooltip.jiezhirbmkmod.rbmk_term_screen.1=右键（蹲不蹲下都一样）打开命令提示符，输出直接显示在大屏上
+tooltip.jiezhirbmkmod.rbmk_term_screen.2=遥控器右键控制台记录，再右键本屏绑定（与其他显示屏一样）
+tooltip.jiezhirbmkmod.rbmk_term_screen.3=命令：help / status / rods / rods <0-100> / scram / where / siren <on|off|test> / history，Tab 补全
+tooltip.jiezhirbmkmod.rbmk_term_screen.4=输入 cls 清空大屏，输入 exit 关闭界面
+
+# ---- 旋转报警灯 (v16.0) ----
+tile.rbmk_alarm_light.name=旋转报警灯
+tile.rbmk_media_screen.name=多媒体显示屏
+tooltip.jiezhirbmkmod.rbmk_alarm_light.0=右键开关灯；潜行右键打开控制面板（颜色 / 转速 / 告警联动 / 光锥实现 / 触发方式）
+tooltip.jiezhirbmkmod.rbmk_alarm_light.1=贴着哪一面放，灯口就朝哪一面（地板 / 天花板 / 墙都行）
+tooltip.jiezhirbmkmod.rbmk_alarm_light.2=手持染料右键直接刷成那个颜色，不用开界面；已联动时会拒绝并说明原因
+tooltip.jiezhirbmkmod.rbmk_alarm_light.3=面板里可随时切换光锥实现：几何锥体（逐条射线遮挡）⇄ 屏幕空间聚光灯（按真实深度）
+tooltip.jiezhirbmkmod.rbmk_alarm_light.4=手持遥控器潜行右键，或用面板上的「联动」：把 16 格内最近的显示屏当作数据源，颜色与转速随告警等级变化（再点一次解除）
+tooltip.jiezhirbmkmod.rbmk_alarm_light.5=面板上的「触发」决定谁来开关它：右键 / 潜行右键 / 红石 / 任意。没被选中的那个手势改为打开面板
+msg.jiezhirbmkmod.alarm_light.color=警示灯颜色已设为 %s（%s）
+msg.jiezhirbmkmod.alarm_light.auto=这盏灯已开启自动染色，颜色由告警等级决定，关闭后恢复你手动染的颜色。手持遥控器潜行右键或用面板上的「自动染色」可关闭
+msg.jiezhirbmkmod.alarm_light.bind=已开启自动染色（数据源 %s），颜色与转速将随告警等级变化；关闭后恢复手动染色
+msg.jiezhirbmkmod.alarm_light.unbind=已关闭自动染色，恢复你手动染的颜色与转速
+msg.jiezhirbmkmod.alarm_light.no_screen_near=16 格内没有显示屏，先把屏幕放到灯附近再试
+msg.jiezhirbmkmod.alarm_light.redstone_only=这盏灯设成了「红石触发」，右键不会开关它（面板里可以改）
+gui.jiezhirbmkmod.alarm_light.title=报警灯控制面板
+gui.jiezhirbmkmod.alarm_light.apply=应用
+gui.jiezhirbmkmod.alarm_light.rpm=转速
+gui.jiezhirbmkmod.alarm_light.link_on=自动染色：开
+gui.jiezhirbmkmod.alarm_light.link_off=自动染色：关
+gui.jiezhirbmkmod.alarm_light.spot_auto=自动
+gui.jiezhirbmkmod.alarm_light.spot_auto_sss=自动·FBO
+gui.jiezhirbmkmod.alarm_light.spot_auto_geo=自动·几何
+gui.jiezhirbmkmod.alarm_light.spot_auto_tex=自动·贴图
+gui.jiezhirbmkmod.alarm_light.spot_geo=几何
+gui.jiezhirbmkmod.alarm_light.spot_sss=FBO
+gui.jiezhirbmkmod.alarm_light.spot_tex=贴图
+gui.jiezhirbmkmod.alarm_light.lamp_on=灯 亮
+gui.jiezhirbmkmod.alarm_light.lamp_off=灯 灭
+gui.jiezhirbmkmod.alarm_light.lamp_redstone=灯 红石控制
+gui.jiezhirbmkmod.alarm_light.trigger_click=不接受红石（右键开关）
+gui.jiezhirbmkmod.alarm_light.trigger_sneak=不接受红石（潜行开关）
+gui.jiezhirbmkmod.alarm_light.trigger_redstone=接受红石（通电即亮）
+gui.jiezhirbmkmod.alarm_light.trigger_any=接受红石+手动（任一即亮）
+gui.jiezhirbmkmod.alarm_light.linked_to=自动染色中 · 数据源 %d, %d, %d
+gui.jiezhirbmkmod.alarm_light.linked=自动染色中（数据源未加载）
+gui.jiezhirbmkmod.alarm_light.manual=手动染色（未开自动染色）
+gui.jiezhirbmkmod.alarm_light.locked=自动染色中：颜色 / 转速 / 开关 / 触发由告警等级决定，关闭后恢复手动染色
+gui.jiezhirbmkmod.alarm_light.sss_off=本局 SSS 不可用，只能用几何光锥
+gui.jiezhirbmkmod.alarm_light.hint_redstone=红石电平决定：通电就亮，断电就灭
+gui.jiezhirbmkmod.alarm_light.hint_sneak=潜行右键开关灯，普通右键开这个面板
+
+tile.rbmk_ppt_screen.name=PPT 汇报显示屏
+item.rbmk_ppt_remote.name=PPT 遥控器
+item.rbmk_manual.name=RBMK 核电站操作手册
+tooltip.jiezhirbmkmod.rbmk_manual=§8只读文档 · 页面不可编辑 · 18 页 · 含合成配方附录
+key.categories.jiezhirbmkmod=RBMK PPT
+key.rbmk_ppt.next=下一页
+key.rbmk_ppt.prev=上一页
+key.rbmk_ppt.goto=跳转
+# ---- 刷新率调节器 (v17.4) ----
+item.rbmk_refresh_tuner.name=刷新率调节器
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.0=潜行 + 右键对准显示屏：循环切换刷新率
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.1=默认 → 低 → 中 → 高 → 超高（500 / 300 / 100 / 50 ms）
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.2=默认＝这块屏出厂值；每块屏独立保存
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner.3=仅限 OP 或手持已签发且次数未用尽的工牌；每次调节扣 1 次
+screen.jiezhirbmkmod.monitor=显示屏
+screen.jiezhirbmkmod.term=终端屏
+screen.jiezhirbmkmod.custom=自定义屏
+screen.jiezhirbmkmod.media=多媒体屏
+screen.jiezhirbmkmod.ppt=PPT 屏
+tier.jiezhirbmkmod.refresh.default=默认
+tier.jiezhirbmkmod.refresh.low=低
+tier.jiezhirbmkmod.refresh.mid=中
+tier.jiezhirbmkmod.refresh.high=高
+tier.jiezhirbmkmod.refresh.ultra=超高
+msg.jiezhirbmkmod.refresh.action=调节成
+msg.jiezhirbmkmod.refresh.same=（与上一档数值相同）
+msg.jiezhirbmkmod.refresh.denied=调节失败：需要管理员权限
+msg.jiezhirbmkmod.refresh.deniedtip=（这件是 OP 版：管理员可用，或手持已签发且次数未用尽的工牌）
+msg.jiezhirbmkmod.refresh.usedup=工牌使用次数已用尽，权限失效（找管理员重签）
+
+# ---- 刷新率调节器 · 普通版 (v17.5) ----
+item.rbmk_refresh_tuner_basic.name=刷新率调节器 · 普通版
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.0=潜行 + 右键对准显示屏：循环切换刷新率
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.1=默认 → 低 → 中 → 中高（500 / 300 / 250 ms）
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.2=默认＝这块屏出厂值；另有 低 500 / 中 300 / 中高 250 三档
+tooltip.jiezhirbmkmod.rbmk_refresh_tuner_basic.3=任何玩家都能用，不需要 OP；本版没有 高 / 超高
+tier.jiezhirbmkmod.refresh.midhigh=中高
+
+# ---- 真实版显示屏 (v17.4) ----
+tile.rbmk_screen_real.name=RBMK 监控显示器（真实）
+tile.rbmk_monitor_real.name=RBMK 堆芯监视器（真实）
+tile.rbmk_custom_real.name=RBMK 自定义显示屏（真实）
+tile.rbmk_graph_real.name=RBMK 曲线显示器（真实）
+tile.rbmk_term_screen_real.name=RBMK 终端大屏（真实）
+tile.rbmk_media_screen_real.name=多媒体显示屏（真实）
+tile.rbmk_ppt_screen_real.name=PPT 汇报显示屏（真实）
+tile.rbmk_terminal_real.name=RBMK 终端显示屏（真实）
+screen.jiezhirbmkmod.terminal=终端
+tooltip.jiezhirbmkmod.real.header=【真实】必须外部供电才会亮
+tooltip.jiezhirbmkmod.real.power.0=需要红石信号强度 ≥ 10，并且
+tooltip.jiezhirbmkmod.real.power.1=同时接入 Forge Energy（FE）供电
+tooltip.jiezhirbmkmod.real.click=单击：待机 ↔ 开机；1.5 秒内点两下：直接开机或关机
+tooltip.jiezhirbmkmod.real.sneak=潜行右键：打开设置（断电时打不开）
+msg.jiezhirbmkmod.real.off=关机
+msg.jiezhirbmkmod.real.standby=待机
+msg.jiezhirbmkmod.real.on=开机
+msg.jiezhirbmkmod.real.power=电源：
+msg.jiezhirbmkmod.real.nopower=不响应：供电不足
+msg.jiezhirbmkmod.real.placed=真实版显示屏已安装（4×3）。目前是关机状态：接上红石信号（强度 ≥ 10）和 FE 供电后，单击进入待机，1.5 秒内再点一次开机。
+msg.jiezhirbmkmod.remote.no_screen=未找到显示屏：请右键显示屏正面（4×3 的屏幕区域）
+msg.jiezhirbmkmod.remote.no_tile=屏幕数据未就绪：已强制刷新该方块，请再右键一次
+msg.jiezhirbmkmod.remote.no_target=遥控器还没有记录数据源：先右键 RBMK 控制台或 RBMK 柱子
+msg.jiezhirbmkmod.remote.dim_mismatch=记录的数据源不在当前维度，无法绑定
+msg.jiezhirbmkmod.remote.chunk_unloaded=数据源所在区块未加载，无法绑定
+msg.jiezhirbmkmod.remote.bind_ok=绑定成功：已连接控制台 %s
+msg.jiezhirbmkmod.remote.bind_part=绑定成功：已连接柱子 %s（附近没找到控制台）
+msg.jiezhirbmkmod.remote.bind_offline=已绑定 %s，但读不到数据：控制台未成形、未启动或区块未加载
+msg.jiezhirbmkmod.remote.bind_cleared=已解除数据源绑定
+msg.jiezhirbmkmod.remote.bind_fail=绑定失败：屏幕数据异常，请查看日志
+msg.jiezhirbmkmod.remote.bind_real_off=注意：这是真实版显示屏，目前处于关机状态。需红石信号 ≥ 10 且 FE 有电，单击/双击开关机
+msg.jiezhirbmkmod.remote.recorded_console=已记录控制台 %s，现在右键显示屏完成绑定（空手右键可打开控制台界面）
+msg.jiezhirbmkmod.remote.recorded_part=已记录 RBMK 柱子 %s，绑定显示屏时会自动寻找附近控制台
+msg.jiezhirbmkmod.remote.not_source=这不是 RBMK 数据源：请右键操作台、燃料棒、控制棒或锅炉柱
+
+# ---- v17.6 卷二手册 / 配置拷贝卡 / 手持检测仪 / 告警扩音器 ----
+item.rbmk_manual_vol2.name=RBMK 应急规程（卷二）
+tooltip.jiezhirbmkmod.rbmk_manual_vol2=§8只读文档 · 与卷一配套 · 应急规程专卷
+item.rbmk_config_card.name=配置拷贝卡
+tooltip.jiezhirbmkmod.rbmk_config_card.0=调好一块屏，九下右键铺满一面墙。
+tooltip.jiezhirbmkmod.rbmk_config_card.1=潜行+右键屏幕：读取配置（阈值/汽笛/红石/刷新/绑定）
+tooltip.jiezhirbmkmod.rbmk_config_card.2=右键屏幕：写入配置 · 潜行+右键空气：清空
+tooltip.jiezhirbmkmod.rbmk_config_card.3=§a已存有配置 —— 找下一块屏右键写入
+tooltip.jiezhirbmkmod.rbmk_config_card.4=§8空卡：先潜行右键一块屏读取
+item.rbmk_probe.name=手持检测仪
+tooltip.jiezhirbmkmod.rbmk_probe.0=右键 RBMK 控制台或堆芯柱件：聊天栏报巡检读数
+tooltip.jiezhirbmkmod.rbmk_probe.1=§8反射读取，与显示屏同一数据链
+tooltip.jiezhirbmkmod.rbmk_probe.2=§8只读，不改任何状态
+item.rbmk_siren_horn.name=告警扩音器
+tooltip.jiezhirbmkmod.rbmk_siren_horn.0=潜行+右键屏幕：绑定数据屏
+tooltip.jiezhirbmkmod.rbmk_siren_horn.1=右键空气：静音切换 · 潜行+右键空气：解绑
+tooltip.jiezhirbmkmod.rbmk_siren_horn.2=绑定屏告警时随身发声（L1 两声 / L2 长鸣）
+tooltip.jiezhirbmkmod.rbmk_siren_horn.3=§a已绑定 （x: %s  y: %s  z: %s）
+tooltip.jiezhirbmkmod.rbmk_siren_horn.4=§8未绑定：潜行右键一块屏
+tooltip.jiezhirbmkmod.rbmk_siren_horn.5=§e已静音
+msg.jiezhirbmkmod.cfg.read=配置已存入拷贝卡
+msg.jiezhirbmkmod.cfg.write=配置已写入
+msg.jiezhirbmkmod.cfg.empty=拷贝卡是空的：先潜行右键一块屏读取配置
+msg.jiezhirbmkmod.cfg.notscreen=这个方块不是 RBMK 显示屏
+msg.jiezhirbmkmod.cfg.cleared=拷贝卡已清空
+msg.jiezhirbmkmod.probe.header=RBMK 巡检 @ %s,%s,%s（%s）
+msg.jiezhirbmkmod.probe.src_console=控制台
+msg.jiezhirbmkmod.probe.src_part=柱件就近控制台
+msg.jiezhirbmkmod.probe.heat=平均柱温 %s°C（阈值 %s°C）· 最高 %s°C
+msg.jiezhirbmkmod.probe.rate=温升 %s°C/s ·
+msg.jiezhirbmkmod.probe.fluxsteam=通量 %s · 蒸汽 %s
+msg.jiezhirbmkmod.probe.riskline=熔毁风险：
+msg.jiezhirbmkmod.probe.risk=%s%%
+msg.jiezhirbmkmod.probe.meltdown=【熔毁】堆芯已熔毁 —— 按卷二第五章撤离
+msg.jiezhirbmkmod.probe.noread=读取失败：数据源无响应
+msg.jiezhirbmkmod.horn.bound=扩音器已绑定，绑定屏告警即随身发声
+msg.jiezhirbmkmod.horn.cleared=扩音器已解绑
+msg.jiezhirbmkmod.horn.notbound=扩音器尚未绑定任何显示屏
+msg.jiezhirbmkmod.horn.notscreen=这个方块不是 RBMK 显示屏
+msg.jiezhirbmkmod.horn.mute_on=扩音器已静音
+msg.jiezhirbmkmod.horn.mute_off=扩音器已恢复鸣响
+
+# ---- v17.6 操作员工牌 ----
+item.rbmk_op_card.name=操作员工牌
+tooltip.jiezhirbmkmod.rbmk_op_card.0=模组管理员凭证：手持已签发工牌即可使用完整版调节器与黑客玩法
+tooltip.jiezhirbmkmod.rbmk_op_card.1=§8潜行+右键：作废（收权限） · 连点两下右键：黑客玩法申请 · 必须出示
+tooltip.jiezhirbmkmod.rbmk_op_card.2=§a已签发 · 签发人 %s
+tooltip.jiezhirbmkmod.rbmk_op_card.3=§8空白工牌：放入签发器签发后生效
+msg.jiezhirbmkmod.opcard.issued=工牌已签发给 %s：手持它即可使用模组管理员功能
+msg.jiezhirbmkmod.opcard.revoked=工牌已作废，恢复为空白卡
+msg.jiezhirbmkmod.opcard.denied=签发 / 作废工牌需要管理员权限（等级 2）
+
+# ---- v17.6 签发器 ----
+tile.jiezhirbmkmod.rbmk_issuer.name=操作员工牌签发器
+item.rbmk_issuer.name=操作员工牌签发器
+container.jiezhirbmkmod.rbmk_issuer=操作员工牌签发器
+gui.jiezhirbmkmod.issuer.title=RBMK 员工牌签发台
+gui.jiezhirbmkmod.issuer.cfg=签发配置
+gui.jiezhirbmkmod.issuer.unlimited=无限制
+gui.jiezhirbmkmod.issuer.uses=每卡 %s 次
+gui.jiezhirbmkmod.issuer.tiers=可调档位：
+gui.jiezhirbmkmod.issuer.players=在线玩家
+gui.jiezhirbmkmod.issuer.multi=多选
+gui.jiezhirbmkmod.issuer.single=单选
+gui.jiezhirbmkmod.issuer.authorize=授权 · 消耗空白卡签发
+gui.jiezhirbmkmod.issuer.selected=已选 %s 人
+gui.jiezhirbmkmod.issuer.nobody=（无在线玩家）
+gui.jiezhirbmkmod.issuer.cards=空白卡：%s
+tooltip.jiezhirbmkmod.rbmk_issuer.0=管理员发卡柜台：放入空白工牌，配置次数与档位，向在线玩家签发
+tooltip.jiezhirbmkmod.rbmk_issuer.1=§8右键打开需管理员权限（等级 2 / 单人房主）
+tooltip.jiezhirbmkmod.rbmk_op_card.4=§8剩余次数：%s
+tooltip.jiezhirbmkmod.rbmk_op_card.5=§8可调档位：%s
+tooltip.jiezhirbmkmod.rbmk_op_card.6=已用尽
+tooltip.jiezhirbmkmod.rbmk_op_card.7=全部
+msg.jiezhirbmkmod.issuer.denied=签发器只对管理员开放（权限等级 2 / 单人房主）
+msg.jiezhirbmkmod.issuer.done=签发完成：%s 人
+msg.jiezhirbmkmod.issuer.summary=（无卡 %s · 不在线 %s）
+msg.jiezhirbmkmod.issuer.offline=不在线，跳过
+msg.jiezhirbmkmod.issuer.nocard=签发器无空白卡，跳过
+msg.jiezhirbmkmod.issuer.received=%s 给了你一张操作员工牌（来自 %s,%s,%s）：手持即拥有模组管理员功能
+msg.jiezhirbmkmod.issuer.noselect=先在名单里选择要授权的玩家
+gui.jiezhirbmkmod.issuer.waiting=已提交，等待服务器确认…
+gui.jiezhirbmkmod.issuer.timeout=服务器无响应（校验未通过或网络异常，可重试）
+gui.jiezhirbmkmod.issuer.result=签发完成：%s 张（无卡 %s · 不在线 %s）
+gui.jiezhirbmkmod.issuer.result_none=签发失败：没有消耗任何空白卡
+gui.jiezhirbmkmod.issuer.result_card=已交给 %s · 悬停左侧查看签发后的卡
+
+# ---- v17.6 黑客攻击玩法申请（双击工牌 → 全服主/管理员审批，一票否决）----
+gui.jiezhirbmkmod.hackapp.title=黑客攻击玩法申请
+gui.jiezhirbmkmod.hackapp.state_sync=当前状态：读取中…
+gui.jiezhirbmkmod.hackapp.state_on=当前状态：已开启
+gui.jiezhirbmkmod.hackapp.state_off=当前状态：已关闭（默认）
+gui.jiezhirbmkmod.hackapp.hint1=开启需全体服主/管理员审核通过（一票否决）
+gui.jiezhirbmkmod.hackapp.hint2=关闭只需任意一名管理员/房主同意
+gui.jiezhirbmkmod.hackapp.hint_locked=已开启。关闭申请需管理员/房主发起
+gui.jiezhirbmkmod.hackapp.send=发送申请
+gui.jiezhirbmkmod.hackapp.cancel=不发送
+gui.jiezhirbmkmod.hackapp.send_open=发送开启申请
+gui.jiezhirbmkmod.hackapp.send_close=发送关闭申请
+gui.jiezhirbmkmod.hackapp.review_title=黑客攻击玩法审批
+gui.jiezhirbmkmod.hackapp.review_body_open=玩家 %s 试图开启黑客攻击玩法
+gui.jiezhirbmkmod.hackapp.review_body_close=玩家 %s 试图关闭黑客攻击玩法
+gui.jiezhirbmkmod.hackapp.rule_open=开启需要全部服主/管理员同意（一票否决）
+gui.jiezhirbmkmod.hackapp.rule_close=关闭只需任意一名管理员/房主同意
+gui.jiezhirbmkmod.hackapp.agree=同意
+gui.jiezhirbmkmod.hackapp.deny=不同意
+gui.jiezhirbmkmod.hackapp.result_ok=您的%s黑客攻击玩法申请已被同意
+gui.jiezhirbmkmod.hackapp.result_deny=您的%s黑客攻击玩法申请已被拒绝
+gui.jiezhirbmkmod.hackapp.result_note=开关已生效并全服公告，重启后保持
+gui.jiezhirbmkmod.hackapp.word_open=开启
+gui.jiezhirbmkmod.hackapp.word_close=关闭
+gui.jiezhirbmkmod.hackapp.ok=知道了
+msg.jiezhirbmkmod.hackapp.pending=已有一份申请在审核中，请稍候再试
+msg.jiezhirbmkmod.hackapp.already_on=黑客攻击玩法已经是开启状态，无需申请
+msg.jiezhirbmkmod.hackapp.already_off=黑客攻击玩法本来就是关闭的
+msg.jiezhirbmkmod.hackapp.close_denied=关闭黑客攻击玩法需要管理员/房主发起
+msg.jiezhirbmkmod.hackapp.no_reviewer=当前没有服主/管理员在线，无法受理申请
+msg.jiezhirbmkmod.hackapp.submitted=申请已提交给 %s 名服主/管理员
+msg.jiezhirbmkmod.hackapp.submitted_open=，全部同意才生效（一票否决）
+msg.jiezhirbmkmod.hackapp.submitted_close=，任意一名同意即生效
+msg.jiezhirbmkmod.hackapp.stale=该申请已被处理或已过期
+msg.jiezhirbmkmod.hackapp.applicant_offline=申请人 %s 已离线，申请作废
+msg.jiezhirbmkmod.hackapp.reviewers_offline=服主/管理员均已离线
+msg.jiezhirbmkmod.hackapp.timeout=超时（60 秒内未完成投票）
+msg.jiezhirbmkmod.hackapp.veto=被 %s 否决
+msg.jiezhirbmkmod.hackapp.closed_by=由 %s 同意
+msg.jiezhirbmkmod.hackapp.unanimous=全服主/管理员一致同意
+msg.jiezhirbmkmod.hackapp.announce_on=黑客攻击玩法已开启（申请人 %s，%s）
+msg.jiezhirbmkmod.hackapp.announce_off=黑客攻击玩法已关闭（申请人 %s，%s）
+tile.jiezhirbmkmod.rbmk_patrol.name=巡屏中控
+gui.jiezhirbmkmod.patrol.title=RBMK 巡屏中控
+gui.jiezhirbmkmod.patrol.hint=潜行右键扫描绑定 %s 格内的屏 · 点行查看
+gui.jiezhirbmkmod.patrol.auto_on=自动轮播：开（谁告警看谁）
+gui.jiezhirbmkmod.patrol.auto_off=自动轮播：关
+gui.jiezhirbmkmod.patrol.offline_slot=#（屏已拆除或未加载）
+gui.jiezhirbmkmod.patrol.empty=尚未绑定任何屏：潜行右键本机扫描绑定
+gui.jiezhirbmkmod.patrol.normal=正常
+gui.jiezhirbmkmod.patrol.warn=预警
+gui.jiezhirbmkmod.patrol.crit=严重
+gui.jiezhirbmkmod.patrol.pwr_off=断电
+gui.jiezhirbmkmod.patrol.unlinked=数据源未绑定
+gui.jiezhirbmkmod.patrol.meltdown=熔毁告警！
+gui.jiezhirbmkmod.patrol.running=运行中
+gui.jiezhirbmkmod.patrol.hist=柱温 · 窗口约 %s 秒
+msg.jiezhirbmkmod.patrol.bound=扫描完成：新绑定 %s 块（当前共 %s 块）
+msg.jiezhirbmkmod.patrol.bound_none=扫描完成：没有新增绑定（当前共 %s 块）
+# ===== v17.8 配方模板卡 / 手册卷三 / 签发器防熊 =====
+item.rbmk_recipe_card.name=配方模板卡
+tooltip.jiezhirbmkmod.rbmk_recipe_card.0=§7一卡快照整张屏配方：监视槽、媒体、阈值、绑定
+tooltip.jiezhirbmkmod.rbmk_recipe_card.1=§8潜行+右键屏幕：快照整张配方
+tooltip.jiezhirbmkmod.rbmk_recipe_card.2=§8右键屏幕：粘贴配方 · 潜行+右键空气：清空
+tooltip.jiezhirbmkmod.rbmk_recipe_card.3=§a已存配方（%s）—— 找同款屏右键粘贴
+tooltip.jiezhirbmkmod.rbmk_recipe_card.4=§8空卡：先潜行右键一块屏快照
+item.rbmk_manual_vol3.name=RBMK 管理员手册（卷三）
+tooltip.jiezhirbmkmod.rbmk_manual_vol3=§8只读文档 · 与卷一卷二配套 · 人与权限专卷 · 15 页 · 含配方附录
+msg.jiezhirbmkmod.recipe.read=已快照整张配方（%s 项）—— 右键同款屏粘贴
+msg.jiezhirbmkmod.recipe.write=已粘贴配方（%s 项），审计已留痕
+msg.jiezhirbmkmod.recipe.empty=模板卡是空的：先潜行右键一块屏快照
+msg.jiezhirbmkmod.recipe.cleared=模板卡已清空
+msg.jiezhirbmkmod.recipe.notscreen=模板卡只对监视屏家族生效
+msg.jiezhirbmkmod.issuer.no_break=签发器拆不得：只有归属者或管理员可以拆除
+# ===== v17.7 工牌吊销 / 调节器吊销提示 =====
+msg.jiezhirbmkmod.revoke.done=已吊销 %s 名下的全部工牌（吊销纪元 %s），旧卡即刻失效，重签请走签发器
+msg.jiezhirbmkmod.revoke.all=已吊销全服所有已签发工牌（全局吊销纪元 %s），重签请走签发器
+msg.jiezhirbmkmod.revoke.notify=你持有的操作员工牌已被管理员吊销，相关权限即刻失效
+msg.jiezhirbmkmod.refresh.revoked=调节失败：工牌已被吊销（管理员收回了权限），请找管理员重新签发
+
+# ===== v17.9 巡屏地图模式 / 反向追踪 / 兼容探针 =====
+gui.jiezhirbmkmod.patrol.map_on=地图模式：开
+gui.jiezhirbmkmod.patrol.map_off=地图模式：关
+gui.jiezhirbmkmod.patrol.map_cell_empty=（空槽）
+msg.jiezhirbmkmod.trace.header=痕迹扫描：半径 %s 格，维度 %s
+msg.jiezhirbmkmod.trace.none=半径 %s 格内没有入侵痕迹。
+msg.jiezhirbmkmod.trace.line_living=  - (%s,%s,%s)【被黑中】入侵者 %s，发生于 %s 前
+msg.jiezhirbmkmod.trace.line_fixed=  - (%s,%s,%s)【已修复】入侵者 %s，黑入发生于 %s 前
+msg.jiezhirbmkmod.trace.player_header=%s 留下的痕迹（本维度已加载区块）：
+msg.jiezhirbmkmod.trace.player_none=本维度已加载区块内没有 %s 留下的痕迹。
+msg.jiezhirbmkmod.trace.count=共 %s 条痕迹。痕迹修复后仍保留，完整流水见 rbmk_audit.log。
+msg.jiezhirbmkmod.compat.header=RBMK 显示屏 兼容探针 —— v%s（网络协议 %s）
+msg.jiezhirbmkmod.compat.env=运行侧：%s | MC %s | Forge %s | Java %s
+msg.jiezhirbmkmod.compat.packets=网络包：%s 个（id 0..%s，一张注册表；版本不一致的构建会被 FML 拒连）
+msg.jiezhirbmkmod.compat.security=黑客玩法总开关：%s | 普通玩家黑客：%s | 全局吊销纪元：%s
+msg.jiezhirbmkmod.compat.files=存档目录数据文件：rbmk_audit.log（审计）/ rbmk_revoke.dat（吊销登记）
+msg.jiezhirbmkmod.compat.client=光影包：%s | SSS 管线：%s %s
+msg.jiezhirbmkmod.compat.optifine=OptiFine：存在=%s
+msg.jiezhirbmkmod.compat.mods=潜在相关 mod：%s（注意功能重叠）
+msg.jiezhirbmkmod.compat.mods_none=未检测到潜在相关 mod
+msg.jiezhirbmkmod.compat.remote_none=本次会话尚未记录网络握手
+msg.jiezhirbmkmod.compat.remote=最近一次握手：%s
+msg.jiezhirbmkmod.compat.remote_hint=若连接被拒且提示含糊（"mod rejections"），请把两端都升到 v%s（详见控制台/审计日志末条）
+
+# ===== v17.9 聚合中控 / 导出命令 =====
+tile.jiezhirbmkmod.rbmk_aggregate.name=多堆芯聚合中控
+gui.jiezhirbmkmod.aggregate.title=RBMK 多堆芯聚合排行
+gui.jiezhirbmkmod.aggregate.hint=潜行右键扫描绑定 %s 格内的屏 · 按堆芯柱温降序排行
+gui.jiezhirbmkmod.aggregate.summary=堆芯 %s 座 | 在线 %s | 总通量 %s F | 最热 %s°C
+gui.jiezhirbmkmod.aggregate.empty=尚未绑定任何屏：潜行右键本机扫描绑定
+gui.jiezhirbmkmod.aggregate.members=本堆芯 %s 块屏
+gui.jiezhirbmkmod.aggregate.no_data=无数据
+msg.jiezhirbmkmod.aggregate.bound=扫描完成：新绑定 %s 块（当前共 %s 块）
+msg.jiezhirbmkmod.aggregate.bound_none=扫描完成：没有新增绑定（当前共 %s 块）
+
+# ===== v17.9 导出设置面板（蹲下连续右键两下） =====
+gui.jiezhirbmkmod.export.title=导出设置 · 历史图形
+gui.jiezhirbmkmod.export.pos=屏幕 %s, %s, %s
+gui.jiezhirbmkmod.export.fmt_csv=格式：CSV（表格）
+gui.jiezhirbmkmod.export.fmt_png=格式：PNG（长图）
+gui.jiezhirbmkmod.export.do=导出历史图形
+gui.jiezhirbmkmod.export.close=关闭
+gui.jiezhirbmkmod.export.samples=%s 个采样点（窗口约 %s 秒）
+gui.jiezhirbmkmod.export.hint=蹲下对屏连续右键两下可打开本面板
+msg.jiezhirbmkmod.export.saved=你的历史图形已保存到 %s，请注意查收
+msg.jiezhirbmkmod.export.file=文件：%s（%s 个采样点）
+msg.jiezhirbmkmod.export.no_data=这块屏还没有采样数据（曲线屏需要通电运行一段时间）。
+msg.jiezhirbmkmod.export.gone=这块屏已经不在了，无法导出。
+msg.jiezhirbmkmod.export.fail=导出失败：%s
+
+gui.jiezhirbmkmod.alarm_light.trigger_always=无线：常亮（始终开启）
+gui.jiezhirbmkmod.alarm_light.lamp_always=灯 常亮
+gui.jiezhirbmkmod.alarm_light.hint_always=常亮：灯始终开启，右键或潜行右键都只开面板
+
+gui.jiezhirbmkmod.alarm_light.trigger_off=关闭：常灭（始终关闭）
+gui.jiezhirbmkmod.alarm_light.lamp_always_off=灯 常灭
+gui.jiezhirbmkmod.alarm_light.hint_off=常灭：灯始终关闭，右键或潜行右键都只开面板
+gui.jiezhirbmkmod.alarm_light.cancel=取消
+gui.jiezhirbmkmod.alarm_light.export_btn=导出设置
+gui.jiezhirbmkmod.alarm_light.import_btn=导入设置
+gui.jiezhirbmkmod.alarm_light.export_dialog=导出报警灯设置
+gui.jiezhirbmkmod.alarm_light.import_dialog=导入报警灯设置
+msg.jiezhirbmkmod.alarm_light.exported=报警灯设置已导出到 %s
+msg.jiezhirbmkmod.alarm_light.export_fail=导出失败：%s
+msg.jiezhirbmkmod.alarm_light.imported=已导入并应用报警灯设置：%s
+msg.jiezhirbmkmod.alarm_light.import_fail=导入失败（设置未改动）：%s
+msg.jiezhirbmkmod.alarm_light.cancelled=已恢复打开面板前的设置
+# ===== v18.0 历史落盘 / 导出时间段 =====
+gui.jiezhirbmkmod.export.dur_all=时间范围：全部
+gui.jiezhirbmkmod.export.dur_s=时间范围：最近 %s 秒
+rbmkexport.client_only=只有玩家才能使用这个命令
+rbmkexport.bad_seconds=时间段无效：%s（需要 1..3600 秒）
+tile.rbmk_cycle_screen.name=RBMK 轮播显示屏
+tile.rbmk_cycle_screen_real.name=RBMK 轮播显示屏（真实）
+tooltip.jiezhirbmkmod.rbmk_cycle_screen.0=自动轮播页面：总览 → 热图 → 曲线（默认 3 秒）
+tooltip.jiezhirbmkmod.rbmk_cycle_screen.1=真实版未通电（红石<10 且 HE/FE 双空）强制黑屏

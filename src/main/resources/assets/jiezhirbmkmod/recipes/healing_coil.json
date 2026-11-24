@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:healing_coil",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:apple",
+    "minecraft:gold_ingot",
+    "minecraft:redstone",
+    "minecraft:iron_ingot"
+  ]
+}

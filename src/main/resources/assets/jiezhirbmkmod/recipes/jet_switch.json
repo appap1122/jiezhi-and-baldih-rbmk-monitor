@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:jet_switch",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:lever",
+    "minecraft:iron_ingot",
+    "minecraft:redstone"
+  ]
+}

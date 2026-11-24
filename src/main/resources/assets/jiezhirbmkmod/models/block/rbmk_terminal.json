@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "jiezhirbmkmod:blocks/rbmk_terminal_top",
+    "front": "jiezhirbmkmod:blocks/rbmk_terminal_front",
+    "side": "jiezhirbmkmod:blocks/rbmk_terminal_side"
+  }
+}

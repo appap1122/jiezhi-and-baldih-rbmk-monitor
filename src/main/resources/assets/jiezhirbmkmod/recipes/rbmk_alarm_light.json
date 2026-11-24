@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_alarm_light",
+    "count": 1
+  },
+  "ingredients": [
+    "minecraft:redstone_lamp",
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:redstone",
+    "minecraft:redstone",
+    "minecraft:redstone",
+    "minecraft:glass_pane"
+  ]
+}

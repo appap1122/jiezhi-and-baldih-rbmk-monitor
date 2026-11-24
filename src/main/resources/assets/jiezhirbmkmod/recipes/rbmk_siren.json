@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "jiezhirbmkmod:rbmk_siren",
+    "data": 14,
+    "count": 1
+  },
+  "pattern": [
+    "iri",
+    "ini",
+    "iri"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "n": {
+      "item": "minecraft:noteblock"
+    }
+  }
+}

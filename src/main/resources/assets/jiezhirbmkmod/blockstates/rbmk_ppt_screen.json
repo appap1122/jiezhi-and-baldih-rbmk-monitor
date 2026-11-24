@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,powered=false": { "model": "jiezhirbmkmod:block/rbmk_ppt_screen" },
+    "facing=north,powered=true":  { "model": "jiezhirbmkmod:block/rbmk_ppt_screen" },
+    "facing=south,powered=false": { "model": "jiezhirbmkmod:block/rbmk_ppt_screen", "y": 180 },
+    "facing=south,powered=true":  { "model": "jiezhirbmkmod:block/rbmk_ppt_screen", "y": 180 },
+    "facing=west,powered=false":  { "model": "jiezhirbmkmod:block/rbmk_ppt_screen", "y": 270 },
+    "facing=west,powered=true":   { "model": "jiezhirbmkmod:block/rbmk_ppt_screen", "y": 270 },
+    "facing=east,powered=false":  { "model": "jiezhirbmkmod:block/rbmk_ppt_screen", "y": 90 },
+    "facing=east,powered=true":   { "model": "jiezhirbmkmod:block/rbmk_ppt_screen", "y": 90 }
+  }
+}
