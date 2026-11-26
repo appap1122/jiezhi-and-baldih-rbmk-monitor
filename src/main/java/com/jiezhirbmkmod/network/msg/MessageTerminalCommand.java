@@ -60,6 +60,9 @@ public class MessageTerminalCommand implements IMessage {
             "clear                    unlink this terminal from the reactor",
             "where                    show this terminal's position and its reactor link",
             "siren <on|off|test>      trigger, silence or test nearby RBMK sirens",
+            "watch <m> <op> <v> do <a>   threshold guard rule: m=heat/peak/flux/water/steam/enrich/xenon, op=> or <, a=scram/alarm/audit",
+            "watch list               show all guard rules",
+            "watch del <n>            delete rule #n; watch clear deletes all",
             "history                  list previously typed commands (local)",
             "cls                      clear the screen (local)",
             "exit                     close the terminal (local)"
@@ -70,8 +73,11 @@ public class MessageTerminalCommand implements IMessage {
     /** search radius (blocks) of the 'siren' command around the terminal */
     public static final int SIREN_RADIUS = 16;
     public static final String[] SIREN_ACTIONS = new String[]{"on", "off", "test"};
+    /** v18.2 watch 命令的 Tab 补全片段 */
+    public static final String[] WATCH_METRICS = new String[]{"heat", "peak", "flux", "water", "steam", "enrich", "xenon"};
+    public static final String[] WATCH_ACTIONS = new String[]{"scram", "alarm", "audit"};
     public static final String[] COMMANDS = new String[]{"help", "status", "rods", "scram", "bind", "clear",
-            "cls", "exit", "az5", "unbind", "quit", "where", "siren", "history"};
+            "cls", "exit", "az5", "unbind", "quit", "where", "siren", "history", "watch"};
 
     public static final class CmdLine {
         public final int color;
@@ -357,6 +363,8 @@ public class MessageTerminalCommand implements IMessage {
                 Handler.cmdRods(world, center, parts, out);
             } else if ("scram".equals(cmd) || "az5".equals(cmd)) {
                 Handler.cmdScram(world, center, out, player);
+            } else if ("watch".equals(cmd)) {
+                Handler.cmdWatch(world, console, parts, out, player);
             } else {
                 out.add(new CmdLine(C_ERR, "  '" + cmd + "' is not recognized as an RBMK terminal command. Type 'help'."));
             }
@@ -569,6 +577,90 @@ public class MessageTerminalCommand implements IMessage {
                     player == null ? null : player.getName(), "scram", world, center);
             out.add(new CmdLine(C_OK, "  AZ-5 SCRAM engaged: " + set + " control rod(s) fully inserted."));
             out.add(new CmdLine(C_WARN, "  The reactor will shut down once the rods reach the bottom."));
+        }
+
+        // ==================== v18.2 阈值自动化防护链 ====================
+
+        /**
+         * 'watch' 命令：阈值监视规则的管理入口。语法对齐设计稿：
+         * <pre>
+         *   watch heat &gt; 900 do scram     # 命中自动 AZ-5
+         *   watch peak &gt; 1100 do alarm    # 命中全员报警 + 汽笛试鸣
+         *   watch flux &lt; 50 do audit      # 命中只记审计
+         *   watch list / watch del &lt;n&gt; / watch clear
+         * </pre>
+         * 开关 {@code RbmkConfig.allowThresholdWatch} 关闭时整条命令不可用
+         * （审批 GUI 开启后才生效）。规则按绑定控制台为键，落盘
+         * {@code rbmk_watch.json}。
+         */
+        private static void cmdWatch(World world, TileEntity console, String[] parts,
+                List<CmdLine> out, EntityPlayerMP player) {
+            if (!com.jiezhirbmkmod.dfc.RbmkConfig.allowThresholdWatch) {
+                out.add(new CmdLine(C_ERR, "  Threshold guard (watch) is disabled on this server."));
+                out.add(new CmdLine(C_DIM, "  Ask an operator to approve it via the op badge application GUI."));
+                return;
+            }
+            // 子命令
+            if (parts.length >= 2 && "list".equals(parts[1])) {
+                java.util.List<com.jiezhirbmkmod.dfc.WatchChain.Rule> rules =
+                        com.jiezhirbmkmod.dfc.WatchChain.snapshotRules();
+                if (rules.isEmpty()) {
+                    out.add(new CmdLine(C_DIM, "  No guard rules. Add one: watch heat > 900 do scram"));
+                    return;
+                }
+                out.add(new CmdLine(C_OUT, "  Threshold guard rules (" + rules.size() + "):"));
+                for (int i = 0; i < rules.size(); ++i) {
+                    com.jiezhirbmkmod.dfc.WatchChain.Rule r = rules.get(i);
+                    out.add(new CmdLine(C_OUT, "  #" + (i + 1) + " [" + r.key + "] "
+                            + r.describe() + "  (by " + r.createdBy + ")"));
+                }
+                return;
+            }
+            if (parts.length >= 2 && "clear".equals(parts[1])) {
+                int n = com.jiezhirbmkmod.dfc.WatchChain.clearRules();
+                out.add(new CmdLine(n > 0 ? C_OK : C_WARN, "  Deleted " + n + " guard rule(s)."));
+                return;
+            }
+            if (parts.length >= 3 && "del".equals(parts[1])) {
+                int idx;
+                try {
+                    idx = Integer.parseInt(parts[2]);
+                } catch (NumberFormatException e) {
+                    out.add(new CmdLine(C_ERR, "  Usage: watch del <rule number> (see 'watch list')"));
+                    return;
+                }
+                String removed = com.jiezhirbmkmod.dfc.WatchChain.removeRule(idx);
+                if (removed == null) {
+                    out.add(new CmdLine(C_ERR, "  No such rule #" + idx + " (see 'watch list')"));
+                } else {
+                    out.add(new CmdLine(C_OK, "  Deleted rule #" + idx + ": " + removed));
+                }
+                return;
+            }
+            // watch <metric> <op> <value> do <action>
+            if (parts.length != 6 || !"do".equals(parts[4])) {
+                out.add(new CmdLine(C_ERR, "  Usage: watch <metric> <op> <value> do <action>"));
+                out.add(new CmdLine(C_DIM, "  metric: heat/peak/flux/water/steam/enrich/xenon  op: > or <"));
+                out.add(new CmdLine(C_DIM, "  action: scram/alarm/audit   e.g. watch heat > 900 do scram"));
+                return;
+            }
+            double threshold;
+            try {
+                threshold = Double.parseDouble(parts[3]);
+            } catch (NumberFormatException e) {
+                out.add(new CmdLine(C_ERR, "  Threshold must be a number, got '" + parts[3] + "'."));
+                return;
+            }
+            String err = com.jiezhirbmkmod.dfc.WatchChain.addRule(world, console.getPos(),
+                    parts[1], parts[2], threshold, parts[5],
+                    player == null ? null : player.getName());
+            if (err != null) {
+                out.add(new CmdLine(C_ERR, "  " + err));
+                return;
+            }
+            out.add(new CmdLine(C_OK, "  Guard rule armed: " + parts[1] + " " + parts[2] + " "
+                    + parts[3] + " do " + parts[5]));
+            out.add(new CmdLine(C_DIM, "  Scans once per second; cooldown 10s between actions; survives restarts (rbmk_watch.json)."));
         }
     }
 }

@@ -191,6 +191,80 @@ implements ITickable, IRealPowerTile {
     private int rsOutput = 0;
     private final int[] rsStreak = new int[1];
 
+    // ---- v18.2 显示设置（设置中心：蹲下连续右键两下打开）----
+
+    /** 屏幕背光亮度百分比（40~100，100 = 不加暗滤镜） */
+    public static final int BRIGHTNESS_MIN = 40;
+    public static final int BRIGHTNESS_MAX = 100;
+    /** 屏显主题：0=标准 1=琥珀磷光 2=绿磷 3=纯白 */
+    public static final int THEME_COUNT = 4;
+    private int displayBrightness = 100;
+    private int displayTheme = 0;
+    /** 曲线对比模式：多通道叠加在同一面板 */
+    private boolean graphCompare = false;
+    /** 曲线对比模式下的对数纵轴 */
+    private boolean graphLogScale = false;
+
+    public int getDisplayBrightness() {
+        return this.displayBrightness;
+    }
+
+    public int getDisplayTheme() {
+        return this.displayTheme;
+    }
+
+    public boolean isGraphCompare() {
+        return this.graphCompare;
+    }
+
+    public boolean isGraphLogScale() {
+        return this.graphLogScale;
+    }
+
+    /** 亮度循环：100 → 80 → 60 → 40 → 100（设置中心按钮用） */
+    public static int nextBrightness(int cur) {
+        switch (cur) {
+            case 100: return 80;
+            case 80: return 60;
+            case 60: return 40;
+            default: return 100;
+        }
+    }
+
+    /** 主题循环：标准 → 琥珀 → 绿磷 → 纯白 → 标准 */
+    public static int nextTheme(int cur) {
+        return (cur + 1) % THEME_COUNT;
+    }
+
+    /**
+     * v18.2 设置中心的服务端入口：应用一项显示设置并持久化 + 同步。
+     * key: 0=亮度 1=主题 2=曲线对比 3=对数坐标。非法值一律静默丢弃。
+     */
+    public void applyDisplaySetting(int key, int value) {
+        switch (key) {
+            case 0:
+                this.displayBrightness = Math.max(BRIGHTNESS_MIN, Math.min(BRIGHTNESS_MAX, value));
+                break;
+            case 1:
+                this.displayTheme = Math.max(0, Math.min(THEME_COUNT - 1, value));
+                break;
+            case 2:
+                this.graphCompare = value != 0;
+                break;
+            case 3:
+                this.graphLogScale = value != 0;
+                break;
+            default:
+                return;
+        }
+        this.markDirty();
+        if (this.world != null && !this.world.isRemote) {
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos),
+                    this.world.getBlockState(this.pos), 3);
+        }
+    }
+
+
     public int getIntervalTicks() {
         return this.intervalTicks;
     }
@@ -1626,6 +1700,13 @@ implements ITickable, IRealPowerTile {
         this.remoteRedstoneZ = c.getInteger("RRZ");
         this.remoteRedstoneStrength = c.getInteger("RRS");
         this.boundDim = c.hasKey("BoundDim") ? c.getInteger("BoundDim") : Integer.MIN_VALUE;
+        // v18.2 显示设置（旧存档无键走默认：全亮 / 标准主题 / 关对比）
+        this.displayBrightness = c.hasKey("DispBright")
+                ? Math.max(BRIGHTNESS_MIN, Math.min(BRIGHTNESS_MAX, c.getInteger("DispBright"))) : 100;
+        this.displayTheme = c.hasKey("DispTheme")
+                ? Math.max(0, Math.min(THEME_COUNT - 1, c.getInteger("DispTheme"))) : 0;
+        this.graphCompare = c.getBoolean("GraphCompare");
+        this.graphLogScale = c.getBoolean("GraphLog");
         this.policy.readNBT(c);
         this.lastAlertLevel = this.alertLevel = AlertPolicy.LEVEL_NONE;
         this.sirenTick = -1L;
@@ -1673,6 +1754,11 @@ implements ITickable, IRealPowerTile {
         c.setInteger("RRZ", this.remoteRedstoneZ);
         c.setInteger("RRS", this.remoteRedstoneStrength);
         c.setInteger("BoundDim", this.boundDim);
+        // v18.2 显示设置
+        c.setInteger("DispBright", this.displayBrightness);
+        c.setInteger("DispTheme", this.displayTheme);
+        c.setBoolean("GraphCompare", this.graphCompare);
+        c.setBoolean("GraphLog", this.graphLogScale);
         this.policy.writeNBT(c);
         return c;
     }

@@ -25,7 +25,7 @@ public class ModNetwork {
      * （{@code RbmkMonitorMod#onNetworkCheck} 要求版本一致），协议代号
      * 跟着跳一版，让 /rbmkcompat 的输出一眼能认出这是 18.0 的包表。</p>
      */
-    public static final int PROTOCOL = 9;
+    public static final int PROTOCOL = 10;
 
     /**
      * v17.8/17.9 网络包瘦身：全部 23 个 discriminator 注册收进这一张表。
@@ -105,6 +105,12 @@ public class ModNetwork {
         // 归堆在服务端算（consolePos 不同步到客户端），实时数据仍由屏自己的包走
         CHANNEL.registerMessage(com.jiezhirbmkmod.network.msg.MessageAggregateSync.Handler.class,
                 com.jiezhirbmkmod.network.msg.MessageAggregateSync.class, 22, Side.CLIENT);
+        // v18.2 设置中心显示设置（C→S，discriminator 23）：亮度/主题/曲线对比/对数
+        CHANNEL.registerMessage(com.jiezhirbmkmod.network.msg.MessageScreenDisplaySetting.Handler.class,
+                com.jiezhirbmkmod.network.msg.MessageScreenDisplaySetting.class, 23, Side.SERVER);
+        // v18.2 自定义页布局保存（C→S，discriminator 24）：布局编辑器整包提交
+        CHANNEL.registerMessage(com.jiezhirbmkmod.network.msg.MessageCustomLayoutSet.Handler.class,
+                com.jiezhirbmkmod.network.msg.MessageCustomLayoutSet.class, 24, Side.SERVER);
         // v17.8 瘦身：把散在 RbmkMonitorMod.preInit 的 8..11 收编进来（id 不变）
         CHANNEL.registerMessage(TileRbmkMonitorScreen.AutoScramToggleMessage.Handler.class,
                 TileRbmkMonitorScreen.AutoScramToggleMessage.class, 8, Side.SERVER);

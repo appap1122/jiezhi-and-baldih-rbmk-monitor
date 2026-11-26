@@ -178,8 +178,67 @@ public final class RbmkScreenCanvas {
         }
         this.drawScanlines();
         this.image.getRGB(0, 0, 768, 576, this.pixels, 0, 768);
+        // v18.2 显示滤镜：亮度衰减 + 屏显主题（琥珀/绿磷/纯白磷光），像素级一次过
+        this.applyDisplayFilters();
         this.pixelDirty = true;
     }
+
+    // ==================== v18.2 显示设置（设置中心）====================
+
+    /** 屏幕背光亮度百分比（40~100），由渲染器每帧从 Tile 同步 */
+    public volatile int displayBrightness = 100;
+    /** 屏显主题：0=标准 1=琥珀磷光 2=绿磷 3=纯白 */
+    public volatile int displayTheme = 0;
+    /** 曲线对比模式：多通道叠加 */
+    public volatile boolean graphCompare = false;
+    /** 曲线对比模式：对数纵轴 */
+    public volatile boolean graphLogScale = false;
+
+    /**
+     * 像素级显示滤镜：先按亮度整体衰减，再按主题重映射色相
+     * （亮度加权平均 → 单色磷光）。只在脏区重绘时跑（约 5Hz），
+     * 442k 像素纯整数运算开销可忽略。断电黑屏同样会被调暗——
+     * 背光就是背光，断电文字也变暗是符合直觉的。
+     */
+    private void applyDisplayFilters() {
+        int b = this.displayBrightness;
+        int theme = this.displayTheme;
+        if (b >= 100 && theme == 0) {
+            return;
+        }
+        double k = Math.max(0.4D, Math.min(1.0D, b / 100.0D));
+        int[] px = this.pixels;
+        for (int i = 0; i < px.length; ++i) {
+            int c = px[i];
+            int a = (c >> 24) & 0xFF;
+            if (a == 0) {
+                continue;
+            }
+            int r = (int) (((c >> 16) & 0xFF) * k);
+            int g = (int) (((c >> 8) & 0xFF) * k);
+            int bl = (int) ((c & 0xFF) * k);
+            if (theme == 1) {
+                // 琥珀磷光：亮度映射到橙黄单色
+                int lum = (r * 77 + g * 150 + bl * 29) >> 8;
+                r = lum;
+                g = lum * 62 / 100;
+                bl = 0;
+            } else if (theme == 2) {
+                // 绿磷：经典 CRT 终端
+                int lum = (r * 77 + g * 150 + bl * 29) >> 8;
+                r = lum * 15 / 100;
+                g = lum;
+                bl = lum * 30 / 100;
+            } else if (theme == 3) {
+                // 纯白：去色 + 轻微提亮
+                int lum = (r * 77 + g * 150 + bl * 29) >> 8;
+                lum += (255 - lum) / 6;
+                r = g = bl = lum;
+            }
+            px[i] = (a << 24) | (r << 16) | (g << 8) | bl;
+        }
+    }
+
 
     public void setAlert(int level, String cause) {
         this.alert.set(level, cause);
@@ -644,6 +703,11 @@ public final class RbmkScreenCanvas {
     }
 
     private void drawCustom(RbmkSnapshot d) {
+        // v18.2 布局模式：编辑器保存过布局就按布局渲染小部件
+        if (this.customLayout != null && !this.customLayout.isEmpty()) {
+            this.drawCustomLayout(d);
+            return;
+        }
         this.panel(4, 23, 248, 154);
         int y = 35;
         List<DfcWatch> ws = d == null ? null : d.watches;
@@ -672,6 +736,84 @@ public final class RbmkScreenCanvas {
             this.text("\u6ca1\u6709\u6570\u636e\u69fd", 12, 63, -8480856, RbmkScreenCanvas.fCjk(9));
             this.text("\u9065\u63a7\u5668\u8e72\u4e0b\u53f3\u952e\u50a8\u7f50/\u7535\u6c60", 12, 79, -8480856, RbmkScreenCanvas.fCjk(8));
             this.text("\u518d\u8e72\u4e0b\u53f3\u952e\u672c\u5c4f\u63a5\u5165", 12, 91, -8480856, RbmkScreenCanvas.fCjk(8));
+        }
+    }
+
+    /** v18.2 布局编辑器产物（渲染器每帧从自定义屏 Tile 同步；null = 未编辑） */
+    public volatile com.jiezhirbmkmod.dfc.CustomWidgetLayout customLayout;
+
+    private static final String[] LAYOUT_CH_NAMES =
+            new String[]{"\u67f1\u6e29", "\u901a\u91cf", "\u6c34\u91cf", "\u84b8\u6c7d", "\u5bcc\u96c6", "\u6c19\u6bd2"};
+
+    /**
+     * v18.2 按布局渲染自定义页：仪表块（槽位读数+比例条）、曲线块
+     * （历史通道迷你曲线）、文本块（设备名+读数）。坐标即 256×192
+     * 虚拟屏逻辑坐标，与编辑器 1:1。
+     */
+    private void drawCustomLayout(RbmkSnapshot d) {
+        List<DfcWatch> ws = d == null ? null : d.watches;
+        for (com.jiezhirbmkmod.dfc.CustomWidgetLayout.Widget w : this.customLayout.widgets()) {
+            int x = w.x;
+            int y = w.y;
+            int ww = w.w;
+            int wh = w.h;
+            this.panel(x, y, ww, wh);
+            if (w.type == com.jiezhirbmkmod.dfc.CustomWidgetLayout.TYPE_GAUGE) {
+                DfcWatch src = ws != null && w.slot < ws.size() ? ws.get(w.slot) : null;
+                boolean alive = src != null && src.alive;
+                String name = src == null || src.device == null || src.device.isEmpty()
+                        ? ("\u69fd #" + (w.slot + 1)) : this.clip(src.device, ww - 8, RbmkScreenCanvas.fCjk(7));
+                this.text(name, x + 4, y + 6, alive ? -8480856 : -14273474, RbmkScreenCanvas.fCjk(7));
+                String value = alive ? src.value : "\u79bb\u7ebf";
+                this.textRight(value, x + ww - 4, y + wh - 12, alive ? -2299664 : -14273474,
+                        RbmkScreenCanvas.fMonoBold(8));
+                if (alive && src.ratio >= 0.0D) {
+                    this.bar(x + 4, y + wh - 6, ww - 8, 3, (float) src.ratio,
+                            src.ratio >= 0.85D ? -16067 : -12003585);
+                }
+            } else if (w.type == com.jiezhirbmkmod.dfc.CustomWidgetLayout.TYPE_GRAPH) {
+                // 迷你曲线：历史通道按量程归一化画进部件盒
+                this.text(LAYOUT_CH_NAMES[Math.max(0, Math.min(5, w.channel))],
+                        x + 4, y + 5, -14273474, RbmkScreenCanvas.fCjk(7));
+                int gx = x + 4;
+                int gy = y + 14;
+                int gw = ww - 8;
+                int gh = wh - 20;
+                if (gw > 4 && gh > 4 && this.history.hasData()) {
+                    double axisMax = this.history.axisMax(Math.max(0, Math.min(5, w.channel)));
+                    int n = this.history.size();
+                    int lastPx = -1;
+                    int lastPy = -1;
+                    for (int i = 0; i < n; ++i) {
+                        if (this.history.gapAt(i)) {
+                            lastPx = -1;
+                            continue;
+                        }
+                        double v = this.history.valueAt(Math.max(0, Math.min(5, w.channel)), i);
+                        int px = gx + (int) ((long) gw * (long) i / (long) Math.max(1, GraphHistory.CAPACITY - 1));
+                        int py = gy + gh - (int) Math.round((double) gh * Math.min(1.0D, v / axisMax));
+                        if (lastPx >= 0) {
+                            this.g.setColor(new Color(-12003585, true));
+                            this.g.setStroke(new BasicStroke(1.6f));
+                            this.g.drawLine(lastPx * 3, lastPy * 3, px * 3, py * 3);
+                        }
+                        lastPx = px;
+                        lastPy = py;
+                    }
+                }
+            } else {
+                // 文本块：设备名一行 + 读数一行（大字）
+                DfcWatch src = ws != null && w.slot < ws.size() ? ws.get(w.slot) : null;
+                boolean alive = src != null && src.alive;
+                String name = src == null || src.device == null || src.device.isEmpty()
+                        ? ("\u69fd #" + (w.slot + 1)) : this.clip(src.device, ww - 8, RbmkScreenCanvas.fCjk(7));
+                this.text(name, x + 4, y + 5, alive ? -8480856 : -14273474, RbmkScreenCanvas.fCjk(7));
+                String value = alive ? src.value : "\u79bb\u7ebf";
+                Font vf = RbmkScreenCanvas.hasCjk(value)
+                        ? this.fitCjk(value, ww - 8, wh - 16, 9)
+                        : this.fitMono(value, ww - 8, wh - 16, 8, true);
+                this.text(value, x + 4, y + 16, alive ? -2299664 : -14273474, vf);
+            }
         }
     }
 
@@ -734,6 +876,11 @@ public final class RbmkScreenCanvas {
         int n = this.history.size();
         // v17.7 回放：窗口终点 = n - replayOffset，只画到历史里的某个时刻
         int nEff = this.replayOffset > 0 ? Math.max(1, n - this.replayOffset) : n;
+        // v18.2 曲线对比模式：四通道叠加在一块大面板里（设置中心开关）
+        if (this.graphCompare) {
+            this.drawGraphCompare(nEff);
+            return;
+        }
         boolean pageB = (this.framePhaseMs / GRAPH_PAGE_ROTATE_MS) % 2L == 1L;
         String[] names = pageB ? GRAPH_PAGE_B : GRAPH_PAGE_A;
         int[] chans = pageB ? GRAPH_PAGE_B_CH : GRAPH_PAGE_A_CH;
@@ -754,6 +901,90 @@ public final class RbmkScreenCanvas {
             this.textCenter("\u3010" + pageName + "\u3011\u81ea\u52a8\u8f6e\u6362 \u00b7 \u7a97\u53e3\u7ea6 " + com.jiezhirbmkmod.dfc.RbmkConfig.windowSeconds() + " \u79d2 \u00b7 \u6eda\u8f6e=\u56de\u653e",
                     194, -14273474, RbmkScreenCanvas.fCjk(7));
         }
+    }
+
+    /** v18.2 对比模式通道表：柱温/通量/水量/蒸汽，颜色复用全屏色板 */
+    private static final int[] COMPARE_CH = new int[]{0, 1, 2, 3};
+    private static final String[] COMPARE_NAMES =
+            new String[]{"\u67f1\u6e29", "\u901a\u91cf", "\u6c34\u91cf", "\u84b8\u6c7d"};
+    private static final int[] COMPARE_COLORS = new int[]{-46261, -12003585, -11345782, -16067};
+
+    /**
+     * v18.2 曲线对比模式：一块大面板叠加柱温/通量/水量/蒸汽四条曲线，
+     * 每条按各自量程归一化（看形态相关性）；可开对数纵轴（对数域同样
+     * 按各自量程归一）。右上角图例 + 各通道实时值。
+     */
+    private void drawGraphCompare(int n) {
+        int x = 4;
+        int y = 23;
+        int w = 248;
+        int h = 160;
+        this.panel(x, y, w, h);
+        int ix = x + 6;
+        int iy = y + 16;
+        int iw = w - 12;
+        int ih = h - 26;
+        // 网格
+        for (int k = 0; k <= GraphHistory.DIVISIONS; ++k) {
+            int gy = iy + (int) ((long) ih * (long) k / (long) GraphHistory.DIVISIONS);
+            this.hline(ix, gy, iw, k == 0 || k == GraphHistory.DIVISIONS ? this.themeLine : -15457746);
+        }
+        // 四条曲线：各自量程归一（对数开关作用于纵轴映射）
+        boolean log = this.graphLogScale;
+        for (int c = 0; c < COMPARE_CH.length; ++c) {
+            int channel = COMPARE_CH[c];
+            int color = COMPARE_COLORS[c];
+            double axisMax = this.history.axisMax(channel);
+            double lmax = Math.log10(axisMax + 1.0D);
+            int lastPx = -1;
+            int lastPy = -1;
+            for (int i = 0; i < n; ++i) {
+                if (this.history.gapAt(i)) {
+                    lastPx = -1;
+                    continue;
+                }
+                double v = this.history.valueAt(channel, i);
+                int px = ix + (int) ((long) iw * (long) i / (long) Math.max(1, GraphHistory.CAPACITY - 1));
+                double t;
+                if (log) {
+                    t = lmax <= 0.0D ? 0.0D : Math.log10(Math.max(0.0D, v) + 1.0D) / lmax;
+                } else {
+                    t = Math.min(1.0D, v / axisMax);
+                }
+                int py = iy + ih - (int) Math.round((double) ih * t);
+                if (lastPx >= 0) {
+                    this.g.setColor(new Color(color, true));
+                    this.g.setStroke(new BasicStroke(2.0f));
+                    this.g.drawLine(lastPx * 3, lastPy * 3, px * 3, py * 3);
+                }
+                lastPx = px;
+                lastPy = py;
+            }
+        }
+        // 图例 + 实时值（最末采样点）
+        int lx = ix + 2;
+        for (int c = 0; c < COMPARE_CH.length; ++c) {
+            int channel = COMPARE_CH[c];
+            int color = COMPARE_COLORS[c];
+            double cur = Double.NaN;
+            for (int i = n - 1; i >= 0; --i) {
+                if (!this.history.gapAt(i)) {
+                    cur = this.history.valueAt(channel, i);
+                    break;
+                }
+            }
+            String val = Double.isNaN(cur) ? "--" : this.shortAxisLabel(cur);
+            String label = COMPARE_NAMES[c] + " " + val;
+            this.text(label, lx, y + 5, color, RbmkScreenCanvas.fMonoBold(6));
+            lx += this.fontW(label, RbmkScreenCanvas.fMonoBold(6)) + 14;
+        }
+        String mode = (log ? "\u5bf9\u6570\u5750\u6807 \u00b7 " : "")
+                + "\u5bf9\u6bd4\u6a21\u5f0f \u00b7 \u56db\u901a\u9053\u53e0\u52a0 \u00b7 \u8bbe\u7f6e\u4e2d\u5fc3\u53ef\u5173";
+        this.textCenter(mode, y + h + 4, -14273474, RbmkScreenCanvas.fCjk(7));
+    }
+
+    private int fontW(String s, Font f) {
+        return this.g.getFontMetrics(f) == null ? s.length() * 6 : this.g.getFontMetrics(f).stringWidth(s);
     }
 
     private void drawGraphPanel(int x, int y, int w, int h, int channel, String name, int color, int n) {

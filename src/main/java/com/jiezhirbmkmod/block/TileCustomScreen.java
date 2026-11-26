@@ -16,6 +16,31 @@ public class TileCustomScreen
 extends TileRbmkMonitorScreen {
     private final List<DfcWatch> slots = new ArrayList<DfcWatch>();
 
+    // ---- v18.2 自定义页布局（布局编辑器产物，空 = 旧版固定排布）----
+
+    private final com.jiezhirbmkmod.dfc.CustomWidgetLayout layout =
+            new com.jiezhirbmkmod.dfc.CustomWidgetLayout();
+
+    /** 布局（空 widgets = 未编辑过，画布走旧版固定排布） */
+    public com.jiezhirbmkmod.dfc.CustomWidgetLayout getLayout() {
+        return this.layout;
+    }
+
+    /** 编辑器保存：整体替换并持久化 + 同步 */
+    public void setLayout(com.jiezhirbmkmod.dfc.CustomWidgetLayout newLayout) {
+        this.layout.clear();
+        if (newLayout != null) {
+            for (com.jiezhirbmkmod.dfc.CustomWidgetLayout.Widget w : newLayout.widgets()) {
+                this.layout.add(w.copy());
+            }
+        }
+        this.markDirty();
+        if (this.world != null && !this.world.isRemote) {
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos),
+                    this.world.getBlockState(this.pos), 3);
+        }
+    }
+
     public List<DfcWatch> getSlots() {
         return this.slots;
     }
@@ -134,6 +159,8 @@ extends TileRbmkMonitorScreen {
     @Override
     public void readFromNBT(NBTTagCompound c) {
         super.readFromNBT(c);
+        // v18.2 自定义页布局（旧存档无键 → 空布局 = 旧版固定排布）
+        this.layout.readNBT(c);
         this.slots.clear();
         int n = c.hasKey("WatchCount") ? c.getInteger("WatchCount") : 0;
         for (int i = 0; i < n && i < 8; ++i) {
@@ -154,6 +181,8 @@ extends TileRbmkMonitorScreen {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound c) {
         super.writeToNBT(c);
+        // v18.2 自定义页布局
+        this.layout.writeNBT(c);
         c.setInteger("WatchCount", this.slots.size());
         for (int i = 0; i < this.slots.size(); ++i) {
             DfcWatch w = this.slots.get(i);

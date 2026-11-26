@@ -23,10 +23,25 @@ extends GuiScreen {
 
     private final boolean close;
     private final boolean accepted;
+    /** v18.2 申请类别：0 = 黑客玩法，1 = 阈值防护链 */
+    private final int kind;
 
+    /** v17.6 兼容：黑客玩法申请 */
     public GuiHackAppResult(boolean close, boolean accepted) {
+        this(close, accepted, 0);
+    }
+
+    public GuiHackAppResult(boolean close, boolean accepted, int kind) {
         this.close = close;
         this.accepted = accepted;
+        this.kind = kind;
+    }
+
+    /** v18.2：防护链申请的「开启/关闭」措辞在 watchapp 前缀下 */
+    private String wordKey() {
+        return this.close
+                ? "gui.jiezhirbmkmod." + (this.kind == 1 ? "watchapp." : "hackapp.") + "word_close"
+                : "gui.jiezhirbmkmod." + (this.kind == 1 ? "watchapp." : "hackapp.") + "word_open";
     }
 
     @Override
@@ -57,8 +72,7 @@ extends GuiScreen {
         String body = I18n.format(
                 this.accepted ? "gui.jiezhirbmkmod.hackapp.result_ok"
                               : "gui.jiezhirbmkmod.hackapp.result_deny",
-                I18n.format(this.close ? "gui.jiezhirbmkmod.hackapp.word_close"
-                                       : "gui.jiezhirbmkmod.hackapp.word_open"));
+                I18n.format(this.wordKey()));
         this.fontRenderer.drawString(body, x + 12, y + 22,
                 this.accepted ? 0xFFB8F0B0 : 0xFFE8A0A0);
 

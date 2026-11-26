@@ -32,6 +32,8 @@ extends GuiContainer {
     private static final int ID_CLEAR = 1;
     private static final int ID_CLOSE = 2;
     private static final int ID_ADD = 3;
+    /** v18.2 布局编辑器入口 */
+    private static final int ID_LAYOUT = 4;
     private static final int ID_DEL_BASE = 100;
     private final TileCustomScreen tile;
     private final BlockPos pos;
@@ -76,6 +78,9 @@ extends GuiContainer {
         this.clearButton = new GuiButton(1, px + 6, py + 134, 72, 16, I18n.format((String)"gui.jiezhirbmkmod.custom.clear", (Object[])new Object[0]));
         this.buttonList.add(this.clearButton);
         this.buttonList.add(new GuiButton(2, px + 120, py + 134, 72, 16, I18n.format((String)"gui.jiezhirbmkmod.custom.close", (Object[])new Object[0])));
+        // v18.2 布局编辑器入口（第三行按钮：清空 / 关闭 / 布局编辑器）
+        this.buttonList.add(new GuiButton(ID_LAYOUT, px + 234, py + 134, 72, 16,
+                I18n.format("gui.jiezhirbmkmod.custom.layout")));
         if (!loggedInit) {
             loggedInit = true;
             RbmkMonitorMod.warn("[GuiCustomScreen] init: screen={}x{} panel={}x{} gui=({},{}) overflowY={} overflowX={}", this.width, this.height, 312, 240, px, py, py < 0 || py + 240 > this.height, px < 0 || px + 312 > this.width);
@@ -140,6 +145,11 @@ extends GuiContainer {
         }
         if (id == 3) {
             this.send(3, 0);
+            return;
+        }
+        if (id == ID_LAYOUT) {
+            // v18.2 布局编辑器：工作副本进编辑器，保存才落服务端
+            this.mc.displayGuiScreen(new GuiCustomLayoutEditor(this.pos, this.tile.getLayout()));
             return;
         }
         if (id >= 100 && id < 108) {

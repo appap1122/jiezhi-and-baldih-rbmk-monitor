@@ -75,6 +75,14 @@ extends TileEntitySpecialRenderer<TileRbmkMonitorScreen> {
             }
             canvas.setMainStepMs(te.getRefreshMs());
             canvas.setAlert(te.getAlertLevel(), te.getAlertReason());
+            // v18.2 显示设置同步（亮度/主题/曲线对比/对数）
+            canvas.displayBrightness = te.getDisplayBrightness();
+            canvas.displayTheme = te.getDisplayTheme();
+            canvas.graphCompare = te.isGraphCompare();
+            canvas.graphLogScale = te.isGraphLogScale();
+            // v18.2 自定义页布局同步（自定义屏才有；其他屏恒 null → 固定排布路径不涉）
+            canvas.customLayout = te instanceof com.jiezhirbmkmod.block.TileCustomScreen
+                    ? ((com.jiezhirbmkmod.block.TileCustomScreen) te).getLayout() : null;
             canvas.render(powered ? te.clientBootElapsedMs() : -1L, powered, te.getData(), te.getEvents(), page, powered ? te.clientFaultElapsedMs() : -1L);
             canvas.uploadIfDirty(System.currentTimeMillis());
         }

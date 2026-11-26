@@ -52,6 +52,13 @@ public final class RbmkConfig {
     public static boolean spawnFlyingCap = DEFAULT_SPAWN_FLYING_CAP;
     public static boolean enableSteamExplosion = DEFAULT_ENABLE_STEAM_EXPLOSION;
     public static int steamExplosionDelaySec = DEFAULT_STEAM_EXPLOSION_DELAY_SEC;
+    // v18.2 爆炸景观参数（对齐 HBM 式「喷泉碎片雨 + 弹坑阵 + 地表燃烧」）
+    public static int explosionDebrisCount = 140;
+    public static int explosionDebrisSeconds = 3;
+    public static int explosionCraterCount = 32;
+    public static int explosionCraterRadius = 22;
+    public static int explosionFireCount = 28;
+    public static int explosionVanishChance = 45;
     public static boolean enableAutoScram = true;
     public static int autoScramTemp = 1000;
     public static boolean enableHackerAttack = true;
@@ -62,6 +69,13 @@ public final class RbmkConfig {
      * 任意一名管理员/房主同意。
      */
     public static boolean allowNormalPlayerHack = false;
+    /**
+     * v18.2 阈值自动化防护链开关，<b>默认关</b>。审批流程与黑客玩法开关
+     * 完全一致（申请人双击操作员工牌发起，全票开 / 一名管理员关）。
+     * 开启后终端 {@code watch} 命令可用：阈值监视规则 + 自动动作
+     * （SCRAM / 报警 / 审计），由 {@link WatchChain} 每 20 tick 扫描执行。
+     */
+    public static boolean allowThresholdWatch = false;
     public static int defaultWarnC = DEFAULT_WARN_C;
     public static int defaultCritC = DEFAULT_CRIT_C;
     public static int defaultRateWarnD = DEFAULT_RATE_WARN_D;
@@ -218,6 +232,32 @@ public final class RbmkConfig {
                     cfg.getInt("steamExplosionDelaySec", "explosion", DEFAULT_STEAM_EXPLOSION_DELAY_SEC, 1, 300,
                             "熔毁后延迟多少秒发生 20.0F 核爆（服务端定时，不阻塞主线程）"),
                     1, 300, DEFAULT_STEAM_EXPLOSION_DELAY_SEC);
+
+            // v18.2 爆炸景观参数
+            explosionDebrisCount = clampInt(
+                    cfg.getInt("debrisCount", "explosion", 140, 0, 400,
+                            "核爆后喷泉式抛出的碎片方块总数（分秒陆续喷出，落地部分消失、部分成方块）"),
+                    0, 400, 140);
+            explosionDebrisSeconds = clampInt(
+                    cfg.getInt("debrisSeconds", "explosion", 3, 1, 15,
+                            "碎片喷泉持续多少秒（每 tick 均匀喷出）"),
+                    1, 15, 3);
+            explosionCraterCount = clampInt(
+                    cfg.getInt("craterCount", "explosion", 32, 0, 120,
+                            "主爆坑之外散布的小弹坑数量（弹坑阵）"),
+                    0, 120, 32);
+            explosionCraterRadius = clampInt(
+                    cfg.getInt("craterRadius", "explosion", 22, 5, 48,
+                            "弹坑阵散布的最大半径（格）"),
+                    5, 48, 22);
+            explosionFireCount = clampInt(
+                    cfg.getInt("fireCount", "explosion", 28, 0, 120,
+                            "地表随机燃烧点数量（落在实体方块上）"),
+                    0, 120, 28);
+            explosionVanishChance = clampInt(
+                    cfg.getInt("vanishChance", "explosion", 45, 0, 100,
+                            "碎片落地后直接消失（不落成方块）的概率百分比"),
+                    0, 100, 45);
 
             enableAutoScram = cfg.getBoolean("enableAutoScram", "safety", true,
                     "是否开启自动紧急停堆（Auto-SCRAM）：堆芯温度超过 autoScramTemp 时自动把全部控制棒插到底");
@@ -390,6 +430,32 @@ public final class RbmkConfig {
                     "黑客攻击玩法开关（默认关）：开启需全服主/管理员审批通过"
                     + "（玩家双击操作员工牌发起），关闭只需一名管理员/房主同意；"
                     + "false 时仅 OP / 持签发工牌者可发起网络攻击").set(value);
+            if (cfg.hasChanged()) {
+                cfg.save();
+            }
+        }
+        catch (Throwable ignored) {
+            // 写回失败只影响重启后的持久化，本次会话开关仍然生效
+        }
+    }
+
+    /**
+     * v18.2 防护链审批结果落地：更新内存开关并写回
+     * {@code jiezhirbmkmod.cfg} 的 {@code security.allowThresholdWatch}。
+     */
+    public static void setAllowThresholdWatch(boolean value) {
+        allowThresholdWatch = value;
+        File dir = configDirectory;
+        if (dir == null) {
+            return;
+        }
+        try {
+            Configuration cfg = new Configuration(new File(dir, "jiezhirbmkmod.cfg"));
+            cfg.load();
+            cfg.get("security", "allowThresholdWatch", value,
+                    "阈值自动化防护链开关（默认关）：开启流程与黑客玩法一致"
+                            + "（双击操作员工牌申请，全票通过才开）；开启后终端 watch "
+                            + "命令可用：阈值监视 + 自动 SCRAM/报警/审计").set(value);
             if (cfg.hasChanged()) {
                 cfg.save();
             }

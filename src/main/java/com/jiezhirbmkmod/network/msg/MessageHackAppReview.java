@@ -25,14 +25,22 @@ implements IMessage {
     private boolean close;
     /** 申请编号：投票时带回，防止旧弹窗投到新申请上 */
     private int appId;
+    /** v18.2 申请类别：0 = 黑客玩法，1 = 阈值防护链 */
+    private int kind;
 
     public MessageHackAppReview() {
     }
 
+    /** v17.6 兼容：黑客玩法申请 */
     public MessageHackAppReview(String applicant, boolean close, int appId) {
+        this(applicant, close, appId, 0);
+    }
+
+    public MessageHackAppReview(String applicant, boolean close, int appId, int kind) {
         this.applicant = applicant;
         this.close = close;
         this.appId = appId;
+        this.kind = kind;
     }
 
     @Override
@@ -40,6 +48,7 @@ implements IMessage {
         this.applicant = ByteBufUtils.readUTF8String(buf);
         this.close = buf.readBoolean();
         this.appId = buf.readInt();
+        this.kind = buf.readInt();
     }
 
     @Override
@@ -47,6 +56,7 @@ implements IMessage {
         ByteBufUtils.writeUTF8String(buf, this.applicant);
         buf.writeBoolean(this.close);
         buf.writeInt(this.appId);
+        buf.writeInt(this.kind);
     }
 
     public static class Handler
@@ -58,7 +68,7 @@ implements IMessage {
                 @Override
                 public void run() {
                     Minecraft.getMinecraft().displayGuiScreen(
-                            new GuiHackAppReview(msg.applicant, msg.close, msg.appId));
+                            new GuiHackAppReview(msg.applicant, msg.close, msg.appId, msg.kind));
                 }
             });
             return null;

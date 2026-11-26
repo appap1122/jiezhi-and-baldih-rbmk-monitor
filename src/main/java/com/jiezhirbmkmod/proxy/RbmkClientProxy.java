@@ -66,6 +66,9 @@ extends CommonProxy {
         // v17.9 曲线历史导出（客户端聊天命令 /rbmkexport csv|png）
         net.minecraftforge.client.ClientCommandHandler.instance.registerCommand(
                 new com.jiezhirbmkmod.client.RbmkExportCommand());
+        // v18.2 黑匣子管理（客户端聊天命令 /rbmkhistory list|merge）
+        net.minecraftforge.client.ClientCommandHandler.instance.registerCommand(
+                new com.jiezhirbmkmod.client.RbmkHistoryCommand());
         ClientRegistry.bindTileEntitySpecialRenderer(TileRbmkMonitorScreen.class, (TileEntitySpecialRenderer)new RenderRbmkMonitorScreen());
         ClientRegistry.bindTileEntitySpecialRenderer(com.jiezhirbmkmod.block.TileRbmkMediaScreen.class,
                 (TileEntitySpecialRenderer)new com.jiezhirbmkmod.client.dfc.RenderRbmkMediaScreen());

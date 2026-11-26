@@ -21,25 +21,35 @@ implements IMessage {
     private boolean close;
     /** true = 通过；false = 被拒（一票否决 / 超时 / 受理人全下线） */
     private boolean accepted;
+    /** v18.2 申请类别：0 = 黑客玩法，1 = 阈值防护链 */
+    private int kind;
 
     public MessageHackAppResult() {
     }
 
+    /** v17.6 兼容：黑客玩法申请 */
     public MessageHackAppResult(boolean close, boolean accepted) {
+        this(close, accepted, 0);
+    }
+
+    public MessageHackAppResult(boolean close, boolean accepted, int kind) {
         this.close = close;
         this.accepted = accepted;
+        this.kind = kind;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
         this.close = buf.readBoolean();
         this.accepted = buf.readBoolean();
+        this.kind = buf.readInt();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeBoolean(this.close);
         buf.writeBoolean(this.accepted);
+        buf.writeInt(this.kind);
     }
 
     public static class Handler
@@ -51,7 +61,7 @@ implements IMessage {
                 @Override
                 public void run() {
                     Minecraft.getMinecraft().displayGuiScreen(
-                            new GuiHackAppResult(msg.close, msg.accepted));
+                            new GuiHackAppResult(msg.close, msg.accepted, msg.kind));
                 }
             });
             return null;

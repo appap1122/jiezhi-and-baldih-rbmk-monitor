@@ -192,11 +192,25 @@ public final class HistoryStore {
     /** 键 → 文件：{@code <游戏目录>/rbmk_history/dim<x>_<x>_<y>_<z>.dat} */
     private static File fileOf(String key) {
         try {
+            File dir = dirOf();
+            if (dir == null) {
+                return null;
+            }
+            return new File(dir, key.replace(':', '_').replace(',', '_') + ".dat");
+        }
+        catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** v18.2：黑匣子目录（{@code <游戏目录>/rbmk_history/}） */
+    static File dirOf() {
+        try {
             File dir = new File(net.minecraft.client.Minecraft.getMinecraft().gameDir, "rbmk_history");
             if (!dir.isDirectory() && !dir.mkdirs()) {
                 return null;
             }
-            return new File(dir, key.replace(':', '_').replace(',', '_') + ".dat");
+            return dir;
         }
         catch (Throwable t) {
             return null;
@@ -308,6 +322,148 @@ public final class HistoryStore {
         }
         catch (Throwable t) {
             tmp.delete();
+            return;
+        }
+        HistoryStore.indexUpdate(key, h.size());
+    }
+
+    // ==================== v18.2 黑匣子增强：索引 + 跨屏合并 ====================
+
+    /** 索引文件名（与 .dat 同目录） */
+    private static final String INDEX_NAME = "index.txt";
+
+    /**
+     * 索引行更新（save 成功后调用）：{@code key \t samples \t lastSavedMs}。
+     * 索引是给人 grep 与 {@code /rbmkhistory list} 用的，坏了不影响黑匣子本体。
+     */
+    private static void indexUpdate(String key, int samples) {
+        try {
+            File dir = dirOf();
+            File idx = dir == null ? null : new File(dir, INDEX_NAME);
+            if (idx == null) {
+                return;
+            }
+            java.util.LinkedHashMap<String, String> rows = new java.util.LinkedHashMap<String, String>();
+            if (idx.isFile()) {
+                try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.FileReader(idx))) {
+                    String line;
+                    while ((line = r.readLine()) != null) {
+                        int tab = line.indexOf('\t');
+                        if (tab > 0) {
+                            rows.put(line.substring(0, tab), line.substring(tab + 1));
+                        }
+                    }
+                }
+                catch (Throwable ignored) {
+                    // 索引坏了就当没有，重建
+                }
+            }
+            rows.put(key, samples + "\t" + System.currentTimeMillis());
+            try (java.io.PrintWriter w = new java.io.PrintWriter(
+                    new java.io.OutputStreamWriter(new java.io.FileOutputStream(idx),
+                            java.nio.charset.StandardCharsets.UTF_8))) {
+                for (Map.Entry<String, String> e : rows.entrySet()) {
+                    w.println(e.getKey() + "\t" + e.getValue());
+                }
+            }
+        }
+        catch (Throwable ignored) {
+        }
+    }
+
+    /** 索引内容（{@code /rbmkhistory list} 用）：每行 [键 采样数 最后保存时间] */
+    public static java.util.List<String> indexLines() {
+        java.util.List<String> out = new java.util.ArrayList<String>();
+        try {
+            File dir = dirOf();
+            File idx = dir == null ? null : new File(dir, INDEX_NAME);
+            if (idx != null && idx.isFile()) {
+                try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.FileReader(idx))) {
+                    String line;
+                    while ((line = r.readLine()) != null) {
+                        out.add(line);
+                    }
+                }
+            }
+        }
+        catch (Throwable ignored) {
+        }
+        return out;
+    }
+
+    /**
+     * v18.2 跨屏历史合并（迁移存档/换屏场景）：把 from 屏的黑匣子文件
+     * <b>拼接到</b> to 屏的历史后面，中间垫一个采样断口（与曲线页断口
+     * 同一标记，视觉上一眼看出"这里换过屏"）。环形容量装不下时自动
+     * 挤掉最老的样本。to 屏在区块里就写进活历史（立刻可见），不在就
+     * 直接改盘上文件。
+     *
+     * @return 合并的采样数；null-错误串返回抛出 IllegalArgumentException
+     */
+    public static int mergeHistory(int srcDim, BlockPos srcPos, int dstDim, BlockPos dstPos) {
+        if (srcPos == null || dstPos == null) {
+            throw new IllegalArgumentException("coordinates required");
+        }
+        String srcKey = HistoryStore.key(srcDim, srcPos);
+        String dstKey = HistoryStore.key(dstDim, dstPos);
+        if (srcKey.equals(dstKey)) {
+            throw new IllegalArgumentException("source and target are the same screen");
+        }
+        File srcFile = HistoryStore.fileOf(srcKey);
+        if (srcFile == null || !srcFile.isFile()) {
+            throw new IllegalArgumentException("no black box file for source screen " + srcKey);
+        }
+        GraphHistory src = new GraphHistory();
+        if (!HistoryStore.loadInto(srcFile, src) || !src.hasData()) {
+            throw new IllegalArgumentException("source black box is empty or unreadable (" + srcKey + ")");
+        }
+        int moved = src.size();
+        try {
+            // 目标优先走活历史（屏在区块里 → 合并立刻上屏）
+            GraphHistory dst = HistoryStore.LIVE.get(dstKey);
+            if (dst == null) {
+                File dstFile = HistoryStore.fileOf(dstKey);
+                dst = new GraphHistory();
+                if (dstFile != null && dstFile.isFile()) {
+                    HistoryStore.loadInto(dstFile, dst);
+                }
+                HistoryStore.REG.put(dst, dstKey);
+                HistoryStore.LIVE.put(dstKey, dst);
+            }
+            // 断口 + 逐点拼接（环形容量自动挤掉最老）
+            dst.pushGap();
+            int n = src.size();
+            for (int i = 0; i < n; ++i) {
+                if (src.gapAt(i)) {
+                    dst.pushGap();
+                } else {
+                    dst.push(src.valueAt(0, i), src.valueAt(1, i), src.valueAt(2, i),
+                            src.valueAt(3, i), src.valueAt(4, i), src.valueAt(5, i),
+                            src.alertAt(i));
+                }
+            }
+            HistoryStore.DIRTY.add(dst);
+            HistoryStore.flushAll();
+        }
+        catch (IllegalArgumentException e) {
+            throw e;
+        }
+        catch (Throwable t) {
+            throw new IllegalArgumentException("merge failed: " + t);
+        }
+        AuditStyleBridge.logMerge(srcKey, dstKey, moved);
+        return moved;
+    }
+
+    /** 合并落审计：借助服务端 AuditLog 有同 JVM 静态写入通道（单人/LAN） */
+    private static final class AuditStyleBridge {
+        static void logMerge(String from, String to, int samples) {
+            try {
+                com.jiezhirbmkmod.dfc.AuditLog.log(null, "HISTORY_MERGE",
+                        from + " -> " + to + " samples=" + samples);
+            }
+            catch (Throwable ignored) {
+            }
         }
     }
 

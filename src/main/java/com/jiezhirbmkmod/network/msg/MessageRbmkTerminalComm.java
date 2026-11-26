@@ -400,9 +400,21 @@ implements IMessage {
             return;
         }
         if ("play".equals(action)) {
+            // v18.2 PNG 幻灯片轮播：media play slides / media play slides@8
+            //（@后是每张停留秒数，3~60）。幻灯片帧由客户端从本机
+            // rbmk_media/slides/ 目录读取，服务端只记录模式名。
+            if (arg.toLowerCase(java.util.Locale.ROOT).matches("slides(@([3-9]|[1-5][0-9]|60))?")) {
+                media.setMediaState(true, arg.toLowerCase(java.util.Locale.ROOT),
+                        media.getMediaVolume(), "");
+                MessageRbmkTerminalComm.reply(player, MessageTerminalCommand.C_OK,
+                        "[MEDIA] Slideshow started: rbmk_media/slides/*.png ("
+                                + (arg.contains("@") ? arg.substring(arg.indexOf('@') + 1) : "8")
+                                + "s per slide)");
+                return;
+            }
             if (!arg.matches("[A-Za-z0-9._-]{1,64}")) {
                 MessageRbmkTerminalComm.reply(player, MessageTerminalCommand.C_ERR,
-                        "  用法: media play <文件名>（字母数字 . _ -）");
+                        "  用法: media play <文件名>（字母数字 . _ -）| slides[@秒]");
                 return;
             }
             media.setMediaState(true, arg, media.getMediaVolume(), "");

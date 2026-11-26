@@ -144,15 +144,17 @@ public final class ScreenMultiblock {
                 return true;
             }
         }
-        // v17.9 蹲下对屏连续右键两下 = 打开历史导出设置面板（纯客户端 GUI）。
-        // 必须放在所有持卡分支之后：手里拿着调屏器/拷贝卡/配方卡/扩音器/
-        // 遥控器时，潜行右键仍是它们自己的语义，绝不被双击劫持。客户端
-        // 每下右键的交互包都已先行发出，所以双击的两下服务端各拨一次电源
-        // （净状态不变，提示走 action-bar 一闪而过）；第一下永远交回正常
-        // 路由。GuiRbmkExport 只在 isRemote 分支被触达（isRemote 先短路），
+        // v18.2 蹲下对屏连续右键两下 = 打开「屏幕设置中心」（纯客户端 GUI）。
+        // v17.9 双击原是历史导出面板，v18.2 升级为设置中心（亮度/主题/曲线
+        // 对比/运行报表），历史导出降级为其中一个按钮。必须放在所有持卡
+        // 分支之后：手里拿着调屏器/拷贝卡/配方卡/扩音器/遥控器时，潜行
+        // 右键仍是它们自己的语义，绝不被双击劫持。客户端每下右键的交互
+        // 包都已先行发出，所以双击的两下服务端各拨一次电源（净状态不变，
+        // 提示走 action-bar 一闪而过）；第一下永远交回正常路由。
+        // GuiScreenSettings 只在 isRemote 分支被触达（isRemote 先短路），
         // 专用服务器不会解析这个客户端类。
         if (world.isRemote && player.isSneaking() && hand == EnumHand.MAIN_HAND
-                && com.jiezhirbmkmod.client.gui.GuiRbmkExport.tryOpen(world, pos, player)) {
+                && com.jiezhirbmkmod.client.gui.GuiScreenSettings.tryOpen(world, pos, player)) {
             return true;
         }
         try {

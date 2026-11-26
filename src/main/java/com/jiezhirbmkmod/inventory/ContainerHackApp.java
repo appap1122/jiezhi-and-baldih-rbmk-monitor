@@ -6,21 +6,25 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
 /**
- * v17.6 黑客攻击玩法申请选择 GUI 的无槽容器。
+ * 敏感开关申请选择 GUI 的无槽容器。v18.2 泛化为两类开关：
  *
- * <p>没有格子，只有两个窗口属性随容器机制同步到客户端：当前开关状态
- * （字段 0）与"该玩家能否发起关闭申请"（字段 1，管理员/房主才为真）。
- * 客户端 GUI 据此决定按钮文案与置灰逻辑，判定本身仍以服务端为准。</p>
+ * <p>没有格子，只有四个窗口属性随容器机制同步到客户端：黑客开关状态
+ * （字段 0）、"该玩家能否发起黑客关闭申请"（字段 1）、防护链开关状态
+ * （字段 2）、"该玩家能否发起防护链关闭申请"（字段 3）。客户端 GUI 据
+ * 此决定按钮文案与置灰逻辑，判定本身仍以服务端为准。</p>
  */
 public class ContainerHackApp
 extends Container {
 
-    /** 窗口属性 id：0 = 开关状态（1 开 / 0 关），1 = 发起人可关闭（1/0） */
+    /** 窗口属性 id：0 = 黑客开关状态，1 = 可关黑客，2 = 防护链开关状态，3 = 可关防护链 */
     public static final int FIELD_ALLOW = 0;
     public static final int FIELD_CAN_CLOSE = 1;
+    public static final int FIELD_WATCH = 2;
+    public static final int FIELD_WATCH_CAN_CLOSE = 3;
 
+    /** 关闭申请都要管理员/房主身份 —— 两类开关共用同一个判定 */
     private final boolean canClose;
-    private final int[] cached = new int[]{-1, -1};
+    private final int[] cached = new int[]{-1, -1, -1, -1};
 
     public ContainerHackApp(boolean canClose) {
         this.canClose = canClose;
@@ -35,6 +39,8 @@ extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         int[] fields = new int[]{RbmkConfig.allowNormalPlayerHack ? 1 : 0,
+                this.canClose ? 1 : 0,
+                RbmkConfig.allowThresholdWatch ? 1 : 0,
                 this.canClose ? 1 : 0};
         for (int i = 0; i < this.listeners.size(); ++i) {
             for (int f = 0; f < fields.length; ++f) {

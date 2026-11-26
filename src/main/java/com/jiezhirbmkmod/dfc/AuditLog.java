@@ -35,8 +35,10 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
  */
 public final class AuditLog {
 
-    /** 单文件上限（字节），超过即轮转为 .old */
+    /** 单文件上限（字节），超过即轮转 */
     private static final long MAX_BYTES = 4L * 1024L * 1024L;
+    /** v18.2 保留的旧代数（rbmk_audit.1.log ~ .3.log，比旧版单代 .old 更耐查） */
+    private static final int GENERATIONS = 3;
     /** 内存尾迹条数 */
     private static final int TAIL = 200;
 
@@ -69,13 +71,7 @@ public final class AuditLog {
                     AuditLog.file = new File(dir, "rbmk_audit.log");
                 }
                 if (AuditLog.file.length() > MAX_BYTES) {
-                    File old = new File(AuditLog.file.getParentFile(), "rbmk_audit.log.old");
-                    if (old.exists() && !old.delete()) {
-                        // 轮不动就先继续写，宁可超限也不丢这一条
-                    }
-                    if (!AuditLog.file.renameTo(old)) {
-                        // 同上：改名失败不致命
-                    }
+                    AuditLog.rotate();
                 }
                 try (FileWriter w = new FileWriter(AuditLog.file, true)) {
                     w.write(line);
@@ -88,6 +84,58 @@ public final class AuditLog {
                     System.out.println("[jiezhirbmkmod] audit log unavailable: " + t);
                 }
             }
+        }
+    }
+
+    /**
+     * v18.2 玩家动作审计：除名字外追加 {@code uuid=<带连字符全串>}，
+     * 改名/伪造昵称不再能洗白身份。player 为 null 时与 {@link #log}
+     * 等价（SYSTEM 行）。
+     */
+    public static void logPlayer(net.minecraft.entity.player.EntityPlayerMP player,
+            String action, String detail) {
+        if (player == null) {
+            AuditLog.log(null, action, detail);
+            return;
+        }
+        String uuid;
+        try {
+            uuid = player.getUniqueID() == null ? "?" : player.getUniqueID().toString();
+        }
+        catch (Throwable t) {
+            uuid = "?";
+        }
+        AuditLog.log(player.getName(), action,
+                (detail == null || detail.isEmpty() ? "" : detail + " ") + "uuid=" + uuid);
+    }
+
+    /**
+     * v18.2 多代轮转：{@code .3←.2←.1←当前}，最老一代直接丢弃。
+     * 某一代改名失败不影响后面代次 —— 宁可少留一代也不丢当前写入。
+     */
+    private static void rotate() {
+        File dir = AuditLog.file.getParentFile();
+        String base = AuditLog.file.getName(); // rbmk_audit.log
+        // 先删最老一代，再逐代后移
+        File oldest = new File(dir, base.replace(".log", "") + "." + GENERATIONS + ".log");
+        if (oldest.exists()) {
+            oldest.delete();
+        }
+        for (int g = GENERATIONS - 1; g >= 1; --g) {
+            File from = new File(dir, base.replace(".log", "") + "." + g + ".log");
+            File to = new File(dir, base.replace(".log", "") + "." + (g + 1) + ".log");
+            if (from.exists()) {
+                from.renameTo(to);
+            }
+        }
+        File firstGen = new File(dir, base.replace(".log", "") + ".1.log");
+        AuditLog.file.renameTo(firstGen);
+        // 兼容旧版 .old：趁轮转顺手归入 .1（已有 .1 时丢弃）
+        File legacy = new File(dir, base.replace(".log", "") + ".log.old");
+        if (legacy.exists() && !firstGen.exists()) {
+            legacy.renameTo(firstGen);
+        } else if (legacy.exists()) {
+            legacy.delete();
         }
     }
 

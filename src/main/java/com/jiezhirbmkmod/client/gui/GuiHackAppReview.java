@@ -29,13 +29,26 @@ extends GuiScreen {
     private final String applicant;
     private final boolean close;
     private final int appId;
+    /** v18.2 申请类别：0 = 黑客玩法，1 = 阈值防护链（正文键前缀随之切换） */
+    private final int kind;
     private boolean voted = false;
 
+    /** v17.6 兼容：黑客玩法申请 */
     public GuiHackAppReview(String applicant, boolean close, int appId) {
+        this(applicant, close, appId, 0);
+    }
+
+    public GuiHackAppReview(String applicant, boolean close, int appId, int kind) {
         this.applicant = applicant == null || applicant.isEmpty()
                 ? "?" : applicant;
         this.close = close;
         this.appId = appId;
+        this.kind = kind;
+    }
+
+    /** v18.2：防护链申请的正文键在 watchapp 前缀下，文案对应替换 */
+    private String key(String tail) {
+        return "gui.jiezhirbmkmod." + (this.kind == 1 ? "watchapp." : "hackapp.") + tail;
     }
 
     @Override
@@ -73,13 +86,13 @@ extends GuiScreen {
                 - this.fontRenderer.getStringWidth(title) / 2, y + 10, 0xFFE8D48A);
 
         String body = I18n.format(this.close
-                ? "gui.jiezhirbmkmod.hackapp.review_body_close"
-                : "gui.jiezhirbmkmod.hackapp.review_body_open", this.applicant);
+                ? this.key("review_body_close")
+                : this.key("review_body_open"), this.applicant);
         this.fontRenderer.drawString(body, x + 12, y + 34, 0xFFE0E0E0);
 
         String rule = I18n.format(this.close
-                ? "gui.jiezhirbmkmod.hackapp.rule_close"
-                : "gui.jiezhirbmkmod.hackapp.rule_open");
+                ? this.key("rule_close")
+                : this.key("rule_open"));
         this.fontRenderer.drawString(rule, x + 12, y + 48, 0xFF9FB4CC);
 
         super.drawScreen(mouseX, mouseY, partialTicks);

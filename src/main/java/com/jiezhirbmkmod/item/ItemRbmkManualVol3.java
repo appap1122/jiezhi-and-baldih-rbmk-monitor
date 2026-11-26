@@ -45,7 +45,7 @@ extends ItemWrittenBook {
 
     /** 全部页面。行宽与卷一同规矩：每行 ≤14 个全角字，每页 ≤170 字符。 */
     private static final String[] PAGES = new String[] {
-        "《RBMK 管理员手册》\n卷三 · 人与权限\n\n固件 18.1 · 管理员\n上岗必读\n\n只读文档。卷一管\n日常，卷二管异常，\n本卷只讲一件事：\n管好人，别管坏事。\n\n——中控设备科",
+        "《RBMK 管理员手册》\n卷三 · 人与权限\n\n固件 18.2 · 管理员\n上岗必读\n\n只读文档。卷一管\n日常，卷二管异常，\n本卷只讲一件事：\n管好人，别管坏事。\n\n——中控设备科",
         "第一章 权限体系\n\n管理员三件套：\n1.签发器（发卡柜台）\n2.操作员工牌\n3.审计日志\n\n权限只认服务端。\nGUI 只是前台，\n校验永远在服务端\n二次执行。",
         "第二章 签发规程\n\n签发器四步：\n1.放入空白工牌\n2.定次数与档位\n3.勾选在线玩家\n4.点授权\n\n次数 0 = 无限；\n正数 = 每张卡可\n用的管理员操作\n次数，用完即废。\n\n已签发的卡拒收回炉。",
         "第三章 工牌语义\n\n持卡 ≠ 管理员：\n卡只开放刷新率\n调节与门禁，\n不开放指令。\n\n卡被没收/作废，\n权限即刻失效。\n\n给谁发卡，谁\n就有一次「越权\n查看」的机会 ——\n发卡即授权。",
@@ -67,7 +67,7 @@ extends ItemWrittenBook {
      * 原版成书 ~21 个半角字符控制，仍是硬编码安全文件（理由同卷一）。
      */
     private static final String[] PAGES_EN = new String[] {
-        "RBMK Administrator\nHandbook Vol. III\n\nFirmware 18.1\nFor admins.\n\nRead-only. Vol. I\nruns the day, Vol. II\nthe emergency; this\none is about people\nand permissions.\n\n— Control Equip. Div.",
+        "RBMK Administrator\nHandbook Vol. III\n\nFirmware 18.2\nFor admins.\n\nRead-only. Vol. I\nruns the day, Vol. II\nthe emergency; this\none is about people\nand permissions.\n\n— Control Equip. Div.",
         "Ch.1 Permission\nModel\n\nThe admin trio:\n1. issuer (card counter)\n2. operator badge\n3. audit log\n\nThe server decides.\nGUIs are front desks;\nchecks always run\nagain server-side.",
         "Ch.2 Issuing\n\nIssuer, four steps:\n1. insert blank badges\n2. set uses and tiers\n3. tick online players\n4. press Authorize\n\nUses 0 = unlimited;\npositive = actions\nper card, then dead.\n\nIssued cards refuse\nto be re-melted.",
         "Ch.3 Badge Rules\n\nHolding a badge is\nnot being an admin:\nit opens tier tuning\nand gates only, no\ncommands.\n\nConfiscate or revoke\nthe card - rights die\nwith it instantly.\n\nIssuing a card grants\none peek beyond tier.\nIssuing = trust.",

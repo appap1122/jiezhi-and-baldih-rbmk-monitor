@@ -1,6 +1,6 @@
 # RBK-Monitor（RBMK 显示屏）
 
-Minecraft 1.12.2 Forge 模组 —— 为 HBM 核技术（Nuclear Tech Mod）的 RBMK 反应堆提供一整套**监控、报警、审计与中控室**解决方案。当前版本：**18.1**。
+Minecraft 1.12.2 Forge 模组 —— 为 HBM 核技术（Nuclear Tech Mod）的 RBMK 反应堆提供一整套**监控、报警、审计与中控室**解决方案。当前版本：**18.2**。
 
 ## 原作与二次创作声明
 
@@ -31,7 +31,7 @@ dependencies {
 ```bash
 # 自行构建（需要 JDK 8）
 ./gradlew build
-# 产物在 build/libs/RBMK-Monitor-18.1.jar
+# 产物在 build/libs/RBMK-Monitor-18.2.jar
 ```
 
 > 若在国内构建时 kotlin-stdlib 等 POM 解析报错：删除 `~/.gradle/caches/modules-2` 与 `forge_gradle` 缓存重跑；仍失败可移除 `build.gradle` 里的 aliyun 镜像仓库行（镜像偶尔吐损坏 POM）。
@@ -52,7 +52,7 @@ dependencies {
 .minecraft/mods/
 ```
 
-（和 `RBMK-Monitor-18.1.jar` 放在同一个文件夹，重启游戏即可生效。）
+（和 `RBMK-Monitor-18.2.jar` 放在同一个文件夹，重启游戏即可生效。）
 
 如果服务端/整合包不允许往 `mods/` 里放非模组 jar，可改用回退目录：
 
@@ -92,22 +92,22 @@ media install
 
 ## 方块一览
 
-| 方块                                      | 说明                                     |
-| --------------------------------------- | -------------------------------------- |
-| `rbmk_screen` / `_real`                 | 堆芯总览屏（平均/最高柱温、通量、蒸汽、富集度、氙毒、控制棒）        |
-| `rbmk_monitor` / `_real`                | 热图网格屏（逐柱温度矩阵，熔毁自动红屏）                   |
-| `rbmk_graph` / `_real`                  | 历史曲线屏（滚轮回放，双击开导出面板）                    |
-| `rbmk_custom` / `_real`                 | 自定义文本屏                                 |
-| `rbmk_term_screen` / `_real`            | 墙挂终端屏                                  |
-| `rbmk_cycle_screen` / `_real`           | **v18.0 轮播屏**：总览 → 热图 → 曲线自动轮播（默认 3 秒） |
-| `rbmk_terminal` / `_real`               | 地面控制台（终端指令入口，见下节）                      |
-| `rbmk_patrol`                           | 巡屏中控：绑定 4 块屏轮巡                         |
-| `rbmk_aggregate`                        | 多堆芯聚合中控：多反应堆功率/温度排行（熔毁置顶）              |
-| `rbmk_siren`                            | 警笛                                     |
-| `rbmk_alarm_light`                      | 报警灯：四级自动染色 / 手动染色 / 六档触发               |
-| `rbmk_issuer`                           | 签发器                                    |
-| `rbmk_router`                           | 网络路由器（跨维度通讯）                           |
-| `rbmk_media_screen` / `rbmk_ppt_screen` | 多媒体屏 / PPT 汇报屏                         |
+| 方块 | 说明 |
+|---|---|
+| `rbmk_screen` / `_real` | 堆芯总览屏（平均/最高柱温、通量、蒸汽、富集度、氙毒、控制棒） |
+| `rbmk_monitor` / `_real` | 热图网格屏（逐柱温度矩阵，熔毁自动红屏） |
+| `rbmk_graph` / `_real` | 历史曲线屏（滚轮回放，双击开导出面板） |
+| `rbmk_custom` / `_real` | 自定义文本屏 |
+| `rbmk_term_screen` / `_real` | 墙挂终端屏 |
+| `rbmk_cycle_screen` / `_real` | **v18.0 轮播屏**：总览 → 热图 → 曲线自动轮播（默认 3 秒） |
+| `rbmk_terminal` / `_real` | 地面控制台（终端指令入口，见下节） |
+| `rbmk_patrol` | 巡屏中控：绑定 4 块屏轮巡 |
+| `rbmk_aggregate` | 多堆芯聚合中控：多反应堆功率/温度排行（熔毁置顶） |
+| `rbmk_siren` | 警笛 |
+| `rbmk_alarm_light` | 报警灯：四级自动染色 / 手动染色 / 六档触发 |
+| `rbmk_issuer` | 签发器 |
+| `rbmk_router` | 网络路由器（跨维度通讯） |
+| `rbmk_media_screen` / `rbmk_ppt_screen` | 多媒体屏 / PPT 汇报屏 |
 
 带 `_real` 后缀的是**真实版**，需要三路供电才能亮（见「供电速查」）。普通版免电，行为与旧版完全一致。
 
@@ -142,9 +142,7 @@ rods | filter flux < 100        通量小于 100 的行
 ```
 
 - 支持运算符 `> < >= <= =`
-- 字段可用别名：`heat` / `temp` / `温度` / `flux` / `water` / `steam` / `enrichment` / `xenon` / `level`  
-  |  |  |  
-  | --- | --- |
+- 字段可用别名：`heat` / `temp` / `温度` / `flux` / `water` / `steam` / `enrichment` / `xenon` / `level`
 - `filter` 关键字可省略：`status | heat > 800` 等价
 - 多级过滤可串联；回显与错误行永远放行；10 秒无回包自动失效
 
@@ -160,18 +158,42 @@ macro del emergency                     删除宏
 
 宏为会话内存，重启即清（像真 shell）；嵌套深度 ≤3。
 
+### v18.2 阈值自动化防护链（终端 `watch`）
+
+```
+watch heat > 800 do scram        超过 800°C 自动停堆
+watch water < 40 do alarm        水量低于 40 拉响附近警报器
+watch flux > 2000 do audit       只记审计日志
+watch list / del N / clear       规则管理
+```
+
+- 指标：`heat` / `peak`（最高柱温）/ `flux` / `water` / `steam` / `enrich` / `xenon`
+- 动作：`scram`（插棒+审计+公告）/ `alarm`（告警+附近警报器试鸣）/ `audit`
+- 冷却 200 刻；规则落盘 `rbmk_watch.json`，重启不丢
+- **开关走审批**：与黑客玩法同一套流程——双击操作员工牌申请「阈值自动化防护链」，全体管理员全票通过才开启，任意一名管理员同意即关闭
+
+### v18.2 其它新功能
+
+- **蒸气爆炸景观**：顶盖飞天 → 喷泉式碎片雨（140 块、分 3 秒喷出）→ 地面弹坑阵（32 坑）+ 余火与烟柱，节奏对齐 HBM 实机效果
+- **自定义页布局编辑器**：自定义屏设置界面新增「布局编辑器…」，仪表/曲线/文本块自由摆放缩放（最多 12 个），导出/导入剪贴板
+- **设置中心**：任意显示屏蹲下连续右键 2 下打开——亮度 40~100、四种磷光主题（标准/琥珀/绿磷/纯白）、曲线对比模式（四通道叠加+可选对数纵轴）、运行报表（CSV/HTML 一键生成）
+- **媒体屏幻灯片**：`media play slides@[3-60]` 轮播 `rbmk_media/slides/` 里的 PNG/JPG（默认 8 秒一张）
+- **黑匣子增强**：`rbmk_history/index.txt` 索引、`/rbmkhistory merge <x> <y> <z>` 合并历史到注视屏
+- **审计日志轮转**：`rbmk_audit.log` 满 4MB 自动滚到 `.1/.2/.3` 三代
+- 网络协议代号 9 → 10（17/18/20 号包格式有变，新旧不可互通）
+
 ---
 
 ## 常用命令与操作
 
-| 操作                         | 方式                                   |
-| -------------------------- | ------------------------------------ |
-| 开/关屏                       | 右键屏                                  |
-| 告警阈值 / 红石联动设置              | 蹲下 + 空手右键                            |
-| 导出历史图形                     | 蹲下 + 连续右键 2 下 → 选 CSV/PNG → 「导出历史图形」 |
-| `/rbmkexport csv\|png [秒]` | 对准屏执行；可带时间段（如 `/rbmkexport png 60`）  |
-| `/rbmktrace`               | 查询附近屏的入侵痕迹                           |
-| `/rbmkcompat`              | 网络兼容探针（版本/协议 9/包注册表）                 |
+| 操作 | 方式 |
+|---|---|
+| 开/关屏 | 右键屏 |
+| 告警阈值 / 红石联动设置 | 蹲下 + 空手右键 |
+| 导出历史图形 | 蹲下 + 连续右键 2 下 → 选 CSV/PNG → 「导出历史图形」 |
+| `/rbmkexport csv\|png [秒]` | 对准屏执行；可带时间段（如 `/rbmkexport png 60`） |
+| `/rbmktrace` | 查询附近屏的入侵痕迹 |
+| `/rbmkcompat` | 网络兼容探针（版本/协议 10/包注册表） |
 
 ### 数据文件位置（运行时自动创建）
 
@@ -193,11 +215,11 @@ macro del emergency                     删除宏
 
 ## 真实版供电速查
 
-| 电源          | 类型           | 接法                         |
-| ----------- | ------------ | -------------------------- |
-| HE（厂用电，优先）  | HBM 能量系统     | 屏/终端**贴着** HBM 能量方块即可，自动拉电 |
-| FE/RF（外部备用） | Forge Energy | Mekanism / 热力膨胀电缆直接接       |
-| 红石（许可）      | —            | 屏旁 ≥10 级红石信号               |
+| 电源 | 类型 | 接法 |
+|---|---|---|
+| HE（厂用电，优先） | HBM 能量系统 | 屏/终端**贴着** HBM 能量方块即可，自动拉电 |
+| FE/RF（外部备用） | Forge Energy | Mekanism / 热力膨胀电缆直接接 |
+| 红石（许可） | — | 屏旁 ≥10 级红石信号 |
 
 - HE 优先扣费（1 FE 当量 = 10 HE），HE 不足自动落 FE（UPS 语义），两路全空才黑屏
 - 状态行电源指示：`MAINS`=厂用 HE / `EXT`=外部 FE
@@ -208,16 +230,16 @@ macro del emergency                     删除宏
 
 ## 安装与升级
 
-**安装**：Forge 1.12.2（推荐 14.23.5.2860）+ HBM 核技术 → 把 `RBMK-Monitor-18.1.jar` 放进 `mods/`。
+**安装**：Forge 1.12.2（推荐 14.23.5.2860）+ HBM 核技术 → 把 `RBMK-Monitor-18.2.jar` 放进 `mods/`。
 
-**从旧版升级（≤17.10 → 18.1）**：
+**从旧版升级（≤17.10 → 18.2）**：
 
 1. 备份存档
-2. `mods/` 里删光所有旧版 RBK-Monitor jar，**只留 18.1 一份**（残留两份会 `DuplicateModsFoundException` 崩启动）
+2. `mods/` 里删光所有旧版 RBK-Monitor jar，**只留 18.2 一份**（残留两份会 `DuplicateModsFoundException` 崩启动）
 3. 旧配置文件**不用删**，存档**不用动**，`rbmk_export/`、`rbmk_history/` 跨版本通用
 4. 进世界跑 `/rbmkcompat` 确认
 
-> **注意**：18.1 网络协议代号为 **9**，与 17.10 及更早版本**不可互通**——多人游戏两端必须都升 18.1（握手阶段直接标红拒绝，`/rbmkcompat` 给可读原因）。这是防止包串台崩运行时的保护，不是 bug。
+> **注意**：18.2 网络协议代号为 **10**，与 17.10 及更早版本**不可互通**——多人游戏两端必须都升 18.2（握手阶段直接标红拒绝，`/rbmkcompat` 给可读原因）。这是防止包串台崩运行时的保护，不是 bug。
 
 ---
 
@@ -231,4 +253,4 @@ macro del emergency                     删除宏
 
 ---
 
-*v18.1 · RBMK 显示屏 · 仅供 Minecraft 游戏娱乐，与任何现实核设施无关。*
+*v18.2 · RBMK 显示屏 · 仅供 Minecraft 游戏娱乐，与任何现实核设施无关。*
