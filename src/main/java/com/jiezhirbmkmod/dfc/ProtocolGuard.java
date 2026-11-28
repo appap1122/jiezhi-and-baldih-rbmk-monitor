@@ -53,16 +53,16 @@ public final class ProtocolGuard {
     public static void logReject(String version, boolean remoteIsServerSide) {
         String msg = "Connection rejected by RBMK-Monitor compat check: remote "
                 + (remoteIsServerSide ? "server" : "client") + " has "
-                + com.jiezhirbmkmod.RbmkMonitorMod.MODID
+                + com.jiezhirbmkmod.Tags.MODID
                 + (version == null ? " MISSING" : " v" + version)
-                + ", local v" + com.jiezhirbmkmod.RbmkMonitorMod.VERSION
-                + " — 让对方安装/更新到 v" + com.jiezhirbmkmod.RbmkMonitorMod.VERSION
+                + ", local v" + com.jiezhirbmkmod.Tags.VERSION
+                + " — 让对方安装/更新到 v" + com.jiezhirbmkmod.Tags.VERSION
                 + " 后再连。";
         System.out.println("[jiezhirbmkmod] " + msg);
         try {
             AuditLog.log(null, "NET_REJECT",
                     (version == null ? "mod missing" : "remote v" + version)
-                            + " local v" + com.jiezhirbmkmod.RbmkMonitorMod.VERSION);
+                            + " local v" + com.jiezhirbmkmod.Tags.VERSION);
         }
         catch (Throwable ignored) {
             // 审计不可用不影响握手流程
@@ -90,6 +90,6 @@ public final class ProtocolGuard {
         return who + ": v" + (v == null ? "?" : v)
                 + (ProtocolGuard.remoteAccepted ? " (accepted)"
                 : " (REJECTED — update remote to v"
-                        + com.jiezhirbmkmod.RbmkMonitorMod.VERSION + ")");
+                        + com.jiezhirbmkmod.Tags.VERSION + ")");
     }
 }

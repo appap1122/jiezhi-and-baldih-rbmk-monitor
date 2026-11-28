@@ -391,6 +391,7 @@ tooltip.jiezhirbmkmod.rbmk_recipe_card.2=§8Right-click a screen: paste recipe �
 tooltip.jiezhirbmkmod.rbmk_recipe_card.3=§aRecipe stored (%s) — right-click a matching screen to paste
 tooltip.jiezhirbmkmod.rbmk_recipe_card.4=§8Empty card: sneak+right-click a screen first
 item.rbmk_manual_vol3.name=RBMK Administrator Handbook (Vol. III)
+item.rbmk_pda.name=RBMK PDA
 tooltip.jiezhirbmkmod.rbmk_manual_vol3=§8Read-only document · companion to Vol. I & II · people & permissions · 15 pages · with recipe appendix
 msg.jiezhirbmkmod.recipe.read=Full recipe snapshotted (%s keys) — right-click a matching screen to paste
 msg.jiezhirbmkmod.recipe.write=Recipe pasted (%s keys), audit logged

@@ -68,7 +68,7 @@ extends CommandBase {
         String pfx = TextFormatting.AQUA + "[jiezhirbmkmod] ";
         // 1) 本端身份：版本 + 协议
         send(sender, pfx, TextFormatting.AQUA, "msg.jiezhirbmkmod.compat.header",
-                com.jiezhirbmkmod.RbmkMonitorMod.VERSION,
+                com.jiezhirbmkmod.Tags.VERSION,
                 Integer.valueOf(com.jiezhirbmkmod.network.ModNetwork.PROTOCOL));
         // 2) 运行环境
         boolean dedicated = net.minecraftforge.fml.common.FMLCommonHandler.instance()
@@ -112,7 +112,7 @@ extends CommandBase {
             send(sender, pfx, bad ? TextFormatting.YELLOW : TextFormatting.GRAY,
                     "msg.jiezhirbmkmod.compat.remote", remote);
             send(sender, pfx, TextFormatting.GRAY, "msg.jiezhirbmkmod.compat.remote_hint",
-                    com.jiezhirbmkmod.RbmkMonitorMod.VERSION);
+                    com.jiezhirbmkmod.Tags.VERSION);
         }
     }
 

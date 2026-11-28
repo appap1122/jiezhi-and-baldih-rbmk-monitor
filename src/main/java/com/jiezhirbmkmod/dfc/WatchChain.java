@@ -3,6 +3,7 @@ package com.jiezhirbmkmod.dfc;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jiezhirbmkmod.RbmkMonitorMod;
+import com.jiezhirbmkmod.Tags;
 import com.jiezhirbmkmod.block.TileRbmkSiren;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -52,7 +53,7 @@ import java.util.List;
  *   <li><b>audit</b>：只写审计（事后可查）。</li>
  * </ul>
  */
-@Mod.EventBusSubscriber(modid = RbmkMonitorMod.MODID)
+@Mod.EventBusSubscriber(modid = Tags.MODID)
 public final class WatchChain {
 
     // ---- 规则模型 ----

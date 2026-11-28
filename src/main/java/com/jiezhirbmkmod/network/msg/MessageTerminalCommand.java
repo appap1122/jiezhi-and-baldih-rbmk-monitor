@@ -9,6 +9,7 @@ import com.jiezhirbmkmod.dfc.RbmkConfig;
 import com.jiezhirbmkmod.dfc.RbmkControl;
 import com.jiezhirbmkmod.dfc.RbmkSnapshot;
 import com.jiezhirbmkmod.item.ItemRbmkLaptop;
+import com.jiezhirbmkmod.item.ItemRbmkPda;
 import com.jiezhirbmkmod.network.ModNetwork;
 
 import java.util.ArrayList;
@@ -92,6 +93,8 @@ public class MessageTerminalCommand implements IMessage {
     private boolean reply;
     /** true when the command comes from the handheld laptop (v11.2) */
     private boolean laptop;
+    /** true when the command comes from the PDA (v18.3) */
+    private boolean pda;
     private int hx;
     private int hy;
     private int hz;
@@ -116,6 +119,14 @@ public class MessageTerminalCommand implements IMessage {
         return m;
     }
 
+    /** v18.3 PDA variant: the console link lives in the held PDA's NBT */
+    public static MessageTerminalCommand pda(String command) {
+        MessageTerminalCommand m = new MessageTerminalCommand();
+        m.pda = true;
+        m.command = command;
+        return m;
+    }
+
     public MessageTerminalCommand(List<CmdLine> replyLines) {
         this.reply = true;
         this.lines.addAll(replyLines);
@@ -130,7 +141,8 @@ public class MessageTerminalCommand implements IMessage {
         buf.writeBoolean(this.reply);
         if (!this.reply) {
             buf.writeBoolean(this.laptop);
-            if (!this.laptop) {
+            buf.writeBoolean(this.pda);
+            if (!this.laptop && !this.pda) {
                 buf.writeInt(this.hx);
                 buf.writeInt(this.hy);
                 buf.writeInt(this.hz);
@@ -151,7 +163,8 @@ public class MessageTerminalCommand implements IMessage {
         this.lines.clear();
         if (!this.reply) {
             this.laptop = buf.readBoolean();
-            if (!this.laptop) {
+            this.pda = buf.readBoolean();
+            if (!this.laptop && !this.pda) {
                 this.hx = buf.readInt();
                 this.hy = buf.readInt();
                 this.hz = buf.readInt();
@@ -191,6 +204,8 @@ public class MessageTerminalCommand implements IMessage {
                 net.minecraft.client.gui.GuiScreen screen = mc.currentScreen;
                 if (screen instanceof com.jiezhirbmkmod.client.gui.GuiTerminal) {
                     ((com.jiezhirbmkmod.client.gui.GuiTerminal) screen).onServerReply(replyMsg.getLines());
+                } else if (screen instanceof com.jiezhirbmkmod.client.gui.GuiRbmkPda) {
+                    ((com.jiezhirbmkmod.client.gui.GuiRbmkPda) screen).onServerReply(replyMsg.getLines());
                 }
             });
             return null;
@@ -200,6 +215,11 @@ public class MessageTerminalCommand implements IMessage {
             World world = player.getServerWorld();
             String trimmed = msg.command == null ? "" : msg.command.trim();
             if (trimmed.isEmpty()) {
+                return;
+            }
+            // v18.3 PDA: the console comes from the held PDA's NBT
+            if (msg.pda) {
+                Handler.executePda(player, world, trimmed, out);
                 return;
             }
             // handheld laptop: the console comes from the held item's NBT,
@@ -343,6 +363,75 @@ public class MessageTerminalCommand implements IMessage {
             TileEntity console = world.getTileEntity(consolePos);
             if (!RbmkBridge.isConsole(console)) {
                 out.add(new CmdLine(C_ERR, "  The linked console is gone (was it removed?). Type 'bind' near one to relink."));
+                return;
+            }
+            BlockPos center = RbmkControl.reactorCenter(world, console);
+            Handler.runShared(world, console, center, parts, cmd, out, player);
+        }
+
+        /** v18.3 PDA path: link lives in the held PDA's NBT, validation is server-side. */
+        private static void executePda(EntityPlayerMP player, World world, String trimmed, List<CmdLine> out) {
+            ItemStack held = ItemRbmkPda.findHeld(player);
+            if (held.isEmpty()) {
+                out.add(new CmdLine(C_ERR, "  The PDA is not in your hand."));
+                return;
+            }
+            String[] parts = trimmed.toLowerCase(Locale.ROOT).split("\\s+");
+            String cmd = parts[0];
+            if ("help".equals(cmd)) {
+                out.add(new CmdLine(C_OUT, "RBMK PDA - available commands:"));
+                for (int i = 0; i < HELP.length; ++i) {
+                    out.add(new CmdLine(C_OUT, "  " + HELP[i]));
+                }
+                out.add(new CmdLine(C_DIM, "  diagnose                 local/AI diagnosis (client side)"));
+                return;
+            }
+            if ("bind".equals(cmd)) {
+                BlockPos console = ItemRbmkPda.findBindTarget(player, world);
+                if (console == null) {
+                    out.add(new CmdLine(C_ERR, "  No RBMK console within reach. Look at one and try again."));
+                    return;
+                }
+                ItemRbmkPda.writeBound(held, console, world.provider.getDimension());
+                out.add(new CmdLine(C_OK, "  PDA linked to RBMK console @ "
+                        + console.getX() + " " + console.getY() + " " + console.getZ() + "."));
+                return;
+            }
+            if ("clear".equals(cmd) || "unbind".equals(cmd)) {
+                ItemRbmkPda.clearBound(held);
+                out.add(new CmdLine(C_OK, "  PDA unlinked from the reactor."));
+                return;
+            }
+            BlockPos consolePos = ItemRbmkPda.readBoundPos(held);
+            if (consolePos == null) {
+                out.add(new CmdLine(C_ERR, "  No reactor linked. Look at a console and use the Bind button,"));
+                out.add(new CmdLine(C_ERR, "  or stand near one and type 'bind'."));
+                return;
+            }
+            if (ItemRbmkPda.readBoundDim(held) != world.provider.getDimension()) {
+                out.add(new CmdLine(C_ERR, "  The linked console is in another dimension."));
+                return;
+            }
+            if ("where".equals(cmd)) {
+                double dist = Math.sqrt(player.getDistanceSq((double) consolePos.getX() + 0.5D,
+                        (double) consolePos.getY() + 0.5D, (double) consolePos.getZ() + 0.5D));
+                out.add(new CmdLine(C_OUT, "  PDA linked to RBMK console @ "
+                        + consolePos.getX() + " " + consolePos.getY() + " " + consolePos.getZ()
+                        + " (" + String.format(Locale.ROOT, "%.0f", Double.valueOf(dist)) + "m away)"));
+                return;
+            }
+            if ("siren".equals(cmd)) {
+                Handler.cmdSiren(world, player.getPosition(), parts, out);
+                return;
+            }
+            if (player.getDistanceSq((double) consolePos.getX() + 0.5D, (double) consolePos.getY() + 0.5D,
+                    (double) consolePos.getZ() + 0.5D) > 16384.0D) {
+                out.add(new CmdLine(C_ERR, "  The linked console is too far away (max 128m)."));
+                return;
+            }
+            TileEntity console = world.getTileEntity(consolePos);
+            if (!RbmkBridge.isConsole(console)) {
+                out.add(new CmdLine(C_ERR, "  The linked console is gone (was it removed?). Relink it."));
                 return;
             }
             BlockPos center = RbmkControl.reactorCenter(world, console);

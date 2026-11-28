@@ -391,6 +391,7 @@ tooltip.jiezhirbmkmod.rbmk_recipe_card.2=§8右键屏幕：粘贴配方 · 潜�
 tooltip.jiezhirbmkmod.rbmk_recipe_card.3=§a已存配方（%s）—— 找同款屏右键粘贴
 tooltip.jiezhirbmkmod.rbmk_recipe_card.4=§8空卡：先潜行右键一块屏快照
 item.rbmk_manual_vol3.name=RBMK 管理员手册（卷三）
+item.rbmk_pda.name=PDA 便携式移动中控台
 tooltip.jiezhirbmkmod.rbmk_manual_vol3=§8只读文档 · 与卷一卷二配套 · 人与权限专卷 · 15 页 · 含配方附录
 msg.jiezhirbmkmod.recipe.read=已快照整张配方（%s 项）—— 右键同款屏粘贴
 msg.jiezhirbmkmod.recipe.write=已粘贴配方（%s 项），审计已留痕

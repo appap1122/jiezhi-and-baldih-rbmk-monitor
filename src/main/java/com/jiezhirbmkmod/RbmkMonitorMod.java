@@ -23,12 +23,9 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid="jiezhirbmkmod", name="RBMK\u663e\u793a\u5c4f", version="18.2")
+@Mod(modid = Tags.MODID, name = Tags.NAME, version = Tags.VERSION)
 public class RbmkMonitorMod {
-    public static final String MODID = "jiezhirbmkmod";
-    public static final String NAME = "RBMK\u663e\u793a\u5c4f";
-    public static final String VERSION = "18.2";
-    @Mod.Instance(value="jiezhirbmkmod")
+    @Mod.Instance(value = Tags.MODID)
     public static RbmkMonitorMod instance;
     public static Logger logger;
     @SidedProxy(clientSide="com.jiezhirbmkmod.proxy.RbmkClientProxy", serverSide="com.jiezhirbmkmod.proxy.CommonProxy")
@@ -47,7 +44,7 @@ public class RbmkMonitorMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         logger = event.getModLog();
-        logger.info("RBMK monitor display (derived from JiezhiMod by \u6811\u4e0a\u7684\u8282\u679d) v{} is loading.", (Object)VERSION);
+        logger.info("RBMK monitor display (derived from JiezhiMod by \u6811\u4e0a\u7684\u8282\u679d) v{} is loading.", (Object)Tags.VERSION);
         com.jiezhirbmkmod.dfc.RbmkConfig.load(event.getModConfigurationDirectory());
         ModNetwork.init();
         MinecraftForge.EVENT_BUS.register((Object)new ModBlocks());
@@ -62,20 +59,20 @@ public class RbmkMonitorMod {
         MinecraftForge.EVENT_BUS.register((Object)new com.jiezhirbmkmod.item.RemoteBindHandler());
         // v17.6: 黑客攻击玩法开关审批状态机（超时/掉线检查挂在 server tick 上）
         MinecraftForge.EVENT_BUS.register((Object)new com.jiezhirbmkmod.dfc.HackAppManager());
-        GameRegistry.registerTileEntity(TileRbmkMonitorScreen.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_monitor_screen"));
-        GameRegistry.registerTileEntity(TileCustomScreen.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_custom"));
-        GameRegistry.registerTileEntity(TileRbmkSiren.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_siren"));
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkTerminal.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_terminal"));
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkTermScreen.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_term_screen"));
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkCycleScreen.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_cycle_screen"));
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkMediaScreen.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_media_screen"));
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkPptScreen.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_ppt_screen"));
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileAlarmLight.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_alarm_light"));
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkIssuer.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_issuer"));
+        GameRegistry.registerTileEntity(TileRbmkMonitorScreen.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_monitor_screen"));
+        GameRegistry.registerTileEntity(TileCustomScreen.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_custom"));
+        GameRegistry.registerTileEntity(TileRbmkSiren.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_siren"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkTerminal.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_terminal"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkTermScreen.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_term_screen"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkCycleScreen.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_cycle_screen"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkMediaScreen.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_media_screen"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkPptScreen.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_ppt_screen"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileAlarmLight.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_alarm_light"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkIssuer.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_issuer"));
         // v17.7 巡屏中控 + 审计命令（/rbmkaudit）
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkPatrol.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_patrol"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkPatrol.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_patrol"));
         // v17.9 多堆芯聚合中控
-        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkAggregate.class, (ResourceLocation)new ResourceLocation(MODID, "rbmk_aggregate"));
+        GameRegistry.registerTileEntity(com.jiezhirbmkmod.block.TileRbmkAggregate.class, (ResourceLocation)new ResourceLocation(Tags.MODID, "rbmk_aggregate"));
         MinecraftForge.EVENT_BUS.register((Object)new com.jiezhirbmkmod.dfc.AuditCommand());
         // v17.7: 工牌吊销命令 /rbmkrevoke —— 与审计命令同款注册方式
         MinecraftForge.EVENT_BUS.register((Object)new com.jiezhirbmkmod.dfc.RevokeCommand());
@@ -84,7 +81,7 @@ public class RbmkMonitorMod {
         // v17.9 兼容探针 /rbmkcompat（纯只读，任何玩家可用）
         MinecraftForge.EVENT_BUS.register((Object)new com.jiezhirbmkmod.dfc.CompatCommand());
         net.minecraftforge.fml.common.registry.EntityRegistry.registerModEntity(
-                (ResourceLocation)new ResourceLocation(MODID, "flying_block"),
+                (ResourceLocation)new ResourceLocation(Tags.MODID, "flying_block"),
                 com.jiezhirbmkmod.entity.EntityFlyingBlock.class,
                 "flying_block", 0, (Object)instance, 64, 1, true);
         NetworkRegistry.INSTANCE.registerGuiHandler((Object)instance, (IGuiHandler)proxy);
@@ -123,11 +120,11 @@ public class RbmkMonitorMod {
     public boolean onNetworkCheck(java.util.Map<String, String> remoteMods,
             net.minecraftforge.fml.relauncher.Side remoteSide) {
         boolean remoteIsServer = remoteSide == net.minecraftforge.fml.relauncher.Side.SERVER;
-        String v = remoteMods == null ? null : remoteMods.get(MODID);
+        String v = remoteMods == null ? null : remoteMods.get(Tags.MODID);
         // v18.0 收紧：去掉客户端侧的无条件放行。单机/局域网同版本场景
         // 不受影响（对端版本必相等）；vanilla 服与版本不同的服在客户端
         // 就被拒，报错发生在玩家自己的屏幕上，可读。
-        boolean ok = v != null && VERSION.equals(v);
+        boolean ok = v != null && Tags.VERSION.equals(v);
         com.jiezhirbmkmod.dfc.ProtocolGuard.record(v, remoteIsServer, ok);
         if (!ok) {
             com.jiezhirbmkmod.dfc.ProtocolGuard.logReject(v, remoteIsServer);

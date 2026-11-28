@@ -1,137 +1,52 @@
 RBMK Monitor - Changelog
 ========================
 
-17.8
-- Version unified to 17.8. This banner covers the release previously
-  drafted as 17.7. This release merges what used to be tracked as 17.7
-  (permission wrap-up, audit log, replay, patrol) and 17.8 (recipe card,
-  issuer protection, GUI hub, packet slimming, handbook vol. III) into
-  a single banner.
-- Badge revocation command: /rbmkrevoke <player|all> (permission level
-  2). Cards are entity credentials and deliberately not player-bound,
-  but the issuer knows who it issued to: issued cards now carry a
-  Holder stamp and the revocation epoch of that holder at issue time.
-  Revoking a name bumps that holder's epoch; "all" bumps the global
-  epoch and also kills legacy cards without a holder stamp. A card
-  whose epoch lags the registry is invalid the moment it is shown -
-  wherever it is. Revocation state persists to rbmk_revoke.dat in the
-  save dir (epoch rollback would resurrect revoked cards, so write
-  failures are logged loudly). Fix during self-review: issued-card
-  epoch stamps now take max(global, holder) - previously a badge
-  issued after "rbmkrevoke all" carried only the holder epoch (0) and
-  was instantly dead, bricking the issuer until the global epoch was
-  mirrored onto every new card. Every revoke is audited (BADGE_REVOKE)
-  and the online target is notified in chat. The tuner's denial now
-  distinguishes "no badge" / "used up" / "revoked".
-- Alert markers on the graph screen. The client-sampled history now
-  records the alert level alongside the six channels; the graph panels
-  draw a translucent vertical line at every L1 sample (yellow) and L2
-  (red), so consecutive alerting samples read as a band whose width is
-  the duration. Markers share the replay window: scrubbing back shows
-  them under the curves at the same moments. Zero packets: the level
-  rides the existing canvas sample.
-- Audit query filtering: /rbmkaudit takes grep-style keywords - every
-  non-numeric argument (max 3) must appear in a line for it to match,
-  matched case-insensitively against the full formatted line (player
-  names, actions and details all participate). Numeric argument stays
-  the count, capped at 200. /rbmkaudit Steve REVOKE 10 = Steve's last
-  10 revocation entries. Tab completion offers player names.
-- Bilingual handbooks. All three volumes carry a full English page set
-  (PAGES_EN, page-for-page with the Chinese originals, still hardcoded
-  safe files - no .lang for book pages, same reasoning as before). The
-  client-side NBT self-heal now also compares a Lang stamp against the
-  client language and re-prints the book in the reader's language on
-  first open; server-side /give and recipes keep producing the Chinese
-  default. Vol. III chapter 4 documents /rbmkaudit filtering and
-  /rbmkrevoke; firmware banners updated to 17.7 in all volumes.
-- Permission system wrap-up, part 1: audit log. Every privileged act now
-  leaves a trace: card issuance (per batch, with failure counts), badge
-  revocation, tuner adjustments by card holders (screen, tier, card-holder
-  flag), hack request / vote / veto / outcome, screens hacked and screens
-  repaired, security-code passes, and an issuer broken while holding blank
-  cards. Written to rbmk_audit.log in the server data directory, append-only
-  with a single 4 MB .old rotation; every line flushed immediately so a
-  crash cannot eat the last entry; failures degrade to one console warning
-  instead of throwing into the caller. /rbmkaudit [n] (permission level 2)
-  prints the last n entries from an in-memory tail so operators do not have
-  to shell into the box for a quick "who did this".
-- Permission system wrap-up, part 2: the audit trail deliberately does NOT
-  cover badge issue-from-creative or chat-visible broadcasts - what it does
-  cover is exactly the actions that change rights or fake data, keyed by
-  player name and coordinates, greppable with plain text tools.
-- History replay on the graph screen. Scroll the mouse wheel while looking
-  at a graph display (powered): up scrolls back into the recorded window
-  (1 second per notch, the same client-sampled history the live chart uses),
-  down walks forward, reaching 0 returns to live. A yellow banner shows
-  "REPLAY t-XXs" while scrubbing and the three panels render history up to
-  the scrub point, end-value labels included. No packets, no GUI: the
-  pointer lives in the client canvas next to the history it points into,
-  the server never hears about it, and the wheel event is consumed so the
-  hotbar does not page. Live sampling continues underneath, so replay is
-  strictly "rewind what was recorded", not a pause.
-- Screen patrol hub (rbmk_patrol), a 1x1 block: the duty officer's seat.
-  Sneak+right-click scans up to SCAN_RADIUS=24 blocks and binds the nearest
-  unbound screens (all monitor-screen tiles count) into 4 slots, saved to
-  NBT. Right-click opens a read-only panel: one row per bound screen with
-  type, coordinates, alert level (colored) and heat/flux readouts; clicking
-  a row selects it and shows a detail pane with status line plus a heat
-  history mini-chart drawn from that screen's own client-side canvas
-  history - the same data the graph screen plots, no extra sync. Auto
-  rotate mode switches the selection every 5 s and jumps instantly to the
-  worst alerting screen ("whoever alarms gets watched"). Bound lists reach
-  the client through a dedicated packet (21) because coordinates do not fit
-  window properties; removed screens are pruned client-side, silently, and
-  the server slots are freed on the next scan. The hub itself carries no
-  gate: patrolling is viewing, not a credential.
-- New item: Screen Recipe Card (rbmk_recipe_card). Where the config card
-  moves 15 tuning keys, this one takes a blacklist-based snapshot of an
-  entire screen: everything except the "field state" (power, energy,
-  run ticks, alert cache, messages, security code, owner, tilt, media
-  playback state, PPT slide position) and the TileEntity identity keys
-  (id/x/y/z/ForgeData) goes into the card. Custom-screen watch slot
-  lists, media file/volume, PPT picture mode all travel with it.
-  Sneak+right-click a screen to snapshot, right-click to paste (paste
-  overlays only keys the card holds, so cross-type pastes are safe -
-  each tile reads the keys it knows and ignores the rest), sneak+right-
-  click air to clear. Paste is audit-logged (RECIPE_PASTE). Recipe:
-  config card + 2 paper + gold ingot.
-- Issuer griefing protection, three gates. Placement records the placer
-  as owner (persisted in NBT as OwnerUUID/OwnerName). removedByPlayer
-  now refuses (returns false, block stays) when the breaker is neither
-  owner, admin (level 2 / single-player host) nor creative, and logs
-  ISSUER_BREAK_DENIED to the audit trail. onBlockExploded is
-  intentionally empty: the counter is immune to all explosions. The
-  blank cards stay in the drawer, period.
-- GUI unified safe rendering. GuiDraw is now the single drawing hub for
-  mod-owned GUIs: rect() auto-fills a missing alpha channel (vanilla
-  Gui.drawRect silently draws nothing without it), hline()/vline(),
-  text()/textCentered() normalize colors too, and safe() translates a
-  key with a readable fallback instead of leaking the raw key onto the
-  panel when a translation is missing. GuiRbmkPatrol (overview, rows,
-  detail panel, mini histogram) migrated fully as the reference
-  implementation; existing GuiDraw callers keep their semantics.
-- Network slimming. The per-screen sync packet (highest frequency in
-  the mod) loses 52 bytes: the ten snapshot doubles now travel as
-  floats (display precision), and tilt/alertLevel/rsPower/
-  realPowerState travel as single bytes. Registration table is now one
-  place: the four messages (ids 8..11) that lived in
-  RbmkMonitorMod.preInit moved into ModNetwork.init, ids unchanged.
-  Wire format changed, so old clients cannot join new servers (and
-  vice versa) - same rule as any content update.
-- New item: Administrator Handbook Vol. III (rbmk_manual_vol3), same
-  read-only written-book construction as vols I/II (three siblings, no
-  shared base class on purpose). Eleven chapters cover the permission
-  system end to end: issuer procedure, badge semantics, audit log and
-  /rbmkaudit, patrol control, graph replay wheel, hack approval flow,
-  card vs template division of labor, the griefing checklist and
-  troubleshooting. Recipe: book + black dye + 2 paper + iron ingot.
-- Crafting recipes are now printed inside the handbooks. Vol. I gains
-  three appendix pages (screens / terminal family / alarm family) and
-  a proper closing page (18 pages total); Vol. III gains three appendix
-  pages (permission items / patrol items / the handbooks themselves,
-  15 pages total). Every entry is transcribed from the actual recipe
-  JSON in the jar, shaped grids written as 铁=iron shorthand, not
-  invented. Tooltips state the new page counts.
+18.2
+- Steam-explosion scenery rebuilt to follow HBM's real event: the top lid
+  launches, 140 debris pieces rain down over 3 seconds, 32 surface craters
+  are stamped, and residual fires and smoke columns linger.
+- Threshold watch chain: `watch <metric> <op> <value> do scram|alarm|audit`
+  in the terminal. Rules persist to rbmk_watch.json, fire at most once per
+  200 ticks, and the whole chain is gated behind the badge approval flow
+  (unanimous admins to enable, any one admin to disable).
+- Custom-page layout editor: instruments, curves and text blocks (up to 12)
+  can be placed and scaled freely; layouts export and import through the
+  clipboard.
+- Settings center on every display screen (sneak + double right-click):
+  brightness 40-100, four phosphor themes, curve compare mode with an
+  optional log axis, and one-click run reports (CSV/HTML).
+- Media screens can play slideshows: `media play slides@[3-60]` cycles
+  rbmk_media/slides/.
+- Black box: rbmk_history/index.txt, plus /rbmkhistory merge <x> <y> <z>.
+- Audit log rotation now keeps multiple generations (4 MB each, .1/.2/.3).
+- Network protocol 9 -> 10: packets 17/18/20 changed format. 18.2 cannot
+  talk to any other version; both sides must run 18.2.
+
+18.1
+- Curve history is recorded from the moment a screen is placed (or its
+  chunk loads), not only while a player is watching the graph page with the
+  screen powered on. Export and replay therefore start at placement time.
+- An unpowered real screen freezes its sampler instead of clearing history;
+  it renders a black "no power - history paused" panel with a resume hint
+  and continues from the same point once power returns.
+
+18.0
+- Curve history black box: per-screen history persists across chunk unloads,
+  world reloads and game restarts under rbmk_history/<dim>_<x>_<y>_<z>.
+  Writes use temp file + atomic rename; chunk unload flushes immediately,
+  the rest batched every 15 seconds, and world unload flushes everything.
+- Export time ranges: the double-click panel cycles all/60 s/300 s and
+  /rbmkexport csv|png [seconds] accepts the same window; file names carry a
+  _60s/_300s suffix.
+- Cycle screen (rbmk_cycle_screen): overlay -> heatmap -> graph, 3 s per
+  page by default.
+- Terminal pipeline filters (`status | heat > 800`, aliases, chaining, 10 s
+  validity) and macros (`macro set/run/list/del`, depth <= 3).
+- Screen scans for alarm-light binding, the patrol hub, the aggregate hub
+  and /rbmktrace now share one loaded-chunk-only helper; they never load
+  terrain.
+- Network protocol 8 -> 9 (packet formats unchanged; the major version
+  forces both sides to align).
 
 17.9
 - Map view on the patrol hub. The patrol GUI gains a second button
@@ -286,6 +201,138 @@ RBMK Monitor - Changelog
   reports 23 packets (ids 0..22) after the aggregate packet joined
   the table; version stays 17.9 - these features ship inside the same
   build as the rest of the 17.9 banner.
+
+17.8
+- Version unified to 17.8. This banner covers the release previously
+  drafted as 17.7. This release merges what used to be tracked as 17.7
+  (permission wrap-up, audit log, replay, patrol) and 17.8 (recipe card,
+  issuer protection, GUI hub, packet slimming, handbook vol. III) into
+  a single banner.
+- Badge revocation command: /rbmkrevoke <player|all> (permission level
+  2). Cards are entity credentials and deliberately not player-bound,
+  but the issuer knows who it issued to: issued cards now carry a
+  Holder stamp and the revocation epoch of that holder at issue time.
+  Revoking a name bumps that holder's epoch; "all" bumps the global
+  epoch and also kills legacy cards without a holder stamp. A card
+  whose epoch lags the registry is invalid the moment it is shown -
+  wherever it is. Revocation state persists to rbmk_revoke.dat in the
+  save dir (epoch rollback would resurrect revoked cards, so write
+  failures are logged loudly). Fix during self-review: issued-card
+  epoch stamps now take max(global, holder) - previously a badge
+  issued after "rbmkrevoke all" carried only the holder epoch (0) and
+  was instantly dead, bricking the issuer until the global epoch was
+  mirrored onto every new card. Every revoke is audited (BADGE_REVOKE)
+  and the online target is notified in chat. The tuner's denial now
+  distinguishes "no badge" / "used up" / "revoked".
+- Alert markers on the graph screen. The client-sampled history now
+  records the alert level alongside the six channels; the graph panels
+  draw a translucent vertical line at every L1 sample (yellow) and L2
+  (red), so consecutive alerting samples read as a band whose width is
+  the duration. Markers share the replay window: scrubbing back shows
+  them under the curves at the same moments. Zero packets: the level
+  rides the existing canvas sample.
+- Audit query filtering: /rbmkaudit takes grep-style keywords - every
+  non-numeric argument (max 3) must appear in a line for it to match,
+  matched case-insensitively against the full formatted line (player
+  names, actions and details all participate). Numeric argument stays
+  the count, capped at 200. /rbmkaudit Steve REVOKE 10 = Steve's last
+  10 revocation entries. Tab completion offers player names.
+- Bilingual handbooks. All three volumes carry a full English page set
+  (PAGES_EN, page-for-page with the Chinese originals, still hardcoded
+  safe files - no .lang for book pages, same reasoning as before). The
+  client-side NBT self-heal now also compares a Lang stamp against the
+  client language and re-prints the book in the reader's language on
+  first open; server-side /give and recipes keep producing the Chinese
+  default. Vol. III chapter 4 documents /rbmkaudit filtering and
+  /rbmkrevoke; firmware banners updated to 17.7 in all volumes.
+- Permission system wrap-up, part 1: audit log. Every privileged act now
+  leaves a trace: card issuance (per batch, with failure counts), badge
+  revocation, tuner adjustments by card holders (screen, tier, card-holder
+  flag), hack request / vote / veto / outcome, screens hacked and screens
+  repaired, security-code passes, and an issuer broken while holding blank
+  cards. Written to rbmk_audit.log in the server data directory, append-only
+  with a single 4 MB .old rotation; every line flushed immediately so a
+  crash cannot eat the last entry; failures degrade to one console warning
+  instead of throwing into the caller. /rbmkaudit [n] (permission level 2)
+  prints the last n entries from an in-memory tail so operators do not have
+  to shell into the box for a quick "who did this".
+- Permission system wrap-up, part 2: the audit trail deliberately does NOT
+  cover badge issue-from-creative or chat-visible broadcasts - what it does
+  cover is exactly the actions that change rights or fake data, keyed by
+  player name and coordinates, greppable with plain text tools.
+- History replay on the graph screen. Scroll the mouse wheel while looking
+  at a graph display (powered): up scrolls back into the recorded window
+  (1 second per notch, the same client-sampled history the live chart uses),
+  down walks forward, reaching 0 returns to live. A yellow banner shows
+  "REPLAY t-XXs" while scrubbing and the three panels render history up to
+  the scrub point, end-value labels included. No packets, no GUI: the
+  pointer lives in the client canvas next to the history it points into,
+  the server never hears about it, and the wheel event is consumed so the
+  hotbar does not page. Live sampling continues underneath, so replay is
+  strictly "rewind what was recorded", not a pause.
+- Screen patrol hub (rbmk_patrol), a 1x1 block: the duty officer's seat.
+  Sneak+right-click scans up to SCAN_RADIUS=24 blocks and binds the nearest
+  unbound screens (all monitor-screen tiles count) into 4 slots, saved to
+  NBT. Right-click opens a read-only panel: one row per bound screen with
+  type, coordinates, alert level (colored) and heat/flux readouts; clicking
+  a row selects it and shows a detail pane with status line plus a heat
+  history mini-chart drawn from that screen's own client-side canvas
+  history - the same data the graph screen plots, no extra sync. Auto
+  rotate mode switches the selection every 5 s and jumps instantly to the
+  worst alerting screen ("whoever alarms gets watched"). Bound lists reach
+  the client through a dedicated packet (21) because coordinates do not fit
+  window properties; removed screens are pruned client-side, silently, and
+  the server slots are freed on the next scan. The hub itself carries no
+  gate: patrolling is viewing, not a credential.
+- New item: Screen Recipe Card (rbmk_recipe_card). Where the config card
+  moves 15 tuning keys, this one takes a blacklist-based snapshot of an
+  entire screen: everything except the "field state" (power, energy,
+  run ticks, alert cache, messages, security code, owner, tilt, media
+  playback state, PPT slide position) and the TileEntity identity keys
+  (id/x/y/z/ForgeData) goes into the card. Custom-screen watch slot
+  lists, media file/volume, PPT picture mode all travel with it.
+  Sneak+right-click a screen to snapshot, right-click to paste (paste
+  overlays only keys the card holds, so cross-type pastes are safe -
+  each tile reads the keys it knows and ignores the rest), sneak+right-
+  click air to clear. Paste is audit-logged (RECIPE_PASTE). Recipe:
+  config card + 2 paper + gold ingot.
+- Issuer griefing protection, three gates. Placement records the placer
+  as owner (persisted in NBT as OwnerUUID/OwnerName). removedByPlayer
+  now refuses (returns false, block stays) when the breaker is neither
+  owner, admin (level 2 / single-player host) nor creative, and logs
+  ISSUER_BREAK_DENIED to the audit trail. onBlockExploded is
+  intentionally empty: the counter is immune to all explosions. The
+  blank cards stay in the drawer, period.
+- GUI unified safe rendering. GuiDraw is now the single drawing hub for
+  mod-owned GUIs: rect() auto-fills a missing alpha channel (vanilla
+  Gui.drawRect silently draws nothing without it), hline()/vline(),
+  text()/textCentered() normalize colors too, and safe() translates a
+  key with a readable fallback instead of leaking the raw key onto the
+  panel when a translation is missing. GuiRbmkPatrol (overview, rows,
+  detail panel, mini histogram) migrated fully as the reference
+  implementation; existing GuiDraw callers keep their semantics.
+- Network slimming. The per-screen sync packet (highest frequency in
+  the mod) loses 52 bytes: the ten snapshot doubles now travel as
+  floats (display precision), and tilt/alertLevel/rsPower/
+  realPowerState travel as single bytes. Registration table is now one
+  place: the four messages (ids 8..11) that lived in
+  RbmkMonitorMod.preInit moved into ModNetwork.init, ids unchanged.
+  Wire format changed, so old clients cannot join new servers (and
+  vice versa) - same rule as any content update.
+- New item: Administrator Handbook Vol. III (rbmk_manual_vol3), same
+  read-only written-book construction as vols I/II (three siblings, no
+  shared base class on purpose). Eleven chapters cover the permission
+  system end to end: issuer procedure, badge semantics, audit log and
+  /rbmkaudit, patrol control, graph replay wheel, hack approval flow,
+  card vs template division of labor, the griefing checklist and
+  troubleshooting. Recipe: book + black dye + 2 paper + iron ingot.
+- Crafting recipes are now printed inside the handbooks. Vol. I gains
+  three appendix pages (screens / terminal family / alarm family) and
+  a proper closing page (18 pages total); Vol. III gains three appendix
+  pages (permission items / patrol items / the handbooks themselves,
+  15 pages total). Every entry is transcribed from the actual recipe
+  JSON in the jar, shaped grids written as 铁=iron shorthand, not
+  invented. Tooltips state the new page counts.
 
 17.6
 - The cone implementation is now four explicit choices instead of one cycling

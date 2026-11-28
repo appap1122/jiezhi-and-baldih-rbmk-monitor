@@ -47,6 +47,8 @@ public class ModItems {
     public static final Item RBMK_RECIPE_CARD = new ItemRbmkRecipeCard();
     /** v17.8 只读操作手册 · 卷三（管理员手册）：权限体系收尾读物 */
     public static final Item RBMK_MANUAL_VOL3 = new ItemRbmkManualVol3();
+    /** v18.3 便携式移动中控台（PDA）：绑定控制台、看快照、跑终端指令 */
+    public static final Item RBMK_PDA = new ItemRbmkPda();
 
     @SubscribeEvent
     public void onRegisterItems(RegistryEvent.Register<Item> event) {
@@ -68,6 +70,7 @@ public class ModItems {
         event.getRegistry().register(RBMK_OP_CARD);
         event.getRegistry().register(RBMK_RECIPE_CARD);
         event.getRegistry().register(RBMK_MANUAL_VOL3);
+        event.getRegistry().register(RBMK_PDA);
     }
 
     static {
@@ -89,6 +92,7 @@ public class ModItems {
         RBMK_OP_CARD.setCreativeTab(TAB);
         RBMK_RECIPE_CARD.setCreativeTab(TAB);
         RBMK_MANUAL_VOL3.setCreativeTab(TAB);
+        RBMK_PDA.setCreativeTab(TAB);
     }
 }
 

@@ -5,6 +5,7 @@ import com.jiezhirbmkmod.network.msg.MessageAlarmLight;
 import com.jiezhirbmkmod.network.msg.MessageRbmkCustomScreenAction;
 import com.jiezhirbmkmod.network.msg.MessageRbmkJetExhaust;
 import com.jiezhirbmkmod.network.msg.MessageRbmkMonitorScreen;
+import com.jiezhirbmkmod.network.msg.MessageRbmkPda;
 import com.jiezhirbmkmod.network.msg.MessageRbmkScreenPolicy;
 import com.jiezhirbmkmod.network.msg.MessageRbmkTerminalComm;
 import com.jiezhirbmkmod.network.msg.MessageSirenTune;
@@ -24,8 +25,10 @@ public class ModNetwork {
      * 强制对齐 —— 18.0 与 17.x 混连时握手按模组版本就会被拒
      * （{@code RbmkMonitorMod#onNetworkCheck} 要求版本一致），协议代号
      * 跟着跳一版，让 /rbmkcompat 的输出一眼能认出这是 18.0 的包表。</p>
+     * <p>v18.3：升到 11。MessageTerminalCommand 增加了 PDA 标记位（线上
+     * 格式变了），并新增 PDA 快照/绑定包（id 25/26），旧端必须升级。</p>
      */
-    public static final int PROTOCOL = 10;
+    public static final int PROTOCOL = 11;
 
     /**
      * v17.8/17.9 网络包瘦身：全部 23 个 discriminator 注册收进这一张表。
@@ -58,6 +61,10 @@ public class ModNetwork {
      * id 20  S→C  MessageHackAppResult         结果回信
      * id 21  S→C  MessagePatrolSync            巡屏绑定清单
      * id 22  S→C  MessageAggregateSync         多堆芯聚合归属表（屏→堆芯）
+     * id 23  C→S  MessageScreenDisplaySetting  显示设置（亮度/主题/曲线）
+     * id 24  C→S  MessageCustomLayoutSet      自定义页布局
+     * id 25  C→S  MessageRbmkPda              PDA 快照请求 / 绑定请求
+     * id 26  S→C  MessageRbmkPda              PDA 快照 / 绑定回执
      * </pre>
      */
     public static void init() {
@@ -111,6 +118,9 @@ public class ModNetwork {
         // v18.2 自定义页布局保存（C→S，discriminator 24）：布局编辑器整包提交
         CHANNEL.registerMessage(com.jiezhirbmkmod.network.msg.MessageCustomLayoutSet.Handler.class,
                 com.jiezhirbmkmod.network.msg.MessageCustomLayoutSet.class, 24, Side.SERVER);
+        // v18.3 PDA 快照/绑定往返（25 C→S 请求，26 S→C 回执）
+        CHANNEL.registerMessage(MessageRbmkPda.Handler.class, MessageRbmkPda.class, 25, Side.SERVER);
+        CHANNEL.registerMessage(MessageRbmkPda.Handler.class, MessageRbmkPda.class, 26, Side.CLIENT);
         // v17.8 瘦身：把散在 RbmkMonitorMod.preInit 的 8..11 收编进来（id 不变）
         CHANNEL.registerMessage(TileRbmkMonitorScreen.AutoScramToggleMessage.Handler.class,
                 TileRbmkMonitorScreen.AutoScramToggleMessage.class, 8, Side.SERVER);

@@ -1,6 +1,7 @@
 package com.jiezhirbmkmod.dfc;
 
 import com.jiezhirbmkmod.RbmkMonitorMod;
+import com.jiezhirbmkmod.Tags;
 import com.jiezhirbmkmod.entity.EntityFlyingBlock;
 import com.jiezhirbmkmod.network.ModNetwork;
 import io.netty.buffer.ByteBuf;
@@ -42,7 +43,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  * 队列上，{@link #trigger} 本身不做任何重活。实体总量有硬上限，
  * 反复熔毁不会把世界塞满掉落方块实体。</p>
  */
-@Mod.EventBusSubscriber(modid = RbmkMonitorMod.MODID)
+@Mod.EventBusSubscriber(modid = Tags.MODID)
 public final class SteamExplosionHandler {
 
     private static final int STEAM_PARTICLES = 240;

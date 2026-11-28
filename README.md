@@ -34,6 +34,8 @@ dependencies {
 # 产物在 build/libs/RBMK-Monitor-18.2.jar
 ```
 
+> **版本号只维护两处，且漏改会构建失败**：`build.gradle` 的 `version` 是唯一权威值；`Tags.VERSION`（供 `@Mod` 与握手使用）由 `verifyModMetadata` 任务校验，`mcmod.info` 里的 `@VERSION@` 占位符在打包时注入。两处与 `project.version` 不一致时构建直接报错，不会静默漂移。
+
 > 若在国内构建时 kotlin-stdlib 等 POM 解析报错：删除 `~/.gradle/caches/modules-2` 与 `forge_gradle` 缓存重跑；仍失败可移除 `build.gradle` 里的 aliyun 镜像仓库行（镜像偶尔吐损坏 POM）。
 
 ---
@@ -232,14 +234,14 @@ watch list / del N / clear       规则管理
 
 **安装**：Forge 1.12.2（推荐 14.23.5.2860）+ HBM 核技术 → 把 `RBMK-Monitor-18.2.jar` 放进 `mods/`。
 
-**从旧版升级（≤17.10 → 18.2）**：
+**从任意旧版本升级到 18.2（≤18.1）**：
 
 1. 备份存档
 2. `mods/` 里删光所有旧版 RBK-Monitor jar，**只留 18.2 一份**（残留两份会 `DuplicateModsFoundException` 崩启动）
 3. 旧配置文件**不用删**，存档**不用动**，`rbmk_export/`、`rbmk_history/` 跨版本通用
 4. 进世界跑 `/rbmkcompat` 确认
 
-> **注意**：18.2 网络协议代号为 **10**，与 17.10 及更早版本**不可互通**——多人游戏两端必须都升 18.2（握手阶段直接标红拒绝，`/rbmkcompat` 给可读原因）。这是防止包串台崩运行时的保护，不是 bug。
+> **注意**：18.2 网络协议代号为 **10**，握手要求两端版本**完全一致**，所以它和**任何其他版本**都不可互通（18.0/18.1 的协议 9、以及更早的 17.x 全都算在内）——多人游戏两端必须都升到 18.2，否则多人列表直接标红拒绝，`/rbmkcompat` 给可读原因。这是防止新旧包表串台崩运行时的保护，不是 bug。
 
 ---
 

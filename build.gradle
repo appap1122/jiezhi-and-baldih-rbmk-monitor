@@ -12,7 +12,9 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'wtf.gofancy.fancygradle'
-version = '18.2'
+// Single source of truth for the mod version. Tags.java and mcmod.info are
+// checked/injected against this value by verifyModMetadata below.
+version = '18.3'
 group = 'com.jiezhirbmkmod'
 archivesBaseName = 'RBMK-Monitor'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
@@ -22,8 +24,6 @@ minecraft {
 }
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
-    // v15.2 multimedia screen: MP3/AAC audio helper (small, pure Java)
-    implementation 'com.googlecode.soundlibs:mp3spi:1.9.5.4'
     // JavaCV is an OPTIONAL client-side runtime dependency: the decoder is
     // loaded by reflection, so the mod never hard-links against it and can not
     // crash with NoClassDefFoundError when the natives are absent.
@@ -43,11 +43,46 @@ jar {
 }
 processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    // v17.7-beta: mcmod.info is copied verbatim. Groovy's expand() runs the
-    // file through SimpleTemplateEngine, which rewrote the \n escapes inside
-    // the description into raw control characters - the packaged file came
-    // out as invalid strict JSON (Forge's lenient Gson hid it in game).
-    // The version string is hardcoded in mcmod.info now and must be kept in
-    // sync with this file's `version` and @Mod's version by hand.
-    from(sourceSets.main.resources.srcDirs)
+    // mcmod.info carries a @VERSION@ token instead of a hand-copied version
+    // number. ReplaceTokens is a literal token substitution: unlike Groovy's
+    // expand() it never interprets backslash escapes, so the \n escapes in the
+    // description stay intact. (expand() used to turn them into raw control
+    // characters, which produced invalid strict JSON in the packaged file;
+    // Forge's lenient Gson hid that in game.) The old
+    // `from(sourceSets.main.resources.srcDirs)` line was also removed: it
+    // re-added the default source set and only copied every resource twice.
+    inputs.property 'version', project.version
+    filteringCharset = 'UTF-8'
+    filesMatching('mcmod.info') {
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION: project.version.toString()])
+    }
 }
+
+tasks.register('verifyModMetadata') {
+    group = 'verification'
+    description = 'Fails the build when Tags.VERSION or mcmod.info drifts from project.version.'
+    def tagsFile = file('src/main/java/com/jiezhirbmkmod/Tags.java')
+    def metaFile = file('src/main/resources/mcmod.info')
+    inputs.files(tagsFile, metaFile)
+    doLast {
+        String tags = tagsFile.getText('UTF-8')
+        def m = tags =~ /static\s+final\s+String\s+VERSION\s*=\s*"([^"]+)"/
+        if (!m.find()) {
+            throw new GradleException("verifyModMetadata: no VERSION constant in ${tagsFile}.")
+        }
+        if (m.group(1) != project.version.toString()) {
+            throw new GradleException("Version drift: Tags.VERSION=${m.group(1)} but project.version=${project.version}.")
+        }
+        String token = '@VERSION@'
+        String meta = metaFile.getText('UTF-8')
+        if (!meta.contains('"' + token + '"')) {
+            throw new GradleException("verifyModMetadata: mcmod.info must carry the ${token} token in its version field.")
+        }
+        def parsed = new groovy.json.JsonSlurper().parseText(meta.replace(token, project.version.toString()))
+        if (parsed[0].version != project.version.toString()) {
+            throw new GradleException("verifyModMetadata: mcmod.info renders version ${parsed[0].version}, expected ${project.version}.")
+        }
+    }
+}
+compileJava.dependsOn tasks.named('verifyModMetadata')
+processResources.dependsOn tasks.named('verifyModMetadata')
