@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkMediaScreen;
 import com.jiezhirbmkmod.block.TileRbmkMonitorScreen;
 import com.jiezhirbmkmod.network.ModNetwork;
@@ -127,7 +129,7 @@ implements IMessage {
         }
         List<MessageTerminalCommand.CmdLine> lines = new ArrayList<MessageTerminalCommand.CmdLine>();
         lines.add(new MessageTerminalCommand.CmdLine(color, text));
-        ModNetwork.CHANNEL.sendTo((IMessage) new MessageTerminalCommand(lines), player);
+        NetGuard.sendTo((IMessage) new MessageTerminalCommand(lines), player);
     }
 
     private static EntityPlayerMP findPlayer(MinecraftServer server, String name) {
@@ -462,6 +464,7 @@ implements IMessage {
     implements IMessageHandler<MessageRbmkTerminalComm, IMessage> {
 
         public IMessage onMessage(final MessageRbmkTerminalComm msg, MessageContext ctx) {
+            try {
             if (ctx.side != Side.SERVER || ctx.getServerHandler() == null
                     || ctx.getServerHandler().player == null) {
                 return null;
@@ -485,6 +488,11 @@ implements IMessage {
                 // a malformed packet must never break the network thread
             }
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

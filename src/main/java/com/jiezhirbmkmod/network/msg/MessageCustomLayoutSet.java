@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileCustomScreen;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,6 +54,7 @@ implements IMessage {
     implements IMessageHandler<MessageCustomLayoutSet, IMessage> {
         @Override
         public IMessage onMessage(final MessageCustomLayoutSet msg, MessageContext ctx) {
+            try {
             if (ctx.side.isServer() && ctx.getServerHandler() != null
                     && ctx.getServerHandler().player != null) {
                 final net.minecraft.entity.player.EntityPlayerMP player = ctx.getServerHandler().player;
@@ -85,6 +88,11 @@ implements IMessage {
                 });
             }
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

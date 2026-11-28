@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkSiren;
 import com.jiezhirbmkmod.client.util.GuiDraw;
 import com.jiezhirbmkmod.dfc.SirenPresets;
@@ -248,7 +250,7 @@ public class GuiRbmkSiren extends GuiScreen {
     }
 
     private void save() {
-        ModNetwork.CHANNEL.sendToServer((IMessage) new MessageSirenTune(this.pos, this.colorMeta, this.preset,
+        NetGuard.sendToServer((IMessage) new MessageSirenTune(this.pos, this.colorMeta, this.preset,
                 this.volume(), this.pitch, this.gap(), this.mode, this.category, this.flash));
         this.tile.applyConfigLocal(this.preset, this.volume(), this.pitch, this.gap(),
                 this.mode, this.category, this.flash);

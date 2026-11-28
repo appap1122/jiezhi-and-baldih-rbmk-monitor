@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.block;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.network.ModNetwork;
 import com.jiezhirbmkmod.network.msg.MessageAggregateSync;
 import com.jiezhirbmkmod.proxy.CommonProxy;
@@ -79,7 +81,7 @@ implements net.minecraft.block.ITileEntityProvider {
         }
         // 打开 GUI 前先把「屏 → 堆芯」归属表下发（两份清单同序）
         if (player instanceof EntityPlayerMP) {
-            ModNetwork.CHANNEL.sendTo(
+            NetGuard.sendTo(
                     new MessageAggregateSync(hub.validScreens(), hub.reactorKeys()),
                     (EntityPlayerMP) player);
         }

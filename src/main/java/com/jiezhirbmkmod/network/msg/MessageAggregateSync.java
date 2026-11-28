@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,10 +75,16 @@ implements IMessage {
     implements IMessageHandler<MessageAggregateSync, IMessage> {
         @Override
         public IMessage onMessage(MessageAggregateSync msg, MessageContext ctx) {
+            try {
             net.minecraft.client.Minecraft.getMinecraft().addScheduledTask(() -> {
                 GuiRbmkAggregate.acceptPairs(msg.pairs);
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

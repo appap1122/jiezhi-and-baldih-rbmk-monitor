@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.dfc.HackAppManager;
 
 import io.netty.buffer.ByteBuf;
@@ -46,6 +48,7 @@ implements IMessage {
 
         @Override
         public IMessage onMessage(final MessageHackAppVote msg, MessageContext ctx) {
+            try {
             final EntityPlayerMP voter = ctx.getServerHandler().player;
             voter.getServer().addScheduledTask(new Runnable() {
                 @Override
@@ -54,6 +57,11 @@ implements IMessage {
                 }
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

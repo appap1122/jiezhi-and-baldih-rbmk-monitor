@@ -1,6 +1,22 @@
 RBMK Monitor - Changelog
 ========================
 
+18.4
+- Network handshake relaxed back to the Forge default: a peer that does NOT
+  have this mod is now ACCEPTED (onNetworkCheck returns true), so vanilla
+  servers and clients without the mod no longer get "mod rejections". A peer
+  that HAS the mod but with a different version is still rejected - the
+  packet table stays version-locked (protocol 11).
+  /rbmkcompat now prints "no RBMK-Monitor on remote (accepted)" for that case.
+- New NetGuard (network/NetGuard.java): all 55 outgoing packet call sites now
+  go through a null check + try-catch Throwable, and all 23
+  IMessageHandler#onMessage bodies are wrapped the same way. A failed send or
+  a packet that arrives in an unexpected state is logged once per packet type
+  and dropped; it can no longer break the caller's tick, the network thread
+  or a dedicated server.
+- Version bumped to 18.4; Tags.VERSION and project.version moved together so
+  verifyModMetadata stays green.
+
 18.2
 - Steam-explosion scenery rebuilt to follow HBM's real event: the top lid
   launches, 140 debris pieces rain down over 3 seconds, 32 surface craters

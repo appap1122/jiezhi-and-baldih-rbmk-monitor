@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.RbmkMonitorMod;
 import com.jiezhirbmkmod.block.ContainerCustomScreen;
 import com.jiezhirbmkmod.block.TileCustomScreen;
@@ -158,7 +160,7 @@ extends GuiContainer {
     }
 
     private void send(int action, int index) {
-        ModNetwork.CHANNEL.sendToServer((IMessage)new MessageRbmkCustomScreenAction(this.pos, action, index));
+        NetGuard.sendToServer((IMessage)new MessageRbmkCustomScreenAction(this.pos, action, index));
     }
 
     private void closeGui() {

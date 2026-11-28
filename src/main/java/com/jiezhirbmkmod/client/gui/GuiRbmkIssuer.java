@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -245,7 +247,7 @@ extends GuiContainer {
         this.result = null;
         this.resultCard = null;
         this.updateButtonStates();
-        ModNetwork.CHANNEL.sendToServer(new MessageIssuerAuthorize(this.pos,
+        NetGuard.sendToServer(new MessageIssuerAuthorize(this.pos,
                 this.usesPerCard, this.tierMask,
                 this.selected.toArray(new String[this.selected.size()])));
     }

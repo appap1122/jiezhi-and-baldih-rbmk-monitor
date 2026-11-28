@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import java.io.IOException;
 
 import com.jiezhirbmkmod.dfc.HackAppManager;
@@ -137,10 +139,10 @@ extends GuiContainer {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button.id == BTN_SEND && this.sendButton != null && this.sendButton.enabled) {
-            ModNetwork.CHANNEL.sendToServer(new MessageHackAppSend(
+            NetGuard.sendToServer(new MessageHackAppSend(
                     HackAppManager.KIND_HACK, allowState == 1));
         } else if (button.id == BTN_WATCH && this.watchButton != null && this.watchButton.enabled) {
-            ModNetwork.CHANNEL.sendToServer(new MessageHackAppSend(
+            NetGuard.sendToServer(new MessageHackAppSend(
                     HackAppManager.KIND_WATCH, watchState == 1));
         }
         this.mc.displayGuiScreen(null);

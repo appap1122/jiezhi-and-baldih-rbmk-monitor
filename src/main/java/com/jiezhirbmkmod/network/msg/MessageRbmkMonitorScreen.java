@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkMonitorScreen;
 import com.jiezhirbmkmod.dfc.AlertPolicy;
 import com.jiezhirbmkmod.dfc.RbmkSnapshot;
@@ -98,6 +100,7 @@ implements IMessage {
     public static class Handler
     implements IMessageHandler<MessageRbmkMonitorScreen, IMessage> {
         public IMessage onMessage(final MessageRbmkMonitorScreen msg, MessageContext ctx) {
+            try {
             Minecraft.getMinecraft().addScheduledTask(new Runnable(){
 
                 @Override
@@ -115,6 +118,11 @@ implements IMessage {
                 }
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

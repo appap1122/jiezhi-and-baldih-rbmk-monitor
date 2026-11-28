@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.BlockRbmkSiren;
 import com.jiezhirbmkmod.block.TileRbmkSiren;
 import io.netty.buffer.ByteBuf;
@@ -85,6 +87,7 @@ public class MessageSirenTune implements IMessage {
     public static class Handler implements IMessageHandler<MessageSirenTune, IMessage> {
         @Override
         public IMessage onMessage(MessageSirenTune msg, MessageContext ctx) {
+            try {
             if (ctx.side == Side.SERVER) {
                 final EntityPlayerMP player = ctx.getServerHandler().player;
                 player.getServerWorld().addScheduledTask(() -> applyServer(player.getServerWorld(), msg, player));
@@ -93,6 +96,11 @@ public class MessageSirenTune implements IMessage {
             net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
             mc.addScheduledTask(() -> applyClient(mc.world, msg));
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
 
         private static void applyServer(World world, MessageSirenTune msg, EntityPlayerMP player) {
@@ -114,7 +122,7 @@ public class MessageSirenTune implements IMessage {
             TileRbmkSiren tile = (TileRbmkSiren) te;
             tile.applyConfig(msg.preset, msg.volume, msg.pitch, msg.gap, msg.mode, msg.category, msg.flash);
             world.checkLight(msg.pos);
-            com.jiezhirbmkmod.network.ModNetwork.CHANNEL.sendToAllAround(
+            NetGuard.sendToAllAround(
                     (IMessage) new MessageSirenTune(world, msg.pos, tile),
                     new NetworkRegistry.TargetPoint(world.provider.getDimension(),
                             (double) msg.pos.getX() + 0.5D, (double) msg.pos.getY() + 0.5D,

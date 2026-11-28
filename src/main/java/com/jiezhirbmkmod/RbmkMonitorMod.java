@@ -95,22 +95,30 @@ public class RbmkMonitorMod {
     }
 
     /**
-     * v17.9 网络握手回调（/rbmkcompat 的数据源）；v18.0 收紧为双侧对称。
+     * v17.9 网络握手回调（/rbmkcompat 的数据源）；v18.4 改回「缺失放行」。
      *
-     * <p>v18.0 之前判定是不对称的：对端是服务器时无条件放行（判定权全在
-     * 服务器），只有"客户端来连"一侧要求版本一致。这在标准 Forge 服下
-     * 安全（旧服或 Forge 默认校验总会拒），但留了两条真缝隙：旧服判定
-     * 宽松、或 mod 列表被代理（BungeeCord 等）改写时，两侧包表不同的
-     * 连接会真握手成功，第一发同步包就是解码崩溃，而不是干净的握手
-     * 拒绝；客户端连没装本模组的 Forge 服则报 "missing channel" 这种
-     * 玩家看不懂的错。现在收紧：<b>无论本端是哪一侧，都要求对端存在
-     * 本模组且版本与本端完全一致</b> —— 这正是 Forge 对未提供
-     * {@code @NetworkCheckHandler} 的模组的默认语义（此前客户端侧的
-     * 无条件放行反而是放宽）。版本不等的服务器在多人列表 ping 阶段就
-     * 标红、连接发起前就被本端拒绝，不再把判定权押给对端。</p>
+     * <p><b>判定规则（v18.4 起）：</b></p>
+     * <ul>
+     *   <li>对端<b>没有装</b>本模组（{@code remoteMods} 里没有
+     *       {@link Tags#MODID}，或整个 map 为 null）→ <b>返回 true，放行</b>。
+     *       本模组的所有玩法都是自包含的：vanilla 服、只装别的模组的客户端
+     *       本来就不该被一个纯装饰/监控模组踢下线。放行后本模组的功能
+     *       在对方那一侧不存在，本端照样能跑（屏幕只对自己显示，命令只
+     *       处理本端数据）。</li>
+     *   <li>对端<b>装了但版本不符</b> → <b>返回 false，拒绝</b>。包表/线上
+     *       格式按大版本强制对齐（见 {@code ModNetwork.PROTOCOL}），混连
+     *       会在解码阶段炸掉，必须在握手阶段挡住。</li>
+     *   <li>版本一致 → 放行。</li>
+     * </ul>
+     *
+     * <p>v18.0 曾收紧成「双侧对称：必须存在且版本一致」，代价是连 vanilla
+     * 服、或在纯净客户端上进原版服直接报 "mod rejections"，玩家看不懂。
+     * v18.4 改回 Forge 的常规做法：缺失即放行，只有真正的协议冲突才拒绝。
+     * 放行带来的「对端没有 channel」风险由 {@code NetGuard} 兜底 ——
+     * 所有收发包都过它，异常只记日志不冒泡（见该类的注释）。</p>
      *
      * <p>变化记录照旧：无论接受与否，对端版本都记进
-     * {@link ProtocolGuard}，拒绝时把精确原因写进控制台与审计链，
+     * {@link ProtocolGuard}，版本不符被拒时把精确原因写进控制台与审计链，
      * /rbmkcompat 能把它翻译成人话。</p>
      *
      * <p>注意：本方法在握手期被调用，双端各一次（ping 查询也会触发）；
@@ -121,10 +129,9 @@ public class RbmkMonitorMod {
             net.minecraftforge.fml.relauncher.Side remoteSide) {
         boolean remoteIsServer = remoteSide == net.minecraftforge.fml.relauncher.Side.SERVER;
         String v = remoteMods == null ? null : remoteMods.get(Tags.MODID);
-        // v18.0 收紧：去掉客户端侧的无条件放行。单机/局域网同版本场景
-        // 不受影响（对端版本必相等）；vanilla 服与版本不同的服在客户端
-        // 就被拒，报错发生在玩家自己的屏幕上，可读。
-        boolean ok = v != null && Tags.VERSION.equals(v);
+        boolean present = v != null;
+        // v18.4：缺失放行，只有"装了但对不上版本"才拒绝。
+        boolean ok = !present || Tags.VERSION.equals(v);
         com.jiezhirbmkmod.dfc.ProtocolGuard.record(v, remoteIsServer, ok);
         if (!ok) {
             com.jiezhirbmkmod.dfc.ProtocolGuard.logReject(v, remoteIsServer);

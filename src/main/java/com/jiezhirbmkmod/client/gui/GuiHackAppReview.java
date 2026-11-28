@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import java.io.IOException;
 
 import com.jiezhirbmkmod.network.ModNetwork;
@@ -68,7 +70,7 @@ extends GuiScreen {
             return;
         }
         this.voted = true;
-        ModNetwork.CHANNEL.sendToServer(new MessageHackAppVote(
+        NetGuard.sendToServer(new MessageHackAppVote(
                 this.appId, button.id == BTN_AGREE));
         this.mc.displayGuiScreen(null);
     }

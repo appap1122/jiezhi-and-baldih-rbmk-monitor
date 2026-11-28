@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkPptScreen;
 import com.jiezhirbmkmod.item.ItemRbmkPptRemote;
 import io.netty.buffer.ByteBuf;
@@ -77,6 +79,7 @@ implements IMessage {
 
         @Override
         public IMessage onMessage(final MessageRbmkPptControl msg, MessageContext ctx) {
+            try {
             if (ctx.side != Side.SERVER || ctx.getServerHandler() == null
                     || ctx.getServerHandler().player == null) {
                 return null;
@@ -124,6 +127,11 @@ implements IMessage {
                 }
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
 
         static TileRbmkPptScreen resolve(EntityPlayerMP player, BlockPos pos) {

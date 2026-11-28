@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import java.io.IOException;
 
 import com.jiezhirbmkmod.block.TileCustomScreen;
@@ -214,7 +216,7 @@ extends GuiScreen {
                 break;
             }
             case BTN_SAVE: {
-                ModNetwork.CHANNEL.sendToServer(new MessageCustomLayoutSet(this.pos,
+                NetGuard.sendToServer(new MessageCustomLayoutSet(this.pos,
                         this.layout.exportString() == null ? "" : this.layout.exportString()));
                 this.status = "已保存";
                 this.mc.displayGuiScreen(null);

@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.block;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.RbmkMonitorMod;
 import com.jiezhirbmkmod.block.BlockRbmkMonitor;
 import com.jiezhirbmkmod.client.dfc.RbmkScreenCanvas;
@@ -873,7 +875,7 @@ implements ITickable, IRealPowerTile {
         List<MessageTerminalCommand.CmdLine> lines = new ArrayList<MessageTerminalCommand.CmdLine>();
         lines.add(new MessageTerminalCommand.CmdLine(MessageTerminalCommand.C_ERR,
                 "[AUTH-REQ] 该屏幕已启用安全码，请先输入 auth <4位数字>。"));
-        ModNetwork.CHANNEL.sendTo((IMessage) new MessageTerminalCommand(lines), attacker);
+        NetGuard.sendTo((IMessage) new MessageTerminalCommand(lines), attacker);
         return false;
     }
 
@@ -1543,7 +1545,7 @@ implements ITickable, IRealPowerTile {
             return;
         }
         try {
-            ModNetwork.CHANNEL.sendToAllAround((IMessage)new MessageRbmkMonitorScreen(this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), (double)this.pos.getX() + 0.5, (double)this.pos.getY() + 0.5, (double)this.pos.getZ() + 0.5, 96.0));
+            NetGuard.sendToAllAround((IMessage)new MessageRbmkMonitorScreen(this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), (double)this.pos.getX() + 0.5, (double)this.pos.getY() + 0.5, (double)this.pos.getZ() + 0.5, 96.0));
         }
         catch (Throwable t) {
             // a failed sync must never abort refresh() or the block interaction
@@ -1917,6 +1919,7 @@ implements ITickable, IRealPowerTile {
         public static class Handler
         implements IMessageHandler<AutoScramToggleMessage, IMessage> {
             public IMessage onMessage(AutoScramToggleMessage msg, MessageContext ctx) {
+                try {
                 if (ctx == null || ctx.getServerHandler() == null || ctx.getServerHandler().player == null
                         || msg == null || msg.pos == null) {
                     return null;
@@ -1947,6 +1950,11 @@ implements ITickable, IRealPowerTile {
                     }
                 }
                 return null;
+            
+            } catch (Throwable t) {
+                NetGuard.reportHandler("Handler", t);
+                return null;
+            }
             }
         }
     }
@@ -1998,6 +2006,7 @@ implements ITickable, IRealPowerTile {
         public static class Handler
         implements IMessageHandler<HackToggleMessage, IMessage> {
             public IMessage onMessage(HackToggleMessage msg, MessageContext ctx) {
+                try {
                 if (ctx == null || ctx.getServerHandler() == null || ctx.getServerHandler().player == null) {
                     return null;
                 }
@@ -2015,6 +2024,11 @@ implements ITickable, IRealPowerTile {
                     }
                 }
                 return null;
+            
+            } catch (Throwable t) {
+                NetGuard.reportHandler("Handler", t);
+                return null;
+            }
             }
         }
     }
@@ -2256,6 +2270,7 @@ implements ITickable, IRealPowerTile {
         public static class Handler
         implements IMessageHandler<ConnectMessage, IMessage> {
             public IMessage onMessage(ConnectMessage msg, MessageContext ctx) {
+                try {
                 if (ctx == null || ctx.getServerHandler() == null || ctx.getServerHandler().player == null
                         || msg == null || msg.pos == null || msg.target == null) {
                     return null;
@@ -2317,6 +2332,11 @@ implements ITickable, IRealPowerTile {
                     }
                 }
                 return null;
+            
+            } catch (Throwable t) {
+                NetGuard.reportHandler("Handler", t);
+                return null;
+            }
             }
         }
     }

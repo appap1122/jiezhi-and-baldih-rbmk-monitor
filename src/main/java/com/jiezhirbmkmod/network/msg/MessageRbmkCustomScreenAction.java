@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.ContainerCustomScreen;
 import com.jiezhirbmkmod.block.TileCustomScreen;
 import com.jiezhirbmkmod.item.ItemRbmkRemote;
@@ -65,6 +67,7 @@ implements IMessage {
     public static class Handler
     implements IMessageHandler<MessageRbmkCustomScreenAction, IMessage> {
         public IMessage onMessage(MessageRbmkCustomScreenAction msg, MessageContext ctx) {
+            try {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServerWorld().addScheduledTask(() -> {
                 TileEntity te = player.world.getTileEntity(msg.pos);
@@ -99,6 +102,11 @@ implements IMessage {
                 screen.refresh();
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
 
         private static void importFromRemote(EntityPlayerMP player, TileCustomScreen screen) {

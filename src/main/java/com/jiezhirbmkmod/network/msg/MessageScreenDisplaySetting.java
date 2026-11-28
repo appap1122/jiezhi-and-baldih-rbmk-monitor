@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkMonitorScreen;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
@@ -58,6 +60,7 @@ implements IMessage {
     implements IMessageHandler<MessageScreenDisplaySetting, IMessage> {
         @Override
         public IMessage onMessage(MessageScreenDisplaySetting msg, MessageContext ctx) {
+            try {
             final BlockPos p = msg.pos;
             final int k = msg.key;
             final int v = msg.value;
@@ -84,6 +87,11 @@ implements IMessage {
                 });
             }
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkSiren;
 import com.jiezhirbmkmod.block.TileRbmkTermScreen;
 import com.jiezhirbmkmod.block.TileRbmkTerminal;
@@ -184,6 +186,7 @@ public class MessageTerminalCommand implements IMessage {
 
         @Override
         public IMessage onMessage(MessageTerminalCommand msg, MessageContext ctx) {
+            try {
             if (ctx.side == Side.SERVER) {
                 final EntityPlayerMP player = ctx.getServerHandler().player;
                 final MessageTerminalCommand req = msg;
@@ -194,7 +197,7 @@ public class MessageTerminalCommand implements IMessage {
                     } catch (Throwable t) {
                         out.add(new CmdLine(C_ERR, "  Internal error: " + t));
                     }
-                    ModNetwork.CHANNEL.sendTo((IMessage) new MessageTerminalCommand(out), player);
+                    NetGuard.sendTo((IMessage) new MessageTerminalCommand(out), player);
                 });
                 return null;
             }
@@ -209,6 +212,11 @@ public class MessageTerminalCommand implements IMessage {
                 }
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
 
         private static void execute(EntityPlayerMP player, MessageTerminalCommand msg, List<CmdLine> out) {

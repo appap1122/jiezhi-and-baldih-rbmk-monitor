@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkMonitorScreen;
 import com.jiezhirbmkmod.dfc.AlertPolicy;
 import io.netty.buffer.ByteBuf;
@@ -42,6 +44,7 @@ implements IMessage {
     public static class Handler
     implements IMessageHandler<MessageRbmkScreenPolicy, IMessage> {
         public IMessage onMessage(MessageRbmkScreenPolicy msg, MessageContext ctx) {
+            try {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServerWorld().addScheduledTask(() -> {
                 TileEntity te = player.world.getTileEntity(msg.pos);
@@ -64,6 +67,11 @@ implements IMessage {
                                 + (screen.getPolicy().rsInvert ? TextFormatting.YELLOW + "（已反相）" : "")), true);
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

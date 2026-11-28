@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkIssuer;
 import com.jiezhirbmkmod.item.ItemRbmkOpCard;
 
@@ -98,6 +100,7 @@ implements IMessage {
 
         @Override
         public IMessage onMessage(MessageIssuerAuthorize msg, MessageContext ctx) {
+            try {
             final MessageIssuerAuthorize m = msg;
             final EntityPlayerMP operator = ctx.getServerHandler().player;
             final MinecraftServer server = operator.getServer();
@@ -111,6 +114,11 @@ implements IMessage {
                 }
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
 
         private static void handle(MessageIssuerAuthorize msg, EntityPlayerMP operator) {
@@ -215,7 +223,7 @@ implements IMessage {
                         issuer.getUsesPerCard(), issuer.getTierMask(), firstIssued);
                 sampleTag = sample.writeToNBT(new net.minecraft.nbt.NBTTagCompound());
             }
-            com.jiezhirbmkmod.network.ModNetwork.CHANNEL.sendTo(
+            NetGuard.sendTo(
                     new com.jiezhirbmkmod.network.msg.MessageIssuerResult(
                             ok, noCard, offline, firstIssued, sampleTag), operator);
         }

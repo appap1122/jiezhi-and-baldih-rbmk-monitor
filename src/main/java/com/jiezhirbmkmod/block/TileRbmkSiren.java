@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.block;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.dfc.SirenPresets;
 import com.jiezhirbmkmod.item.ModSounds;
 import com.jiezhirbmkmod.network.ModNetwork;
@@ -161,7 +163,7 @@ public class TileRbmkSiren extends TileEntity implements ITickable {
             return;
         }
         IMessage msg = new MessageSirenTune(this.world, this.pos, this);
-        ModNetwork.CHANNEL.sendToAllAround(msg, new NetworkRegistry.TargetPoint(
+        NetGuard.sendToAllAround(msg, new NetworkRegistry.TargetPoint(
                 this.world.provider.getDimension(),
                 (double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D,
                 96.0D));

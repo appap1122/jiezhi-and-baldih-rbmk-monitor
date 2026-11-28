@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.client.ai.AiDiagnoseDispatcher;
 import com.jiezhirbmkmod.dfc.RbmkSnapshot;
 import com.jiezhirbmkmod.item.ItemRbmkPda;
@@ -95,17 +97,17 @@ public class GuiRbmkPda extends GuiScreen {
     }
 
     private void requestSnapshot() {
-        ModNetwork.CHANNEL.sendToServer(MessageRbmkPda.request(MessageRbmkPda.ACTION_SNAPSHOT));
+        NetGuard.sendToServer(MessageRbmkPda.request(MessageRbmkPda.ACTION_SNAPSHOT));
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button.id == 0) {
-            ModNetwork.CHANNEL.sendToServer(MessageRbmkPda.request(MessageRbmkPda.ACTION_BIND));
+            NetGuard.sendToServer(MessageRbmkPda.request(MessageRbmkPda.ACTION_BIND));
         } else if (button.id == 1) {
             this.requestSnapshot();
         } else if (button.id == 2) {
-            ModNetwork.CHANNEL.sendToServer(MessageRbmkPda.request(MessageRbmkPda.ACTION_UNBIND));
+            NetGuard.sendToServer(MessageRbmkPda.request(MessageRbmkPda.ACTION_UNBIND));
         } else if (button.id == 3) {
             this.mc.displayGuiScreen((GuiScreen) null);
         }
@@ -148,7 +150,7 @@ public class GuiRbmkPda extends GuiScreen {
             this.runDiagnose();
             return;
         }
-        ModNetwork.CHANNEL.sendToServer(MessageTerminalCommand.pda(raw));
+        NetGuard.sendToServer(MessageTerminalCommand.pda(raw));
     }
 
     /** Local AI diagnosis: same dispatcher the terminal uses, same snapshot. */

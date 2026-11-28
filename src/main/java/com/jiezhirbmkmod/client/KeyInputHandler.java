@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.client.gui.GuiPptGoto;
 import com.jiezhirbmkmod.item.ItemRbmkPptRemote;
 import com.jiezhirbmkmod.network.ModNetwork;
@@ -45,10 +47,10 @@ public class KeyInputHandler {
             return;
         }
         if (nextEdge) {
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.NEXT, 0, BlockPos.ORIGIN));
         } else if (prevEdge) {
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.PREV, 0, BlockPos.ORIGIN));
         } else if (openEdge) {
             mc.displayGuiScreen(new GuiPptGoto());

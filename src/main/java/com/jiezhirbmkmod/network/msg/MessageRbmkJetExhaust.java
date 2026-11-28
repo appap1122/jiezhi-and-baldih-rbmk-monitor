@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.client.ClientJetState;
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
@@ -55,6 +57,7 @@ implements IMessage {
     public static class Handler
     implements IMessageHandler<MessageRbmkJetExhaust, IMessage> {
         public IMessage onMessage(MessageRbmkJetExhaust message, MessageContext ctx) {
+            try {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 WorldClient w = Minecraft.getMinecraft().world;
                 if (w == null) {
@@ -63,6 +66,11 @@ implements IMessage {
                 ClientJetState.set(message.playerId, message.firing, message.heatRatio);
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

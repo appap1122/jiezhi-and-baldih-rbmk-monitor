@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.dfc.RbmkBridge;
 import com.jiezhirbmkmod.dfc.RbmkSnapshot;
 import com.jiezhirbmkmod.item.ItemRbmkPda;
@@ -146,6 +148,7 @@ public class MessageRbmkPda implements IMessage {
 
         @Override
         public IMessage onMessage(final MessageRbmkPda msg, MessageContext ctx) {
+            try {
             if (ctx.side == Side.SERVER) {
                 final EntityPlayerMP player = ctx.getServerHandler().player;
                 player.getServerWorld().addScheduledTask(() -> Handler.handleServer(player, msg));
@@ -159,19 +162,24 @@ public class MessageRbmkPda implements IMessage {
                 }
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
 
         private static void handleServer(EntityPlayerMP player, MessageRbmkPda msg) {
             ItemStack held = ItemRbmkPda.findHeld(player);
             if (held.isEmpty()) {
-                ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(msg.action, false, "PDA 不在手上。"), player);
+                NetGuard.sendTo(MessageRbmkPda.reply(msg.action, false, "PDA 不在手上。"), player);
                 return;
             }
             World world = player.getServerWorld();
             if (msg.action == MessageRbmkPda.ACTION_BIND) {
                 BlockPos target = ItemRbmkPda.findBindTarget(player, world);
                 if (target == null) {
-                    ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(msg.action, false,
+                    NetGuard.sendTo(MessageRbmkPda.reply(msg.action, false,
                             "视线 32 格内没有 RBMK 控制台，靠近控制台再试。"), player);
                     return;
                 }
@@ -182,12 +190,12 @@ public class MessageRbmkPda implements IMessage {
                 r.y = target.getY();
                 r.z = target.getZ();
                 r.dim = world.provider.getDimension();
-                ModNetwork.CHANNEL.sendTo(r, player);
+                NetGuard.sendTo(r, player);
                 return;
             }
             if (msg.action == MessageRbmkPda.ACTION_UNBIND) {
                 ItemRbmkPda.clearBound(held);
-                ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(msg.action, true, "已解除绑定。"), player);
+                NetGuard.sendTo(MessageRbmkPda.reply(msg.action, true, "已解除绑定。"), player);
                 return;
             }
             Handler.sendSnapshot(player, held, msg.action);
@@ -196,31 +204,31 @@ public class MessageRbmkPda implements IMessage {
         private static void sendSnapshot(EntityPlayerMP player, ItemStack held, int action) {
             BlockPos pos = ItemRbmkPda.readBoundPos(held);
             if (pos == null) {
-                ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(action, false,
+                NetGuard.sendTo(MessageRbmkPda.reply(action, false,
                         "尚未绑定控制台，先点「绑定控制台」。"), player);
                 return;
             }
             World world = player.getServerWorld();
             if (ItemRbmkPda.readBoundDim(held) != world.provider.getDimension()) {
-                ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(action, false,
+                NetGuard.sendTo(MessageRbmkPda.reply(action, false,
                         "绑定的控制台在另一个维度。"), player);
                 return;
             }
             if (player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D,
                     (double) pos.getZ() + 0.5D) > MessageRbmkPda.MAX_DISTANCE_SQ) {
-                ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(action, false,
+                NetGuard.sendTo(MessageRbmkPda.reply(action, false,
                         "距离绑定的控制台超过 128 格。"), player);
                 return;
             }
             TileEntity console = world.getTileEntity(pos);
             if (!RbmkBridge.isConsole(console)) {
-                ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(action, false,
+                NetGuard.sendTo(MessageRbmkPda.reply(action, false,
                         "绑定的控制台已不存在，请重新绑定。"), player);
                 return;
             }
             RbmkSnapshot data = new RbmkSnapshot();
             if (!RbmkBridge.read(console, data)) {
-                ModNetwork.CHANNEL.sendTo(MessageRbmkPda.reply(action, false, "读取反应堆数据失败。"), player);
+                NetGuard.sendTo(MessageRbmkPda.reply(action, false, "读取反应堆数据失败。"), player);
                 return;
             }
             MessageRbmkPda r = MessageRbmkPda.reply(action, true, "");
@@ -230,7 +238,7 @@ public class MessageRbmkPda implements IMessage {
             r.y = pos.getY();
             r.z = pos.getZ();
             r.dim = world.provider.getDimension();
-            ModNetwork.CHANNEL.sendTo(r, player);
+            NetGuard.sendTo(r, player);
         }
     }
 }

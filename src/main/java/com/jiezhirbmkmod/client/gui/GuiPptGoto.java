@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.network.ModNetwork;
 import com.jiezhirbmkmod.network.msg.MessageRbmkPptControl;
 import java.io.IOException;
@@ -56,7 +58,7 @@ extends GuiScreen {
             this.error = "页码必须 >= 1";
             return;
         }
-        ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+        NetGuard.sendToServer(new MessageRbmkPptControl(
                 MessageRbmkPptControl.GOTO, page, BlockPos.ORIGIN));
         this.mc.displayGuiScreen(null);
     }

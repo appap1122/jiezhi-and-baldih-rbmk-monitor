@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.dfc;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -163,7 +165,7 @@ public class HackAppManager {
                 (close ? "close" : "open") + " -> reviewers=" + required.size() + " id=" + appId);
         for (EntityPlayerMP p : server.getPlayerList().getPlayers()) {
             if (required.contains(p.getUniqueID())) {
-                ModNetwork.CHANNEL.sendTo(new MessageHackAppReview(
+                NetGuard.sendTo(new MessageHackAppReview(
                         applicantName, closeType, appId, kind), p);
             }
         }
@@ -231,7 +233,7 @@ public class HackAppManager {
         EntityPlayerMP applicant = findPlayer(server, applicantId);
         if (applicant != null) {
             // 回信弹窗：点「知道了」关闭
-            ModNetwork.CHANNEL.sendTo(new MessageHackAppResult(closeType, accepted, kind), applicant);
+            NetGuard.sendTo(new MessageHackAppResult(closeType, accepted, kind), applicant);
         }
         if (!accepted) {
             notifyReviewers(server, TextFormatting.YELLOW, why);

@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.client.gui.GuiRbmkIssuer;
 
 import io.netty.buffer.ByteBuf;
@@ -93,6 +95,7 @@ implements IMessage {
 
         @Override
         public IMessage onMessage(final MessageIssuerResult msg, MessageContext ctx) {
+            try {
             Minecraft.getMinecraft().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
@@ -104,6 +107,11 @@ implements IMessage {
                 }
             });
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

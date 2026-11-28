@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.BlockRbmkCustomScreen;
 import com.jiezhirbmkmod.block.BlockRbmkGraph;
 import com.jiezhirbmkmod.block.BlockRbmkMonitor;
@@ -670,9 +672,9 @@ public class GuiTerminal extends GuiScreen {
         }
         if (this.isLaptop()) {
             // handheld mode: the server resolves the console from the held item
-            ModNetwork.CHANNEL.sendToServer(MessageTerminalCommand.laptop(raw));
+            NetGuard.sendToServer(MessageTerminalCommand.laptop(raw));
         } else {
-            ModNetwork.CHANNEL.sendToServer(new MessageTerminalCommand(this.hostPos, raw));
+            NetGuard.sendToServer(new MessageTerminalCommand(this.hostPos, raw));
         }
         this.history.add(raw);
         this.historyIndex = this.history.size();
@@ -825,7 +827,7 @@ public class GuiTerminal extends GuiScreen {
             this.pushLines(out);
             return;
         }
-        ModNetwork.CHANNEL.sendToServer(
+        NetGuard.sendToServer(
                 new TileRbmkMonitorScreen.AutoScramToggleMessage(monitor.getPos(), disabled));
         if (disabled) {
             out.add(new CmdLine(MessageTerminalCommand.C_ERR,
@@ -990,7 +992,7 @@ public class GuiTerminal extends GuiScreen {
             this.pushLines(out);
             return;
         }
-        ModNetwork.CHANNEL.sendToServer(
+        NetGuard.sendToServer(
                 new TileRbmkMonitorScreen.ConnectMessage(monitor.getPos(), dim, new BlockPos(x, y, z)));
         out.add(new CmdLine(MessageTerminalCommand.C_WARN,
                 "[SYSTEM] 跨维度连接请求已发送：维度 " + dim + " @ (" + x + ", " + y + ", " + z + ")"));
@@ -1107,12 +1109,12 @@ public class GuiTerminal extends GuiScreen {
                 return;
             }
             screen.invalidatePictureTexture();
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.PICTURE, 0, screen.getPos(), arg));
             out.add(new CmdLine(MessageTerminalCommand.C_OK, "  [PIC] 正在显示: " + arg));
         } else if ("clear".equals(sub)) {
             screen.invalidatePictureTexture();
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.CLEAR, 0, screen.getPos(), ""));
             out.add(new CmdLine(MessageTerminalCommand.C_OK, "  [PIC] 屏幕已清空（黑屏）。"));
         } else {
@@ -1162,15 +1164,15 @@ public class GuiTerminal extends GuiScreen {
             out.add(new CmdLine(MessageTerminalCommand.C_OK, "  [PPT] 已加载 " + count + " 页幻灯片。"));
             cur = 1;
             total = Math.max(1, count);
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.LOAD, count, screen.getPos()));
         } else if ("next".equals(sub)) {
             cur = Math.min(total, cur + 1);
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.NEXT, 0, screen.getPos()));
         } else if ("prev".equals(sub)) {
             cur = Math.max(1, cur - 1);
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.PREV, 0, screen.getPos()));
         } else if ("goto".equals(sub)) {
             int page;
@@ -1190,7 +1192,7 @@ public class GuiTerminal extends GuiScreen {
                 return;
             }
             cur = page;
-            ModNetwork.CHANNEL.sendToServer(new MessageRbmkPptControl(
+            NetGuard.sendToServer(new MessageRbmkPptControl(
                     MessageRbmkPptControl.GOTO, page, screen.getPos()));
         } else {
             out.add(new CmdLine(MessageTerminalCommand.C_ERR,
@@ -1323,7 +1325,7 @@ public class GuiTerminal extends GuiScreen {
         if (this.mc != null && this.mc.player != null) {
             packet.setSender(this.mc.player.getName());
         }
-        ModNetwork.CHANNEL.sendToServer(packet);
+        NetGuard.sendToServer(packet);
         out.add(new CmdLine(MessageTerminalCommand.C_DIM,
                 "  [MSG] 已发往 " + target + "，等待服务端回执..."));
         this.pushLines(out);
@@ -1348,7 +1350,7 @@ public class GuiTerminal extends GuiScreen {
             this.pushLines(out);
             return;
         }
-        ModNetwork.CHANNEL.sendToServer(new MessageRbmkTerminalComm(
+        NetGuard.sendToServer(new MessageRbmkTerminalComm(
                 auth ? MessageRbmkTerminalComm.ACTION_AUTH : MessageRbmkTerminalComm.ACTION_SET_CODE,
                 monitor.getPos(), "", code));
         out.add(new CmdLine(MessageTerminalCommand.C_DIM,
@@ -1401,7 +1403,7 @@ public class GuiTerminal extends GuiScreen {
             return;
         }
         String payload = x + " " + y + " " + z + " " + strength;
-        ModNetwork.CHANNEL.sendToServer(new MessageRbmkTerminalComm(
+        NetGuard.sendToServer(new MessageRbmkTerminalComm(
                 MessageRbmkTerminalComm.ACTION_REDSTONE, monitor.getPos(), "", payload));
         out.add(new CmdLine(MessageTerminalCommand.C_DIM,
                 "  [REDSTONE] 已发送远程红石请求 @ (" + x + ", " + y + ", " + z + ") 强度 " + strength + "..."));
@@ -1494,7 +1496,7 @@ public class GuiTerminal extends GuiScreen {
             return;
         }
         String payload = arg.isEmpty() ? action : action + " " + arg;
-        ModNetwork.CHANNEL.sendToServer(new MessageRbmkTerminalComm(
+        NetGuard.sendToServer(new MessageRbmkTerminalComm(
                 MessageRbmkTerminalComm.ACTION_MEDIA, monitor.getPos(), "", payload));
         out.add(new CmdLine(MessageTerminalCommand.C_DIM, "  [MEDIA] 请求已发送，等待服务端回执..."));
         this.pushLines(out);
@@ -1528,7 +1530,7 @@ public class GuiTerminal extends GuiScreen {
         } else {
             packetPos = monitor.getPos();
         }
-        ModNetwork.CHANNEL.sendToServer(
+        NetGuard.sendToServer(
                 new TileRbmkMonitorScreen.HackToggleMessage(packetPos, hacked, remote ? targetName : ""));
         if (hacked) {
             if (remote) {

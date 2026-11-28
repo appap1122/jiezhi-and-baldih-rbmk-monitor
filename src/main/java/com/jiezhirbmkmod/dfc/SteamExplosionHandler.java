@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.dfc;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.RbmkMonitorMod;
 import com.jiezhirbmkmod.Tags;
 import com.jiezhirbmkmod.entity.EntityFlyingBlock;
@@ -502,7 +504,7 @@ public final class SteamExplosionHandler {
             if (player == null) {
                 continue;
             }
-            ModNetwork.CHANNEL.sendTo(new ShakeMessage(2.2F, 40), player);
+            NetGuard.sendTo(new ShakeMessage(2.2F, 40), player);
         }
     }
 

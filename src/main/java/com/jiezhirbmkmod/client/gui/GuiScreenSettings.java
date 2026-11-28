@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.BlockRbmkGraph;
 import com.jiezhirbmkmod.block.TileRbmkMonitorScreen;
 import com.jiezhirbmkmod.network.ModNetwork;
@@ -211,7 +213,7 @@ extends GuiScreen {
     }
 
     private void send(int key, int value) {
-        ModNetwork.CHANNEL.sendToServer(new MessageScreenDisplaySetting(this.screenPos, key, value));
+        NetGuard.sendToServer(new MessageScreenDisplaySetting(this.screenPos, key, value));
     }
 
     @Override

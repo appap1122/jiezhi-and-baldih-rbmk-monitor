@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.alarm.AlarmConfig;
 import com.jiezhirbmkmod.block.TileAlarmLight;
 import com.jiezhirbmkmod.dfc.RbmkConfig;
@@ -389,7 +391,7 @@ extends GuiScreen {
             return;
         }
         this.lockTicks = 10;
-        ModNetwork.CHANNEL.sendToServer(new MessageAlarmLight(this.tile.getPos(),
+        NetGuard.sendToServer(new MessageAlarmLight(this.tile.getPos(),
                 this.currentColor(), this.sliderRpm.value, this.localOn, this.localSpot,
                 this.localTrigger, auto));
     }

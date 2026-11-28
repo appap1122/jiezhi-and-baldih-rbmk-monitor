@@ -11,9 +11,8 @@ package com.jiezhirbmkmod.dfc;
  * {@code /rbmkcompat} 再把它翻译成人话。</p>
  *
  * <p>重要约束：记录<b>绝不放宽也不收紧</b>校验语义 —— 接受/拒绝的判定
- * 在 {@code RbmkMonitorMod} 的握手回调里做（v18.0 起双侧对称：无论本端
- * 是哪一侧，都要求对端存在本模组且版本与本端一致，即 Forge 对未提供
- * {@code @NetworkCheckHandler} 的模组的默认语义），本类只做旁观记录。
+ * 在 {@code RbmkMonitorMod} 的握手回调里做（v18.4 起：对端没装本模组
+ * 则放行，装了但版本不符才拒绝），本类只做旁观记录。
  * 记录是"最近一次握手"的快照：多人同时连入时以后到的为准，时间戳
  * 供 {@code /rbmkcompat} 判断新鲜度。</p>
  */
@@ -47,8 +46,8 @@ public final class ProtocolGuard {
 
     /**
      * 拒绝时的可读落盘：FML 的拒绝屏玩家看不懂，这里把精确原因写进
-     * 控制台与审计链。只在服务端拒绝客户端时触发（客户端侧按默认
-     * 语义不拒绝服务器，走不到这里）。
+     * 控制台与审计链。v18.4 起只有「对端装了本模组但版本与本端不符」
+     * 才会走到这里；对端完全没装模组时是放行的，不会再触发。
      */
     public static void logReject(String version, boolean remoteIsServerSide) {
         String msg = "Connection rejected by RBMK-Monitor compat check: remote "
@@ -84,7 +83,7 @@ public final class ProtocolGuard {
         }
         String who = ProtocolGuard.remoteIsServer ? "server" : "client";
         if (!ProtocolGuard.remotePresent) {
-            return who + ": no RBMK-Monitor on remote";
+            return who + ": no RBMK-Monitor on remote (accepted — vanilla / other mods)";
         }
         String v = ProtocolGuard.remoteVersion;
         return who + ": v" + (v == null ? "?" : v)

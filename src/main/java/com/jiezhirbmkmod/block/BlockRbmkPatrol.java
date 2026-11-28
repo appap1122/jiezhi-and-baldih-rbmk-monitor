@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.block;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.network.ModNetwork;
 import com.jiezhirbmkmod.network.msg.MessagePatrolSync;
 import com.jiezhirbmkmod.proxy.CommonProxy;
@@ -76,7 +78,7 @@ implements net.minecraft.block.ITileEntityProvider {
         }
         // 打开 GUI 前先把绑定清单下发：方块实体字段不同步，专用包是正路
         if (player instanceof EntityPlayerMP) {
-            ModNetwork.CHANNEL.sendTo(
+            NetGuard.sendTo(
                     new MessagePatrolSync(patrol.validScreens()), (EntityPlayerMP) player);
         }
         player.openGui(com.jiezhirbmkmod.RbmkMonitorMod.instance,

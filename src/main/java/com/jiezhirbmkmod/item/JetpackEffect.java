@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.item;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.client.ClientJetState;
 import com.jiezhirbmkmod.item.JetHeat;
 import com.jiezhirbmkmod.item.JetPhysics;
@@ -128,7 +130,7 @@ public class JetpackEffect {
         if (!(player instanceof EntityPlayerMP)) {
             return;
         }
-        ModNetwork.CHANNEL.sendTo((IMessage)new MessageRbmkJetExhaust(player, firing, heatRatio), (EntityPlayerMP)player);
+        NetGuard.sendTo((IMessage)new MessageRbmkJetExhaust(player, firing, heatRatio), (EntityPlayerMP)player);
     }
 
     @SubscribeEvent

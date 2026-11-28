@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.network.msg;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.alarm.AlarmConfig;
 import com.jiezhirbmkmod.block.TileAlarmLight;
 import io.netty.buffer.ByteBuf;
@@ -94,6 +96,7 @@ implements IMessage {
 
         @Override
         public IMessage onMessage(final MessageAlarmLight msg, MessageContext ctx) {
+            try {
             if (ctx.side != Side.SERVER || ctx.getServerHandler() == null
                     || ctx.getServerHandler().player == null) {
                 return null;
@@ -160,6 +163,11 @@ implements IMessage {
             catch (Throwable ignored) {
             }
             return null;
+        
+        } catch (Throwable t) {
+            NetGuard.reportHandler("Handler", t);
+            return null;
+        }
         }
     }
 }

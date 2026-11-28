@@ -1,5 +1,7 @@
 package com.jiezhirbmkmod.client.gui;
 
+
+import com.jiezhirbmkmod.network.NetGuard;
 import com.jiezhirbmkmod.block.TileRbmkMonitorScreen;
 import com.jiezhirbmkmod.client.util.GuiDraw;
 import com.jiezhirbmkmod.dfc.AlertPolicy;
@@ -185,7 +187,7 @@ extends GuiScreen {
         int id = button.id;
         if (id == ID_CLOSE) {
             this.p.clampAll();
-            ModNetwork.CHANNEL.sendToServer((IMessage) new MessageRbmkScreenPolicy(this.pos, this.p));
+            NetGuard.sendToServer((IMessage) new MessageRbmkScreenPolicy(this.pos, this.p));
             this.tile.applyPolicyLocal(this.p); 
             return;
         }
