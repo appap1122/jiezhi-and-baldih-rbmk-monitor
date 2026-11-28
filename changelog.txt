@@ -1,7 +1,7 @@
 RBMK Monitor - Changelog
 ========================
 
-18.4
+18.3
 - Network handshake relaxed back to the Forge default: a peer that does NOT
   have this mod is now ACCEPTED (onNetworkCheck returns true), so vanilla
   servers and clients without the mod no longer get "mod rejections". A peer
@@ -14,7 +14,7 @@ RBMK Monitor - Changelog
   a packet that arrives in an unexpected state is logged once per packet type
   and dropped; it can no longer break the caller's tick, the network thread
   or a dedicated server.
-- Version bumped to 18.4; Tags.VERSION and project.version moved together so
+- Version bumped to 18.3; Tags.VERSION and project.version moved together so
   verifyModMetadata stays green.
 
 18.2

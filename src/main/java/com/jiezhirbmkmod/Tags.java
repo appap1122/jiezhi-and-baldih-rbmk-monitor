@@ -18,7 +18,7 @@ public final class Tags {
 
     public static final String MODID = "jiezhirbmkmod";
     public static final String NAME = "RBMK\u663e\u793a\u5c4f";
-    public static final String VERSION = "18.4";
+    public static final String VERSION = "18.3";
 
     private Tags() {
     }

@@ -95,9 +95,9 @@ public class RbmkMonitorMod {
     }
 
     /**
-     * v17.9 网络握手回调（/rbmkcompat 的数据源）；v18.4 改回「缺失放行」。
+     * v17.9 网络握手回调（/rbmkcompat 的数据源）；v18.3 改回「缺失放行」。
      *
-     * <p><b>判定规则（v18.4 起）：</b></p>
+     * <p><b>判定规则（v18.3 起）：</b></p>
      * <ul>
      *   <li>对端<b>没有装</b>本模组（{@code remoteMods} 里没有
      *       {@link Tags#MODID}，或整个 map 为 null）→ <b>返回 true，放行</b>。
@@ -113,7 +113,7 @@ public class RbmkMonitorMod {
      *
      * <p>v18.0 曾收紧成「双侧对称：必须存在且版本一致」，代价是连 vanilla
      * 服、或在纯净客户端上进原版服直接报 "mod rejections"，玩家看不懂。
-     * v18.4 改回 Forge 的常规做法：缺失即放行，只有真正的协议冲突才拒绝。
+     * v18.3 改回 Forge 的常规做法：缺失即放行，只有真正的协议冲突才拒绝。
      * 放行带来的「对端没有 channel」风险由 {@code NetGuard} 兜底 ——
      * 所有收发包都过它，异常只记日志不冒泡（见该类的注释）。</p>
      *
@@ -130,7 +130,7 @@ public class RbmkMonitorMod {
         boolean remoteIsServer = remoteSide == net.minecraftforge.fml.relauncher.Side.SERVER;
         String v = remoteMods == null ? null : remoteMods.get(Tags.MODID);
         boolean present = v != null;
-        // v18.4：缺失放行，只有"装了但对不上版本"才拒绝。
+        // v18.3：缺失放行，只有"装了但对不上版本"才拒绝。
         boolean ok = !present || Tags.VERSION.equals(v);
         com.jiezhirbmkmod.dfc.ProtocolGuard.record(v, remoteIsServer, ok);
         if (!ok) {

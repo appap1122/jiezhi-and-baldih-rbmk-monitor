@@ -6,9 +6,9 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 /**
- * v18.4 网络收发的统一安全出口（NetGuard）。
+ * v18.3 网络收发的统一安全出口（NetGuard）。
  *
- * <p>背景：{@code RbmkMonitorMod#onNetworkCheck} 从 v18.4 起改为
+ * <p>背景：{@code RbmkMonitorMod#onNetworkCheck} 从 v18.3 起改为
  * 「对端没装本模组就放行、装了但版本不符才拒绝」（见该方法的注释）。
  * 放行 vanilla 服 / 只装了别的模组的客户端之后，本模组会真的和
  * 「对方压根没有这个 channel」的对端建立连接，此时任何一次
