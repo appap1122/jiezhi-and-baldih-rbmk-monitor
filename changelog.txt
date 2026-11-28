@@ -1,6 +1,14 @@
 RBMK Monitor - Changelog
 ========================
 
+18.4
+- New terminal command: `void`. Prints the core's positive void coefficient
+  (RBMK's defining flaw): void fraction = steam / (steam + boiler water),
+  scaled by how far the rods are withdrawn (0.45x fully inserted, 1.00x fully
+  out). Reactivity above 18% is flagged as self-accelerating.
+  It is an estimate from the same snapshot `status` uses, not a direct read.
+- Version bumped to 18.4 (Tags.VERSION + project.version together).
+
 18.3
 - Network handshake relaxed back to the Forge default: a peer that does NOT
   have this mod is now ACCEPTED (onNetworkCheck returns true), so vanilla

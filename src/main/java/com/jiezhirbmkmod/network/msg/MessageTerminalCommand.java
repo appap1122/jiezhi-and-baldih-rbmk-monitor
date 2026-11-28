@@ -55,6 +55,7 @@ public class MessageTerminalCommand implements IMessage {
     public static final String[] HELP = new String[] {
             "help                     show this command list (Tab autocompletes)",
             "status                   reactor status: temps, flux, steam, rods",
+            "void                     positive void coefficient: void fraction + reactivity",
             "rods                     list manual control rods",
             "rods <0-100>             set ALL manual rods to <0-100>% extracted",
             "rods <0-100> <color>     set only the rods of that color",
@@ -80,7 +81,7 @@ public class MessageTerminalCommand implements IMessage {
     public static final String[] WATCH_METRICS = new String[]{"heat", "peak", "flux", "water", "steam", "enrich", "xenon"};
     public static final String[] WATCH_ACTIONS = new String[]{"scram", "alarm", "audit"};
     public static final String[] COMMANDS = new String[]{"help", "status", "rods", "scram", "bind", "clear",
-            "cls", "exit", "az5", "unbind", "quit", "where", "siren", "history", "watch"};
+            "cls", "exit", "az5", "unbind", "quit", "where", "siren", "history", "watch", "void"};
 
     public static final class CmdLine {
         public final int color;
@@ -460,6 +461,8 @@ public class MessageTerminalCommand implements IMessage {
                 Handler.cmdRods(world, center, parts, out);
             } else if ("scram".equals(cmd) || "az5".equals(cmd)) {
                 Handler.cmdScram(world, center, out, player);
+            } else if ("void".equals(cmd)) {
+                Handler.cmdVoid(world, console, out);
             } else if ("watch".equals(cmd)) {
                 Handler.cmdWatch(world, console, parts, out, player);
             } else {
@@ -584,6 +587,55 @@ public class MessageTerminalCommand implements IMessage {
             if (s.boilerCount > 0) {
                 out.add(new CmdLine(C_OUT, "  Boiler water     : " + DfcFormat.amount(s.waterTotal)));
             }
+        }
+
+        /**
+         * v18.4 'void': the positive void coefficient of this core.
+         *
+         * <p>RBMK 的冷却剂同时是慢化剂的一部分：水在堆芯里沸腾成蒸汽后，空泡里的
+         * 密度骤降，慢化变少但中子吸收减少得更多，净效果是<b>反应性上升</b>。
+         * 这就是著名的正空泡系数，也是 1986 年那次事故的直接推手。</p>
+         *
+         * <p>注意：这是<b>估算</b>，不是 HBM 内部物理量的直读。空泡率取
+         * 蒸汽 / (蒸汽 + 锅炉水)，系数按抽棒程度放大 —— 抽得越干净，正反馈越强。
+         * 数据来自 {@link RbmkSnapshot}，与 status 命令同源。</p>
+         */
+        private static void cmdVoid(World world, TileEntity console, List<CmdLine> out) {
+            RbmkSnapshot s = RbmkSnapshot.empty();
+            if (!RbmkBridge.read(console, s)) {
+                out.add(new CmdLine(C_ERR, "  Could not read the reactor (is HBM's Nuclear Tech installed?)."));
+                return;
+            }
+            if (s.offline) {
+                out.add(new CmdLine(C_WARN, "  Reactor offline: no columns scanned, void estimate unavailable."));
+                return;
+            }
+            double steam = Math.max(0.0D, s.steamTotal);
+            double water = Math.max(0.0D, s.waterTotal);
+            double total = steam + water;
+            double voidFraction = total > 0.0D ? steam / total : 0.0D;
+            voidFraction = Math.min(1.0D, Math.max(0.0D, voidFraction));
+
+            // 抽出率 0..100% → 系数放大 0.45..1.00
+            double extracted = Math.min(100.0D, Math.max(0.0D, s.avgRodLevel));
+            double rodFactor = 0.45D + 0.55D * (extracted / 100.0D);
+            double base = 0.42D;                       // 基准系数（无量纲反应性）
+            double coefficient = base * rodFactor;
+            double reactivity = voidFraction * coefficient;
+
+            out.add(new CmdLine(C_OUT, "  Void fraction    : " + DfcFormat.percent(voidFraction * 100.0D)));
+            out.add(new CmdLine(C_OUT, "  Void coefficient : +" + DfcFormat.percent(coefficient * 100.0D)
+                    + "   (base " + DfcFormat.percent(base * 100.0D) + " x rod factor "
+                    + DfcFormat.percent(rodFactor * 100.0D) + ")"));
+            int color = reactivity > 0.18D ? C_ERR : (reactivity > 0.10D ? C_WARN : C_OK);
+            out.add(new CmdLine(color, "  Void reactivity  : +" + DfcFormat.percent(reactivity * 100.0D)
+                    + (reactivity > 0.18D ? "   [POSITIVE - self-accelerating]" : "")));
+            if (s.controlCount > 0) {
+                out.add(new CmdLine(C_DIM, "  Rods " + s.controlCount + " at "
+                        + DfcFormat.percent(extracted) + " extracted"
+                        + (extracted > 80.0D ? " - void feedback is at its strongest near full withdrawal." : ".")));
+            }
+            out.add(new CmdLine(C_DIM, "  Estimate only: steam / (steam + boiler water) from the last scan."));
         }
 
         private static void cmdRods(World world, BlockPos center, String[] parts, List<CmdLine> out) {

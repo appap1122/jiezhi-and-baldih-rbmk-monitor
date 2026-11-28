@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'wtf.gofancy.fancygradle'
 // Single source of truth for the mod version. Tags.java and mcmod.info are
 // checked/injected against this value by verifyModMetadata below.
-version = '18.3'
+version = '18.4'
 group = 'com.jiezhirbmkmod'
 archivesBaseName = 'RBMK-Monitor'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
